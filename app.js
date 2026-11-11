@@ -50,11 +50,96 @@ const games=[
 ["紙の花をつくろう","紙に花を描いて大人と切り抜こう。","紙・クレヨン・はさみ（大人用）",4,6,30,"creative"],
 ["ありがとうカード","家族にありがとうの絵や言葉を贈ろう。","紙・クレヨン",3,6,30,"creative"]
 ];
-const $=id=>document.getElementById(id);
-let current=null,last=-1;
-const key="asobi-no-tane-favorites";
-function saved(){try{const v=JSON.parse(localStorage.getItem(key)||"[]");return Array.isArray(v)?v:[]}catch{return []}}
-function showFavorites(){const ids=saved();$("favorites").textContent=ids.length?ids.map(i=>games[i]?.[0]).filter(Boolean).join(" ・ "):"まだ登録されていません。"}
-function draw(){const age=+$("age").value,mins=+$("minutes").value,type=$("type").value;const candidates=games.map((g,i)=>({g,i})).filter(({g,i})=>g[3]<=age&&age<=g[4]&&g[5]<=mins&&(type==="any"||g[6]===type)&&i!==last);if(!candidates.length){$("result").classList.remove("hidden");$("title").textContent="条件に合う遊びがありません";$("description").textContent="遊べる時間や遊び方を変更してみてください。";$("materials").textContent="";$("details").textContent="";$("favorite").hidden=true;return}const item=candidates[Math.floor(Math.random()*candidates.length)];current=item.i;last=current;const g=item.g;$("result").classList.remove("hidden");$("title").textContent=g[0];$("description").textContent=g[1];$("materials").textContent="用意するもの："+g[2];$("details").textContent=g[3]+"〜"+g[4]+"歳向け ・ 約"+g[5]+"分";$("favorite").hidden=false;syncFavorite();$("result").scrollIntoView({behavior:"smooth",block:"nearest"})}
-function syncFavorite(){$("favorite").textContent=saved().includes(current)?"★ お気に入り解除":"☆ お気に入りに追加"}
-$("draw").addEventListener("click",draw);$("again").addEventListener("click",draw);$("favorite").addEventListener("click",()=>{if(current===null)return;const ids=saved();const next=ids.includes(current)?ids.filter(i=>i!==current):[...ids,current];try{localStorage.setItem(key,JSON.stringify(next))}catch{}syncFavorite();showFavorites()});showFavorites();
+
+games.push(...(window.extraGames || []));
+const $ = id => document.getElementById(id);
+const STORE = "asobi-no-tane-favorites";
+const METRICS = "asobi-no-tane-metrics";
+let current = null, last = -1;
+function load(key, fallback) { try { const x=JSON.parse(localStorage.getItem(key)); return x ?? fallback; } catch { return fallback; } }
+function save(key, value) { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} }
+function favorites() { const x=load(STORE,[]); return Array.isArray(x)?x.filter(i=>Number.isInteger(i)&&i>=0&&i<games.length):[]; }
+function track(name) {
+  const m=load(METRICS,{visits:0,draws:0,shares:0,favorites:0});
+  m[name]=(m[name]||0)+1; save(METRICS,m);
+  // External traffic analytics is optional and disabled until the owner configures it.
+  if (window.ASOBI_ANALYTICS && typeof window.ASOBI_ANALYTICS.track==="function") {
+    try { window.ASOBI_ANALYTICS.track(name); } catch {}
+  }
+}
+function eligible() {
+  const age=+$("age").value, mins=+$("minutes").value, type=$("type").value;
+  const gear=$("gear").value, cleanup=$("cleanup").checked, keyword=$("keyword").value.trim().toLowerCase();
+  return games.map((g,i)=>({g,i})).filter(({g})=>
+    g[3]<=age && age<=g[4] && g[5]<=mins &&
+    (type==="any" || g[6]===type) &&
+    (gear!=="none" || g[2]==="道具なし") &&
+    (!cleanup || g[2]==="道具なし") &&
+    (!keyword || (g[0]+" "+g[1]+" "+g[2]).toLowerCase().includes(keyword))
+  );
+}
+function count() {
+  const n=eligible().length;
+  $("matches").textContent="条件に合う遊び："+n+"件（全"+games.length+"種類）";
+  $("draw").disabled=n===0;
+}
+function show(i, scroll=true) {
+  current=i; last=i;
+  const g=games[i]; if(!g)return;
+  $("result").classList.remove("hidden");
+  $("title").textContent=g[0]; $("description").textContent=g[1];
+  $("materials").textContent="用意するもの："+g[2];
+  $("details").textContent=g[3]+"〜"+g[4]+"歳向け ・ 約"+g[5]+"分";
+  syncFavorite();
+  if(scroll)$("result").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function draw() {
+  const pool=eligible().filter(x=>x.i!==last);
+  const choices=pool.length?pool:eligible();
+  if(!choices.length){$("result").classList.add("hidden");return;}
+  const item=choices[Math.floor(Math.random()*choices.length)];
+  show(item.i); track("draws");
+}
+function syncFavorite() {
+  $("favorite").textContent=favorites().includes(current)?"★ お気に入り解除":"☆ お気に入りに追加";
+}
+function showFavorites() {
+  const ids=favorites(); const root=$("favorites");root.replaceChildren();
+  $("favcount").textContent=ids.length+"件";
+  if(!ids.length){const p=document.createElement("p");p.className="hint";p.textContent="まだ登録されていません。";root.append(p);return;}
+  for(const i of ids) {
+    const line=document.createElement("div");line.className="favorite-item";
+    const open=document.createElement("button");open.className="favorite-open";open.textContent=games[i][0];
+    open.addEventListener("click",()=>show(i));
+    const remove=document.createElement("button");remove.className="remove";remove.textContent="削除";remove.setAttribute("aria-label",games[i][0]+"をお気に入りから削除");
+    remove.addEventListener("click",()=>{save(STORE,favorites().filter(x=>x!==i));showFavorites();if(current===i)syncFavorite();});
+    line.append(open,remove);root.append(line);
+  }
+}
+async function share() {
+  if(current===null)return;
+  const g=games[current];
+  const url=new URL(location.href);url.searchParams.set("play",String(current));
+  const data={title:"あそびのタネ｜"+g[0],text:g[0]+"："+g[1],url:url.href};
+  try {
+    if(navigator.share)await navigator.share(data);
+    else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(data.text+"\n"+data.url);$("share").textContent="✓ コピーしました";}
+    else {prompt("このリンクをコピーしてください",data.url);}
+    track("shares");
+  } catch(e){if(e.name!=="AbortError")$("share").textContent="共有できませんでした";}
+}
+["age","minutes","type","gear","cleanup","keyword"].forEach(id=>$(id).addEventListener(id==="keyword"?"input":"change",count));
+$("draw").addEventListener("click",draw);
+$("again").addEventListener("click",draw);
+$("share").addEventListener("click",share);
+$("favorite").addEventListener("click",()=>{
+  if(current===null)return;
+  const ids=favorites();save(STORE,ids.includes(current)?ids.filter(i=>i!==current):[...ids,current]);
+  track("favorites");syncFavorite();showFavorites();
+});
+$("reset").addEventListener("click",()=>{
+  $("age").value="3";$("minutes").value="15";$("type").value="any";$("gear").value="any";$("cleanup").checked=false;$("keyword").value="";count();
+});
+const play=new URLSearchParams(location.search).get("play");
+if(play!==null && /^\d+$/.test(play) && games[Number(play)])show(Number(play),false);
+showFavorites();count();track("visits");
