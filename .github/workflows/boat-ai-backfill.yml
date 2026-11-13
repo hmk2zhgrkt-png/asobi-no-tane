@@ -1,5 +1,8 @@
 name: Boat AI - fetch historical pre-race snapshots
 on:
+  push:
+    paths:
+      - '.github/workflows/boat-ai-backfill.yml'
   workflow_dispatch:
     inputs:
       start:
