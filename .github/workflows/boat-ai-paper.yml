@@ -3,8 +3,6 @@ on:
   push:
     paths:
       - 'boat-ai/runtime/model_bundle.zip'
-      - 'boat-ai/runtime/generate_smoke_input.py'
-      - '.github/workflows/boat-ai-paper.yml'
   workflow_dispatch:
     inputs:
       mode:
