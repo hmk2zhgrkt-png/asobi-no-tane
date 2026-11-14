@@ -1,0 +1,57 @@
+name: Boat AI paper prediction (manual)
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "historical-demo OR live (live rejects outdated/unverified features)"
+        required: true
+        type: choice
+        options:
+          - historical-demo
+          - live
+      input_folder:
+        description: "Repository folder with entries.csv and odds.csv"
+        required: true
+        default: boat-ai/runtime/input
+permissions:
+  contents: read
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: python -m pip install pandas numpy lightgbm scikit-learn joblib
+      - name: Extract models previously uploaded by repository owner
+        shell: bash
+        run: |
+          test -f boat-ai/runtime/model_bundle.zip || { echo "Model ZIP missing. See boat-ai/runtime/README.md"; exit 1; }
+          mkdir -p boat-ai/runtime/model
+          python -m zipfile -e boat-ai/runtime/model_bundle.zip boat-ai/runtime/model
+      - name: Validate, predict, and paper trade
+        shell: bash
+        env:
+          MODE: ${{ inputs.mode }}
+          INPUT_FOLDER: ${{ inputs.input_folder }}
+        run: |
+          case "$INPUT_FOLDER" in
+            boat-ai/runtime/input|boat-ai/runtime/input/*) ;;
+            *) echo "Unexpected input folder"; exit 1 ;;
+          esac
+          python boat-ai/runtime/run_one.py \
+            --entries "$INPUT_FOLDER/entries.csv" \
+            --odds "$INPUT_FOLDER/odds.csv" \
+            --mode "$MODE" \
+            --out boat-ai/runtime/output
+      - name: Downloadable results (never real bets)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: boat-ai-paper-results
+          path: boat-ai/runtime/output/
+          if-no-files-found: warn
+          retention-days: 30
