@@ -8,7 +8,7 @@
   "preclose_snapshot_asof_jst": "2026-11-15T14:10:27.397406+09:00",
   "deadline_jst": "2026-11-15T14:20:00+09:00",
   "model_ran": true,
-  "probability_sum": 0.9999999999999998,
+  "probability_sum": 0.9999999999999999,
   "estimated_inputs_present": 168,
   "total_model_inputs": 168,
   "structurally_missing_fields": [],
