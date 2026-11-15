@@ -173,7 +173,7 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
     date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
     lines=raw.decode('utf-8-sig').splitlines()
     if len(lines)<8 or lines[0].strip()!='data=' or lines[1].strip()!='1' or any(x.strip() for x in lines[8:]):
-        raise ValueError(f'Bad {kind} source header')
+        raise ValueError(f'Bad {kind} source header: {len(lines)} lines; markers={lines[:2]!r}; trailing={lines[8:10]!r}')
     if not observed.tzinfo or observed.date()!=date:
         raise ValueError('Preview must be obtained on race day with verified timezone')
     result={'レースコード':f'{date:%Y%m%d}{int(venue):02d}{int(race):02d}',
