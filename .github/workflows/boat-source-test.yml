@@ -109,3 +109,25 @@ jobs:
               except Exception as e:
                   print("FAIL",name,type(e).__name__,getattr(e,'code','timeout'))
           PY
+      - name: Inspect independent public odds API schema
+        run: |
+          python - <<'PY'
+          import json
+          from urllib.request import urlopen,Request
+          urls=[
+            'https://lamrongol.github.io/BoatraceOdds/v3/2026/20261115.json',
+            'https://raw.githubusercontent.com/lamrongol/BoatraceOdds/gh-pages/v3/2026/20261115.json',
+          ]
+          for u in urls:
+              try:
+                  with urlopen(Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as resp:
+                      raw=resp.read()
+                      headers=dict(resp.headers)
+                  j=json.loads(raw)
+                  print('ODDS_API_OK',u,'bytes',len(raw),'shape',type(j).__name__,
+                      'top_keys',list(j)[:15] if isinstance(j,dict) else len(j),
+                      'sample',str(j)[:1100],
+                      'last_modified',headers.get('Last-Modified'))
+              except Exception as e:
+                  print('ODDS_API_FAIL',u,type(e).__name__,getattr(e,'code',str(e)[:120]))
+          PY
