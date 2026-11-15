@@ -79,3 +79,15 @@ jobs:
               print('HOLDING_JSON',repr(str(data)[:800]))
           except Exception as e:print('HOLDING_JSON ERROR',repr(str(e)))
           PY
+      - name: Inspect official Boatcast TSV race card fields
+        run: |
+          python - <<'PY'
+          from urllib.request import urlopen,Request
+          u='https://race.boatcast.jp/hp_txt/24/bc_j_str3_20261115_24_08.txt'
+          with urlopen(Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as r:
+              lines=r.read().decode('utf-8-sig').splitlines()
+          print('OFFICIAL_TSV_LINES',len(lines))
+          for line in lines[:4]:
+              fields=line.split('\\t')
+              print('OFFICIAL_TSV_SAMPLE',len(fields),repr(fields[:26]),'last',repr(fields[26:]))
+          PY
