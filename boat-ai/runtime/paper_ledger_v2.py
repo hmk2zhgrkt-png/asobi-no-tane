@@ -9,7 +9,7 @@ KEY=['date','venue_code','race','trifecta']
 
 def read_csv(path):
     if not Path(path).exists():return pd.DataFrame(columns=FIELDS)
-    data=pd.read_csv(path,encoding='utf-8-sig',dtype={'date':str,'trifecta':str,'venue_code':str})
+    data=pd.read_csv(path,encoding='utf-8-sig',dtype={'date':str,'trifecta':str,'venue_code':str,'actual_trifecta':'string'})
     if data.duplicated(KEY).any():raise ValueError('Duplicated paper ticket; refuse unsafe update')
     for col in FIELDS:
         if col not in data:data[col]=pd.NA
