@@ -54,3 +54,28 @@ jobs:
               except Exception as e:
                   print('PROBE',u,type(e).__name__,getattr(e,'code',str(e)[:100]))
           PY
+      - name: Probe Boatcast official data filename variants
+        run: |
+          python - <<'PY'
+          import json
+          from urllib.request import urlopen,Request
+          from urllib.error import HTTPError, URLError
+          variants=[
+              'https://race.boatcast.jp/hp_txt/24/bc_j_str3_20261115_24_8.txt',
+              'https://race.boatcast.jp/hp_txt/24/bc_j_str3_20261115_24_08.txt',
+              'https://race.boatcast.jp/hp_txt/24/bc_j_str3_20261115_24_03.txt',
+              'https://race.boatcast.jp/hp_txt/24/bc_j_str3_20261115_24_3.txt',
+          ]
+          for u in variants:
+              try:
+                  with urlopen(Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=4) as r:
+                      b=r.read()
+                  print('VARIANT',u,'AVAILABLE',len(b),'prefix',repr(b[:90]))
+              except Exception as e:
+                  print('VARIANT',u,type(e).__name__,getattr(e,'code',str(e)[:70]))
+          u='https://race.boatcast.jp/api_txt/getHoldingList2_20261115.json'
+          try:
+              with urlopen(Request(u),timeout=5) as r: data=json.load(r)
+              print('HOLDING_JSON',repr(str(data)[:800]))
+          except Exception as e:print('HOLDING_JSON ERROR',repr(str(e)))
+          PY
