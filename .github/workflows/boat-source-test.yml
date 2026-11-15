@@ -36,3 +36,17 @@ jobs:
           print('OFFICIAL_CONVERT_OK:',c['レースコード'],
                 [(c[f'艇{i}_選手名'],c[f'艇{i}_モーター番号']) for i in range(1,7)])
           PY
+      - name: Probe upstream preview and odds TSV candidates
+        run: |
+          python - <<'PY'
+          from urllib.request import urlopen,Request
+          from urllib.error import HTTPError
+          base="https://race.boatcast.jp/hp_txt/24/"
+          for typ in ("bc_j_tkz","bc_j_stt","bc_sui","bc_od3","bc_j_od3","bc_j_odds3","bc_odds3","bc_odds_3t"):
+              for suffix in (f"{typ}_20261115_24_08.txt",f"{typ}_20261115_24_8.txt"):
+                  try:
+                      with urlopen(Request(base+suffix,headers={'User-Agent':'Mozilla/5.0'}),timeout=3) as r: raw=r.read()
+                      print("SOURCE_FOUND",typ,suffix,len(raw),repr(raw[:230]))
+                  except Exception as e:
+                      print("SOURCE_FAIL",typ,suffix,type(e).__name__,getattr(e,'code','timeout'))
+          PY
