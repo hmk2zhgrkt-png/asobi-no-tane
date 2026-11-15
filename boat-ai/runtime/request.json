@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
-  "venue": 15,
-  "race": 7,
-  "revision": 16,
-  "comment": "Marugame 7R live model scoring, both probability and ROI top3, venue prior"
+  "venue": 24,
+  "race": 8,
+  "revision": 17,
+  "comment": "Omura 8R 2026-11-15 live, model top3 probability and expected return, venue prior"
 }
