@@ -1,0 +1,21 @@
+name: Race source fallback regression
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/source_fetch.py'
+      - 'boat-ai/runtime/auto_predict.py'
+      - 'boat-ai/runtime/test_source_fetch.py'
+      - '.github/workflows/boat-source-test.yml'
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check source fallback and production inference syntax
+        run: |
+          python -m py_compile boat-ai/runtime/source_fetch.py boat-ai/runtime/auto_predict.py
+          python boat-ai/runtime/test_source_fetch.py
