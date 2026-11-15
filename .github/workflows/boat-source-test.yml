@@ -131,3 +131,16 @@ jobs:
               except Exception as e:
                   print('ODDS_API_FAIL',u,type(e).__name__,getattr(e,'code',str(e)[:120]))
           PY
+      - name: Inspect upstream open-source endpoint definitions
+        run: |
+          python - <<'PY'
+          from urllib.request import urlopen,Request
+          origin='https://raw.githubusercontent.com/BoatraceCSV/boatracecsv.github.io/main/'
+          for path in ('scripts/boatrace/preview_tsv_scraper.py','scripts/preview-realtime.py','scripts/motor-stats.py'):
+              try:
+                  with urlopen(Request(origin+path,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as r: data=r.read().decode('utf-8')
+                  lines=data.splitlines()
+                  selected=[x.strip() for x in lines if any(w in x for w in ('bc_sui','bc_smt_od','bc_j_tkz','od3','bc_mst','bc_mdc'))]
+                  print('UPSTREAM_SCRIPT',path,'length',len(data),'endpoints',selected[:35])
+              except Exception as e:print('UPSTREAM_SCRIPT_FAIL',path,type(e).__name__,getattr(e,'code','timeout'))
+          PY
