@@ -86,6 +86,8 @@ jobs:
           else:
               print('SAFE SKIP:',r.get('reason'))
           PY
+      - name: Settle any completed paper races from published payouts
+        run: python boat-ai/runtime/paper_ledger_v2.py --settle --ledger boat-ai/runtime/paper_ledger.csv
       - name: Save model report and immutable paper log back to GitHub
         run: |
           git config user.name 'github-actions[bot]'
