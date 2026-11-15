@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
-  "venue": 2,
-  "race": 3,
-  "revision": 5,
-  "comment": "Retry live paper-only Toda 3R before 11:39 cutoff with final-day meeting slot calculation"
+  "venue": 13,
+  "race": 8,
+  "revision": 6,
+  "comment": "Amagasaki 8R 14:06 JST cutoff; only record a paper bet if validated preclose inputs and execution before cutoff"
 }
