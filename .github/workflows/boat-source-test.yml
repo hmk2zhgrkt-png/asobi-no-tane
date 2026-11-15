@@ -84,3 +84,28 @@ jobs:
           assert cycle=='2026-05-24'
           print('PREVIEW_FALLBACK_PASS',a['レースコード'],cycle)
           PY
+      - name: Probe authoritative trifecta and water surface
+        run: |
+          python - <<'PY'
+          from urllib.request import urlopen,Request
+          base="https://race.boatcast.jp/hp_txt/24/"
+          candidates=[
+            "bc_smt_od3_20261115_24_08.txt",
+            "bc_smt_od3_20261115_24_8.txt",
+            "bc_smt_od3_20261115_24.txt",
+            "bc_smt_od3_24_08.txt",
+            "bc_smt_od3_24.txt",
+            "bc_smt_od3_20261115_24_08",
+            "bc_sui_20261115_24.txt",
+            "bc_sui_24.txt",
+            "bc_sui_20261115_24_08.txt",
+            "bc_j_sui_20261115_24_08.txt",
+            "bc_sui_20261115_24_8.txt",
+          ]
+          for name in candidates:
+              try:
+                  with urlopen(Request(base+name,headers={'User-Agent':'Mozilla/5.0'}),timeout=3) as r:raw=r.read()
+                  print("FIND",name,"bytes",len(raw),"prefix",repr(raw[:250]))
+              except Exception as e:
+                  print("FAIL",name,type(e).__name__,getattr(e,'code','timeout'))
+          PY
