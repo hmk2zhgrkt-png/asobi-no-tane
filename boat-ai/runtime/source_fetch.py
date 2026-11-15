@@ -172,7 +172,7 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
     if kind not in ("tkz","stt"):raise ValueError('Unsupported preview kind')
     date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
     lines=raw.decode('utf-8-sig').splitlines()
-    if len(lines)<8 or lines[0].strip()!='data=' or lines[1].strip()!='1' or any(x.strip() for x in lines[8:]):
+    if (len(lines)!=(9 if kind=='tkz' else 8) or lines[0].strip()!='data=' or lines[1].strip()!='1'):
         raise ValueError(f'Bad {kind} source header: {len(lines)} lines; markers={lines[:2]!r}; trailing={lines[8:10]!r}')
     if not observed.tzinfo or observed.date()!=date:
         raise ValueError('Preview must be obtained on race day with verified timezone')
@@ -182,6 +182,10 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
             '取得日時':observed.isoformat()}
     names=set()
     if kind=="tkz":
+        # Official tkz has six racer rows plus an additional six-boat start-display summary.
+        summary=lines[8].split(chr(9))
+        if len(summary)<12 or [summary[2*i].strip() for i in range(6)]!=[str(i) for i in range(1,7)]:
+            raise ValueError('Malformed seventh official exhibition summary')
         for boat,line in enumerate(lines[2:8],1):
             fields=line.split(chr(9))
             if len(fields)<7:raise ValueError('Short official exhibition row')
