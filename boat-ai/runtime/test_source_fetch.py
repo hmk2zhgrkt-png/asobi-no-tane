@@ -19,7 +19,7 @@ def opener(request,timeout):
     return Response("レースコード,艇1_登録番号,艇6_登録番号\n202611152408,4934,5055\n".encode())
 rows,origin=fetch_csv('programs/race_cards',dt.date(2026,11,15),opener=opener,origins=origins)
 assert origin==origins[1] and len(calls)==2 and rows[0]['レースコード']=='202611152408'
-assert 'bc_j_str3_20261115_24_8.txt' in boatcast_race_card_url('2026-11-15',24,8)
+assert 'bc_j_str3_20261115_24_08.txt' in boatcast_race_card_url('2026-11-15',24,8)
 try:
     decode_csv(b'<html>Oops</html>', 'programs/race_cards')
 except ValueError: pass
