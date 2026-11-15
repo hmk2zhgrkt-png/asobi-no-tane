@@ -50,3 +50,20 @@ jobs:
                   except Exception as e:
                       print("SOURCE_FAIL",typ,suffix,type(e).__name__,getattr(e,'code','timeout'))
           PY
+      - name: Inspect authoritative motor period and weather feed
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0,'boat-ai/runtime')
+          from source_fetch import official_txt,parse_official_preview
+          from datetime import datetime,timezone,timedelta
+          time=datetime.now(timezone(timedelta(hours=9)))
+          for src in ('tkz','stt','motor_start'):
+              try:
+                  raw=official_txt(src,'2026-11-15',24,8)
+                  print('OFFICIAL',src,'bytes',len(raw),'sample',repr(raw[:260]))
+                  if src!='motor_start':
+                      out=parse_official_preview(raw,src,'2026-11-15',24,8,'18:33',datetime.fromisoformat('2026-11-15T18:27:00+09:00'))
+                      print('OFFICIAL_PREVIEW_OK',src,out['レースコード'],len(out))
+              except Exception as e:print('OFFICIAL_FAILED',src,repr(str(e)))
+          PY
