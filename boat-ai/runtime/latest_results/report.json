@@ -4,7 +4,7 @@
   "venue_code": 22,
   "race": 12,
   "race_code": "202611152212",
-  "status": "PAPER_ONLY_CANDIDATES",
+  "status": "REPLAY_OR_UNVERIFIED_NO_BETS",
   "preclose_snapshot_asof_jst": "2026-11-15T16:20:26.800533+09:00",
   "deadline_jst": "2026-11-15T16:30:00+09:00",
   "model_ran": true,
@@ -110,7 +110,9 @@
     "validated_backtest": false
   },
   "venue_adjustment_backtested": false,
-  "skip_reasons": [],
-  "paper_candidate_count": 3,
+  "skip_reasons": [
+    "too late: within 1 minute of cutoff or postclose"
+  ],
+  "paper_candidate_count": 0,
   "note": "The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting."
 }
