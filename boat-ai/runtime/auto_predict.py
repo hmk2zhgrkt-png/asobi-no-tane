@@ -174,6 +174,20 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     title=today['programs/title']
     title=[z for z in title if z.get('レースコード')==code]
     dayn=race_meeting_day(title[0]) if title else None
+    if dayn is None and title and '最終' in str(title[0].get('日次','')):
+        # The official card contains D1..D7 past-race slots even on the final day.
+        # Infer only from recorded finished earlier-day races, not today's outcomes.
+        completed=[]
+        for boat_slot in range(1,7):
+            for d in range(1,8):
+                for slot in (1,2):
+                    f=f'艇{boat_slot}_節D{d}走{slot}_'
+                    n=number(cards.get(f+'R番号'))
+                    rank=number(cards.get(f+'着順'))
+                    if pd.notna(n) and pd.notna(rank) and 1<=rank<=6:
+                        completed.append(d)
+        if completed and max(completed)<7:
+            dayn=max(completed)+1
     entries=[];audit=[]
     for b in range(1,7):
         rid=int(number(cards[f'艇{b}_登録番号']))
