@@ -19,3 +19,19 @@ jobs:
         run: |
           python -m py_compile boat-ai/runtime/source_fetch.py boat-ai/runtime/auto_predict.py
           python boat-ai/runtime/test_source_fetch.py
+      - name: Probe current upstream availability without modifying prediction results
+        run: |
+          python - <<'PY'
+          import datetime as dt, sys
+          from zoneinfo import ZoneInfo
+          sys.path.insert(0,'boat-ai/runtime')
+          from source_fetch import fetch_csv, check_upstream_card
+          date=dt.datetime.now(ZoneInfo('Asia/Tokyo')).date()
+          for kind in ('programs/race_cards','previews/tkz'):
+              try:
+                  data,origin=fetch_csv(kind,date)
+                  print(kind,'OK',len(data),'origin',origin)
+              except Exception as e:
+                  print(kind,'UNAVAILABLE',str(e)[:450])
+          print('Boatcast upstream:',check_upstream_card(date,24,8))
+          PY
