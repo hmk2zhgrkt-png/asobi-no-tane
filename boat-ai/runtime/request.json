@@ -2,5 +2,6 @@
   "date": "2026-11-15",
   "venue": 18,
   "race": 5,
-  "comment": "Replay photographed Tokuyama 5R; past cutoff means no paper tickets"
+  "comment": "Replay user's Nov 15 Tokuyama 5R with corrected complete auto_predict.py; no paper bets after cutoff",
+  "revision": 2
 }
