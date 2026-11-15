@@ -179,7 +179,17 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         rid=int(number(cards[f'艇{b}_登録番号']))
         motor=int(number(cards[f'艇{b}_モーター番号']))
         gen=motor_starts.get(motor)
-        if not gen:raise ValueError(f'No verified motor generation for {name} motor {motor}')
+        provenance='direct motor_stats row'
+        if not gen:
+            # motor_stats lists only a subset of motors at some venues. Fall back
+            # only if ALL listed motors in this venue share one generation, and
+            # the saved motor's own historical generation matches that date.
+            cohort={v for v in motor_starts.values() if dateparse(v) is not None}
+            prior=str(motors0['motor'].get(f'{name}|{motor}',{}).get('cycle',''))
+            if len(cohort)!=1 or prior not in cohort:
+                raise ValueError(f'Motor generation unavailable or ambiguous: {name} {motor}')
+            gen=next(iter(cohort))
+            provenance='unique venue cohort + matching historical cycle (inferred)'
         gen_date=dateparse(gen)
         if gen_date is None:raise ValueError(f'Invalid motor generation date: {gen}')
         base=motors0['motor'].get(f'{name}|{motor}',{})
@@ -239,7 +249,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         entries.append(entry)
         audit.append({'boat':b,'racer_id':rid,'motor':motor,'cycle_source':gen,'cycle_prior_runs':len(records),
                       'recent_racer_runs':len(recent),'meeting_prior_runs':session_num,
-                      'meeting_relative_exhibition_n':len(meeting_exhs),'base_motor_cycle_matches_source':base_cycle==gen_date})
+                      'meeting_relative_exhibition_n':len(meeting_exhs),'base_motor_cycle_matches_source':base_cycle==gen_date,'motor_generation_provenance':provenance})
     df=pd.DataFrame(entries)
     model_root=Path(model_dir)
     models=[joblib.load(model_root/f'with_motor_rank{i}.joblib') for i in (1,2,3)]
