@@ -92,7 +92,9 @@ def overlay_screenshot(base,screenshot,kind,code,close):
     if current is None:return base
     if screenshot["observed"]>close:raise ValueError("Screenshot observations after cutoff cannot be preclose inputs")
     existing=[row for row in base if row.get("レースコード")==code]
-    merged=dict(existing[0]) if len(existing)==1 else {}
+    # Never mix older publisher odds with newer screenshot prices. Partial
+    # screenshot odds remain partial even if a stale full feed exists.
+    merged={} if kind=='previews/od3' else (dict(existing[0]) if len(existing)==1 else {})
     merged.update(current)
     if kind=="previews/tkz" and "締切時刻" not in merged:
         merged["締切時刻"]=close.strftime("%H:%M")
