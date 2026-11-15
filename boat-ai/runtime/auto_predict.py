@@ -298,6 +298,12 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     df.to_csv(out/'features6.csv',index=False,encoding='utf-8-sig')
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
     pred.to_csv(out/'predictions120.csv',index=False,encoding='utf-8-sig')
+    # Both user-requested top-3 rankings are always saved, including paper skips.
+    rankings={'venue':name,'date':date.isoformat(),'race':race,
+              'venue_adjustment':venue_context(name),
+              'hit_rate_top3':pred.sort_values('probability',ascending=False).head(3).to_dict(orient='records'),
+              'expected_return_top3':pred.head(3).to_dict(orient='records')}
+    (out/'rankings.json').write_text(json.dumps(rankings,ensure_ascii=False,indent=2),encoding='utf-8')
     now=dt.datetime.now(JST)
     current=(now<close-dt.timedelta(minutes=1) and date==now.date())
     # The extracted motor periods are confirmed vs current motor_stats, but daily updates must be complete.
@@ -311,6 +317,13 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     source_ok=(not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
     # Structural NaNs (e.g. no previous meeting) are legitimate; missing baseline racer counts are rejected above.
     missing=sorted({k for k in FEATURES if df[k].isna().any()})
+    skip_reasons=[]
+    if date!=now.date():skip_reasons.append('not the current race day')
+    if now>=close-dt.timedelta(minutes=1):skip_reasons.append('too late: within 1 minute of cutoff or postclose')
+    if has_daily_gap:skip_reasons.append('missing daily archived results or race card downloads')
+    if not today['programs/motor_stats']:skip_reasons.append('no motor stats source')
+    if dayn is None:skip_reasons.append('unverified meeting day')
+    if any(not a['cycle_source'] for a in audit):skip_reasons.append('unverified motor replacement cycle')
     status='PAPER_ONLY_CANDIDATES' if current and source_ok else 'REPLAY_OR_UNVERIFIED_NO_BETS'
     candidates=pred[pred.estimated_roi_proxy_pct>=120].head(3) if status=='PAPER_ONLY_CANDIDATES' else pred.iloc[0:0]
     candidates.to_csv(out/'paper_candidates.csv',index=False,encoding='utf-8-sig')
@@ -321,7 +334,8 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'all120_odds':True,'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
-              'venue_adjustment_backtested':False,'paper_candidate_count':len(candidates),
+              'venue_adjustment_backtested':False,'skip_reasons':skip_reasons,
+              'paper_candidate_count':len(candidates),
               'note':'The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting.'}
     (out/'report.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(manifest,ensure_ascii=False,indent=2))
