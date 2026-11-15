@@ -15,4 +15,6 @@ jobs:
         with:
           python-version: '3.11'
       - name: Validate venue table and probability adjustment
-        run: python boat-ai/runtime/test_venue_context.py
+        run: |
+          python -m py_compile boat-ai/runtime/auto_predict.py boat-ai/runtime/venue_context.py
+          python boat-ai/runtime/test_venue_context.py
