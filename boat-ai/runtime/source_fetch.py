@@ -184,7 +184,7 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
     if kind=="tkz":
         # Official tkz has six racer rows plus an additional six-boat start-display summary.
         summary=lines[8].split(chr(9))
-        if len(summary)<12 or [summary[2*i].strip() for i in range(6)]!=[str(i) for i in range(1,7)]:
+        if len(summary)<17 or [summary[3*i].strip() for i in range(6)]!=[str(i) for i in range(1,7)]:
             raise ValueError('Malformed seventh official exhibition summary')
         for boat,line in enumerate(lines[2:8],1):
             fields=line.split(chr(9))
