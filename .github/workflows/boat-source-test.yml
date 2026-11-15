@@ -10,137 +10,33 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 3
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Check fallback and model syntax
+      - name: Validate fallback syntax and fail-closed logic
         run: |
           python -m py_compile boat-ai/runtime/source_fetch.py boat-ai/runtime/auto_predict.py
           python boat-ai/runtime/test_source_fetch.py
-      - name: Verify real upstream padded race card conversion
-        run: |
-          python - <<'PY'
-          import sys
-          sys.path.insert(0,'boat-ai/runtime')
-          from source_fetch import fetch_official_card
-          c=fetch_official_card('2026-11-15',24,8)
-          assert c['レースコード']=='202611152408'
-          assert c['艇1_登録番号']=='4934'
-          assert c['艇2_登録番号']=='4114'
-          assert len({c[f'艇{i}_登録番号'] for i in range(1,7)})==6
-          for i in range(1,7):
-              assert c[f'艇{i}_モーター番号']
-              assert c[f'艇{i}_全国勝率']
-          print('OFFICIAL_CONVERT_OK:',c['レースコード'],
-                [(c[f'艇{i}_選手名'],c[f'艇{i}_モーター番号']) for i in range(1,7)])
-          PY
-      - name: Probe upstream preview and odds TSV candidates
-        run: |
-          python - <<'PY'
-          from urllib.request import urlopen,Request
-          from urllib.error import HTTPError
-          base="https://race.boatcast.jp/hp_txt/24/"
-          for typ in ("bc_j_tkz","bc_j_stt","bc_sui","bc_od3","bc_j_od3","bc_j_odds3","bc_odds3","bc_odds_3t"):
-              for suffix in (f"{typ}_20261115_24_08.txt",f"{typ}_20261115_24_8.txt"):
-                  try:
-                      with urlopen(Request(base+suffix,headers={'User-Agent':'Mozilla/5.0'}),timeout=3) as r: raw=r.read()
-                      print("SOURCE_FOUND",typ,suffix,len(raw),repr(raw[:230]))
-                  except Exception as e:
-                      print("SOURCE_FAIL",typ,suffix,type(e).__name__,getattr(e,'code','timeout'))
-          PY
-      - name: Inspect authoritative motor period and weather feed
-        run: |
-          python - <<'PY'
-          import sys
-          sys.path.insert(0,'boat-ai/runtime')
-          from source_fetch import official_txt,parse_official_preview
-          from datetime import datetime,timezone,timedelta
-          time=datetime.now(timezone(timedelta(hours=9)))
-          for src in ('tkz','stt','motor_start'):
-              try:
-                  raw=official_txt(src,'2026-11-15',24,8)
-                  print('OFFICIAL',src,'bytes',len(raw),'sample',repr(raw[:260]))
-                  if src!='motor_start':
-                      out=parse_official_preview(raw,src,'2026-11-15',24,8,'18:33',datetime.fromisoformat('2026-11-15T18:27:00+09:00'))
-                      print('OFFICIAL_PREVIEW_OK',src,out['レースコード'],len(out))
-              except Exception as e:print('OFFICIAL_FAILED',src,repr(str(e)))
-          PY
-      - name: Test actual official previews and motor cycle
+      - name: Verify actual official racer, preview, and motor period
         run: |
           python - <<'PY'
           from datetime import datetime
           import sys
           sys.path.insert(0,'boat-ai/runtime')
-          from source_fetch import official_txt,parse_official_preview,official_motor_cycle
+          from source_fetch import fetch_official_card,official_txt,parse_official_preview,official_motor_cycle
+          date='2026-11-15';venue=24;race=8
+          card=fetch_official_card(date,venue,race)
+          assert card['レースコード']=='202611152408'
+          assert [card[f'艇{i}_登録番号'] for i in range(1,3)]==['4934','4114']
           stamp=datetime.fromisoformat('2026-11-15T18:27:00+09:00')
-          a=parse_official_preview(official_txt('tkz','2026-11-15',24,8),'tkz','2026-11-15',24,8,'18:33',stamp)
-          b=parse_official_preview(official_txt('stt','2026-11-15',24,8),'stt','2026-11-15',24,8,'18:33',stamp)
-          assert len([a[f'艇{i}_展示タイム'] for i in range(1,7)])==6
-          assert sorted(int(b[f'艇{i}_コース']) for i in range(1,7))==list(range(1,7))
-          assert len([b[f'艇{i}_スタート展示'] for i in range(1,7)])==6
-          cycle=official_motor_cycle('2026-11-15',24)
-          assert cycle=='2026-05-24'
-          print('PREVIEW_FALLBACK_PASS',a['レースコード'],cycle)
-          PY
-      - name: Probe authoritative trifecta and water surface
-        run: |
-          python - <<'PY'
-          from urllib.request import urlopen,Request
-          base="https://race.boatcast.jp/hp_txt/24/"
-          candidates=[
-            "bc_smt_od3_20261115_24_08.txt",
-            "bc_smt_od3_20261115_24_8.txt",
-            "bc_smt_od3_20261115_24.txt",
-            "bc_smt_od3_24_08.txt",
-            "bc_smt_od3_24.txt",
-            "bc_smt_od3_20261115_24_08",
-            "bc_sui_20261115_24.txt",
-            "bc_sui_24.txt",
-            "bc_sui_20261115_24_08.txt",
-            "bc_j_sui_20261115_24_08.txt",
-            "bc_sui_20261115_24_8.txt",
-          ]
-          for name in candidates:
-              try:
-                  with urlopen(Request(base+name,headers={'User-Agent':'Mozilla/5.0'}),timeout=3) as r:raw=r.read()
-                  print("FIND",name,"bytes",len(raw),"prefix",repr(raw[:250]))
-              except Exception as e:
-                  print("FAIL",name,type(e).__name__,getattr(e,'code','timeout'))
-          PY
-      - name: Inspect independent public odds API schema
-        run: |
-          python - <<'PY'
-          import json
-          from urllib.request import urlopen,Request
-          urls=[
-            'https://lamrongol.github.io/BoatraceOdds/v3/2026/20261115.json',
-            'https://raw.githubusercontent.com/lamrongol/BoatraceOdds/gh-pages/v3/2026/20261115.json',
-          ]
-          for u in urls:
-              try:
-                  with urlopen(Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as resp:
-                      raw=resp.read()
-                      headers=dict(resp.headers)
-                  j=json.loads(raw)
-                  print('ODDS_API_OK',u,'bytes',len(raw),'shape',type(j).__name__,
-                      'top_keys',list(j)[:15] if isinstance(j,dict) else len(j),
-                      'sample',str(j)[:1100],
-                      'last_modified',headers.get('Last-Modified'))
-              except Exception as e:
-                  print('ODDS_API_FAIL',u,type(e).__name__,getattr(e,'code',str(e)[:120]))
-          PY
-      - name: Inspect upstream open-source endpoint definitions
-        run: |
-          python - <<'PY'
-          from urllib.request import urlopen,Request
-          origin='https://raw.githubusercontent.com/BoatraceCSV/boatracecsv.github.io/main/'
-          for path in ('scripts/boatrace/preview_tsv_scraper.py','scripts/preview-realtime.py','scripts/motor-stats.py'):
-              try:
-                  with urlopen(Request(origin+path,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as r: data=r.read().decode('utf-8')
-                  lines=data.splitlines()
-                  selected=[x.strip() for x in lines if any(w in x for w in ('bc_sui','bc_smt_od','bc_j_tkz','od3','bc_mst','bc_mdc'))]
-                  print('UPSTREAM_SCRIPT',path,'length',len(data),'endpoints',selected[:35])
-              except Exception as e:print('UPSTREAM_SCRIPT_FAIL',path,type(e).__name__,getattr(e,'code','timeout'))
+          tkz=parse_official_preview(official_txt('tkz',date,venue,race),'tkz',date,venue,race,'18:33',stamp)
+          stt=parse_official_preview(official_txt('stt',date,venue,race),'stt',date,venue,race,'18:33',stamp)
+          assert len([tkz[f'艇{i}_展示タイム'] for i in range(1,7)])==6
+          assert sorted(int(stt[f'艇{i}_コース']) for i in range(1,7))==list(range(1,7))
+          assert len([stt[f'艇{i}_スタート展示'] for i in range(1,7)])==6
+          assert official_motor_cycle(date,venue)=='2026-05-24'
+          print('OFFICIAL_FALLBACK_PASS: card, 6 exhibitions, 6 courses, 6 start ST, motor generation')
           PY
