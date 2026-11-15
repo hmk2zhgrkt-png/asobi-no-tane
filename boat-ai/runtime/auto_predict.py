@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 import joblib
 from venue_context import adjust_120, context as venue_context
-from source_fetch import fetch_csv, SourceUnavailable, check_upstream_card, fetch_official_card
+from source_fetch import fetch_csv, SourceUnavailable, check_upstream_card, fetch_official_card, official_txt, parse_official_preview, official_motor_cycle
 
 VENUES=['桐生','戸田','江戸川','平和島','多摩川','浜名湖','蒲郡','常滑','津','三国','びわこ','住之江','尼崎','鳴門','丸亀','児島','宮島','徳山','下関','若松','芦屋','福岡','唐津','大村']
 BASE='https://boatracecsv.github.io/data/'
@@ -145,13 +145,38 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         try:
             today[k]=csvday(k,date,root=source_root,required=k!='programs/title')
         except SourceUnavailable as e:
-            if k=='programs/race_cards' and source_root is None:
+            if source_root is None and k=='programs/race_cards':
                 try:
                     today[k]=[fetch_official_card(date,venue_code,race)]
                     print(f'OFFICIAL_FALLBACK: {code} race card from verified Boatcast TSV')
                     continue
                 except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
-                    raise RuntimeError(f'CSV multi-origin failure: {e}; official Boatcast fallback also failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
+                    raise RuntimeError(f'CSV multi-origin failure: {e}; official card fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
+            if source_root is None and k=='programs/motor_stats':
+                try:
+                    period=official_motor_cycle(date,venue_code)
+                    cards=get_by_code(today['programs/race_cards'],code)
+                    today[k]=[{'場コード':f'{venue_code:02d}','モーター番号':str(int(cards[f"艇{boat}_モーター番号"])),
+                               'モーター期起算日':period} for boat in range(1,7)]
+                    print(f'OFFICIAL_FALLBACK: verified motor cycle {period} for {code}')
+                    continue
+                except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
+                    raise RuntimeError(f'CSV multi-origin failure: {e}; official motor start fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
+            if source_root is None and k in ('previews/tkz','previews/stt'):
+                try:
+                    # The official racing schedule is needed to certify deadline;
+                    # never create a guessed pre-close snapshot timestamp.
+                    title=get_by_code(today['programs/title'],code)
+                    cutoff=str(title['電話投票締切予定']).strip()
+                    if len(cutoff)!=5 or cutoff[2]!=':':
+                        raise ValueError('Missing verified race deadline')
+                    raw=official_txt(k.split('/')[-1],date,venue_code,race)
+                    observed=dt.datetime.now(JST)
+                    today[k]=[parse_official_preview(raw,k.split('/')[-1],date,venue_code,race,cutoff,observed)]
+                    print(f'OFFICIAL_FALLBACK: {k} for {code} captured {observed.isoformat()}')
+                    continue
+                except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
+                    raise RuntimeError(f'CSV multi-origin failure: {e}; official preview fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
             raise RuntimeError(f'CSV multi-origin failure: {e}') from e
     cards=get_by_code(today['programs/race_cards'],code)
     ts=[get_by_code(today[k],code) for k in ('previews/tkz','previews/stt','previews/sui','previews/od3')]
