@@ -9,6 +9,7 @@ interchangeable CSV representation and must not be passed to the trained model.
 import csv
 import datetime as dt
 import io
+import json
 import os
 import unicodedata
 from urllib.request import Request, urlopen
@@ -223,3 +224,24 @@ def official_motor_cycle(date,venue,opener=urlopen):
     if start>day or (day-start).days>600:
         raise ValueError('Motor cycle timestamp not compatible with race date')
     return start.isoformat()
+
+def official_race_title(date,venue,race,opener=urlopen):
+    """Official Boatcast live meeting schedule; reject postrace '確定' as a deadline."""
+    date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
+    u=f'https://race.boatcast.jp/api_txt/getHoldingList2_{date:%Y%m%d}.json'
+    with opener(Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=7) as response:
+        data=json.loads(response.read())
+    choices=[z for z in data.get('return_info',[]) if str(z.get('RaceStudiumNo','')).zfill(2)==f'{int(venue):02d}']
+    if len(choices)!=1:raise ValueError('Official venue absent or ambiguous')
+    obj=choices[0]
+    times=obj.get('DeadlineTimeAll',[])
+    if len(times)!=12:raise ValueError('Official deadline list not 12 races')
+    value=str(times[int(race)-1]).strip()
+    if len(value)!=5 or value[2]!=':' or not (value[:2]+value[3:]).isdigit():
+        raise ValueError('Official deadline is not a clock time: '+value)
+    code=f'{date:%Y%m%d}{int(venue):02d}{int(race):02d}'
+    return {'レースコード':code,'レース日':date.isoformat(),
+            'レース場コード':f'{int(venue):02d}', 'レース回':f'{int(race)}R',
+            '電話投票締切予定':value,'日次':str(obj.get('DailyTitle','')),
+            'レース名':str(obj.get('RaceTitleAll',['']*12)[int(race)-1]),
+            'タイトル':str(obj.get('HoldingTitle',''))}
