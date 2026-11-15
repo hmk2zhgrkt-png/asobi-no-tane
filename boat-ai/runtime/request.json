@@ -2,6 +2,6 @@
   "date": "2026-11-15",
   "venue": 24,
   "race": 3,
-  "revision": 12,
-  "comment": "Omura 3R live preclose paper-only request; report both probability and EV top3 with venue course prior"
+  "revision": 13,
+  "comment": "Retry Omura 3R delayed BoatraceCSV until inputs available; preclose only"
 }
