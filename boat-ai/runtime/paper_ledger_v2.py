@@ -39,8 +39,9 @@ def add(report_path,candidates_path,ledger_path):
     raced=existing[['venue_code','race']].astype(str).drop_duplicates()
     race_key=(str(r['venue_code']).zfill(2),str(r['race']))
     present=any(tuple(x)==race_key for x in raced.itertuples(index=False,name=None))
-    if present or len(raced)>=2:
-        return {'added':0,'reason':'daily race limit or duplicate race','total_records':len(old)}
+    # Unlimited distinct races per day; retain duplicate protection and ¥1,000/day cap.
+    if present:
+        return {'added':0,'reason':'duplicate race','total_records':len(old)}
     old_cost=pd.to_numeric(existing.stake_yen,errors='coerce').fillna(0).sum()
     max_tickets=min(3,max(0,int((1000-old_cost)//100)))
     for _,cand in cands.sort_values('estimated_roi_proxy_pct',ascending=False).head(max_tickets).iterrows():
