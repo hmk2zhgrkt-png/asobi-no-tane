@@ -242,7 +242,9 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         for d,rno,_ in meeting:
             prevdate=date-dt.timedelta(days=dayn-d) if dayn else date
             match=[z for z in records if z[0]==prevdate.isoformat() and z[4]==rno and z[1]==rid]
-            if match:meeting_exhs.append(match[-1][3])
+            if match:
+                exh=number(match[-1][3])
+                if pd.notna(exh):meeting_exhs.append(float(exh))
         entry={'date':date.isoformat(),'venue':name,'race':race,'boat':b,'racer_id':rid,'motor':motor,
             'racer_all_win_rate':rate_from_counts(allv,1),'racer_all_top3_rate':rate_from_counts(allv,2),
             'racer_venue_win_rate':rate_from_counts(venuev,1),'racer_venue_top3_rate':rate_from_counts(venuev,2),
