@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import numpy as np
 import pandas as pd
 import joblib
+from venue_context import adjust_120, context as venue_context
 
 VENUES=['桐生','戸田','江戸川','平和島','多摩川','浜名湖','蒲郡','常滑','津','三国','びわこ','住之江','尼崎','鳴門','丸亀','児島','宮島','徳山','下関','若松','芦屋','福岡','唐津','大村']
 BASE='https://boatracecsv.github.io/data/'
@@ -281,11 +282,18 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     tmp=json.loads((model_root/'学習検証結果.json').read_text(encoding='utf-8'))
     temperature=float(tmp['with_motor']['calibration_temperature'])
     p=np.maximum(np.array(probs),1e-12)**(1/temperature);p/=p.sum()
+    # Preserve the trained model's original probabilities for an auditable baseline.
+    p_before_venue=p.copy()
+    entry_courses={int(row.boat):int(row.entry_course_pre) for row in df.itertuples(index=False)
+                   if pd.notna(row.entry_course_pre) and float(row.entry_course_pre).is_integer()}
+    p=np.asarray(adjust_120(name,entry_courses,PERMS,p_before_venue),dtype=float)
     outcome=[]
-    for combo,prob in zip(PERMS,p):
+    for combo,prob,base_prob in zip(PERMS,p,p_before_venue):
         odds_value=odds_values[combo]
         outcome.append({'trifecta':'-'.join(map(str,combo)),'probability':float(prob),
-                        'observed_odds':float(odds_value),'estimated_roi_proxy_pct':float(prob*odds_value*100)})
+                        'observed_odds':float(odds_value),'estimated_roi_proxy_pct':float(prob*odds_value*100),
+                        'base_model_probability':float(base_prob),
+                        'base_model_estimated_roi_pct':float(base_prob*odds_value*100)})
     out=Path(out_dir);out.mkdir(parents=True,exist_ok=True)
     df.to_csv(out/'features6.csv',index=False,encoding='utf-8-sig')
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
@@ -312,8 +320,9 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'total_model_inputs':int(X.size),'structurally_missing_fields':missing,
               'all120_odds':True,'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
-              'motor_sources':audit,'paper_candidate_count':len(candidates),
-              'note':'Historical replays do not count as live bets. EV is a calibrated model estimate, not a guarantee. No real-money betting.'}
+              'motor_sources':audit,'venue_context':venue_context(name),
+              'venue_adjustment_backtested':False,'paper_candidate_count':len(candidates),
+              'note':'The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting.'}
     (out/'report.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
     print(json.dumps(manifest,ensure_ascii=False,indent=2))
     return manifest
