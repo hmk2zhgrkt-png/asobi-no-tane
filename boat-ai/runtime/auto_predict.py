@@ -366,10 +366,12 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
     pred.to_csv(out/'predictions120.csv',index=False,encoding='utf-8-sig')
     # Both user-requested top-3 rankings are always saved, including paper skips.
+    def json_records(frame):
+        return frame.astype(object).where(pd.notna(frame),None).to_dict(orient='records')
     rankings={'venue':name,'date':date.isoformat(),'race':race,
               'venue_adjustment':venue_context(name),
-              'hit_rate_top3':pred.sort_values('probability',ascending=False).head(3).to_dict(orient='records'),
-              'expected_return_top3':pred.dropna(subset=['estimated_roi_proxy_pct']).head(3).to_dict(orient='records'),
+              'hit_rate_top3':json_records(pred.sort_values('probability',ascending=False).head(3)),
+              'expected_return_top3':json_records(pred.dropna(subset=['estimated_roi_proxy_pct']).head(3)),
               'odds_coverage':visible_odds,'expected_return_scope':'all_120' if visible_odds==120 else 'screenshot_visible_only'}
     (out/'rankings.json').write_text(json.dumps(rankings,ensure_ascii=False,indent=2),encoding='utf-8')
     now=dt.datetime.now(JST)
@@ -382,7 +384,9 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     has_daily_gap=any(not gathered.get(('programs/race_cards',start+dt.timedelta(days=i))) or not gathered.get(('results/realtime',start+dt.timedelta(days=i))) for i in range(days_total))
     runner_coverage=X.notna().sum(axis=1).tolist()
     # Opt for safe PAPER_SKIP if any source cannot be verified, rather than treating a model's missing values as zero.
-    source_ok=(visible_odds==120 and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
+    live_critical=['exhibition_time_pre','exhibition_st','entry_course_pre','wind_speed_m_pre','wave_cm_pre','tilt_pre']
+    complete_live_inputs=bool(X[live_critical].notna().all().all())
+    source_ok=(visible_odds==120 and complete_live_inputs and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
     # Structural NaNs (e.g. no previous meeting) are legitimate; missing baseline racer counts are rejected above.
     missing=sorted({k for k in FEATURES if df[k].isna().any()})
     skip_reasons=[]
@@ -390,6 +394,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     if now>=close-dt.timedelta(minutes=1):skip_reasons.append('too late: within 1 minute of cutoff or postclose')
     if has_daily_gap:skip_reasons.append('missing daily archived results or race card downloads')
     if visible_odds<120:skip_reasons.append(f'only {visible_odds}/120 screenshot-visible odds: no full-odds paper bets')
+    if not complete_live_inputs:skip_reasons.append('missing verified screenshot/exhibition/weather model inputs')
     if not today['programs/motor_stats']:skip_reasons.append('no motor stats source')
     if dayn is None:skip_reasons.append('unverified meeting day')
     if any(not a['cycle_source'] for a in audit):skip_reasons.append('unverified motor replacement cycle')
