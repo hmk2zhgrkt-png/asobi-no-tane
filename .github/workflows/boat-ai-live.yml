@@ -69,7 +69,26 @@ jobs:
           VENUE: ${{ steps.race.outputs.venue }}
           RACE: ${{ steps.race.outputs.race }}
         run: |
-          python boat-ai/runtime/auto_predict.py --date "$DATE" --venue "$VENUE" --race "$RACE" --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out boat-ai/runtime/latest_results
+          # Data publisher may lag official race cards; retry until available or max ~10 minutes.
+          for attempt in $(seq 1 20); do
+            echo "Data retrieval attempt $attempt/20"
+            python boat-ai/runtime/auto_predict.py --date "$DATE" --venue "$VENUE" --race "$RACE" --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out boat-ai/runtime/latest_results
+            decision=$(python - <<'PY'
+          import json, datetime as dt, os
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          p=Path('boat-ai/runtime/latest_results/report.json')
+          r=json.loads(p.read_text())
+          if r.get('model_ran'): print('READY')
+          elif dt.date.fromisoformat(os.environ['DATE']) != dt.datetime.now(ZoneInfo('Asia/Tokyo')).date(): print('STOP')
+          elif r.get('status')!='DATA_NOT_READY_SKIP': print('STOP')
+          else: print('RETRY')
+          PY
+            )
+            if [ "$decision" != "RETRY" ]; then echo "Source check: $decision"; break; fi
+            if [ "$attempt" -eq 20 ]; then break; fi
+            sleep 30
+          done
       - name: Apply 120 percent EV threshold only to preclose paper bets
         run: |
           python boat-ai/runtime/paper_ledger_v2.py --report boat-ai/runtime/latest_results/report.json --candidates boat-ai/runtime/latest_results/paper_candidates.csv --ledger boat-ai/runtime/paper_ledger.csv
