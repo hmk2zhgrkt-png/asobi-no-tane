@@ -1,0 +1,49 @@
+name: Boat AI actual screenshot replay (no bets)
+on:
+  push:
+    paths:
+      - '.github/workflows/boat-ai-screenshot-replay.yml'
+      - 'boat-ai/runtime/examples/tokuyama_20261115_5R_*'
+      - 'boat-ai/runtime/exploratory_screenshot_predict.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  screenshot-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install runtime
+        run: python -m pip install pandas numpy joblib lightgbm scikit-learn
+      - name: Verify original model zip and unpack
+        shell: bash
+        run: |
+          echo '9edf35ceaed65514ab8fdc08042f8c4462f4663e5e0ee17dcec7a16b5fd7c22d  boat-ai/runtime/model_bundle.zip' | sha256sum -c -
+          mkdir -p boat-ai/runtime/model
+          python -m zipfile -e boat-ai/runtime/model_bundle.zip boat-ai/runtime/model
+      - name: Replay real photographed Tokuyama race (not certified current prediction)
+        run: |
+          python boat-ai/runtime/exploratory_screenshot_predict.py \
+            --entries boat-ai/runtime/examples/tokuyama_20261115_5R_entries.csv \
+            --odds boat-ai/runtime/examples/tokuyama_20261115_5R_visible_odds.csv \
+            --models boat-ai/runtime/model \
+            --output boat-ai/runtime/example_output
+          python - <<'PY'
+          import pandas as pd,json
+          d=pd.read_csv('boat-ai/runtime/example_output/all120.csv')
+          r=json.load(open('boat-ai/runtime/example_output/report.json'))
+          assert len(d)==120 and abs(d.probability.sum()-1)<1e-6
+          assert r['known_odds']==45 and r['paper_bets_placed']==0
+          assert r['inputs_present']==134 and r['inputs_total']==168
+          print('PASS real screenshot: 120 probabilities, 45 visible odds, 134/168 inputs, no purchases')
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tokuyama-screenshot-replay-not-for-betting
+          path: boat-ai/runtime/example_output/
+          if-no-files-found: warn
