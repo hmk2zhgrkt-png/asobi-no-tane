@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import joblib
 from venue_context import adjust_120, context as venue_context
+from source_fetch import fetch_csv, SourceUnavailable, check_upstream_card
 
 VENUES=['桐生','戸田','江戸川','平和島','多摩川','浜名湖','蒲郡','常滑','津','三国','びわこ','住之江','尼崎','鳴門','丸亀','児島','宮島','徳山','下関','若松','芦屋','福岡','唐津','大村']
 BASE='https://boatracecsv.github.io/data/'
@@ -31,16 +32,12 @@ def csvday(kind,date,root=None,required=False):
             return []
         raw=p.read_bytes()
     else:
-        url=BASE+key
         try:
-            with urlopen(Request(url,headers={'User-Agent':'boat-ai-personal-analysis/1.0'}),timeout=20) as resp:
-                raw=resp.read()
-        except HTTPError as e:
-            if e.code==404 and not required:return []
-            raise RuntimeError(f'{kind} {date}: HTTP {e.code}') from e
-        except URLError as e:
+            rows,origin=fetch_csv(kind,date)
+            return rows
+        except SourceUnavailable:
             if not required:return []
-            raise RuntimeError(f'{kind} {date}: network failure') from e
+            raise
     rows=list(csv.DictReader(io.StringIO(raw.decode('utf-8-sig'))))
     return rows
 
@@ -143,7 +140,12 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     if date<dt.date(2026,11,1):raise ValueError('baseline starts 2026-10-31; replay after this date only')
     name=VENUES[venue_code-1];code=f'{date:%Y%m%d}{venue_code:02d}{race:02d}'
     kinds=['programs/race_cards','programs/title','programs/motor_stats','previews/tkz','previews/stt','previews/sui','previews/od3']
-    today={k:csvday(k,date,root=source_root,required=k not in ['programs/title']) for k in kinds}
+    try:
+        today={k:csvday(k,date,root=source_root,required=k not in ['programs/title']) for k in kinds}
+    except SourceUnavailable as e:
+        # Report upstream access separately from missing/malformed model inputs.
+        upstream=check_upstream_card(date,venue_code,race) if source_root is None else {'source':'offline','available':False}
+        raise RuntimeError(f'CSV multi-origin failure: {e}; official upstream race card: {upstream}') from e
     cards=get_by_code(today['programs/race_cards'],code)
     ts=[get_by_code(today[k],code) for k in ('previews/tkz','previews/stt','previews/sui','previews/od3')]
     t,st,weather,odds=ts
