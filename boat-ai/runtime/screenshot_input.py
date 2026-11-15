@@ -46,7 +46,7 @@ def read_screenshot(path,date,venue,race):
         raise ValueError("Screenshot timestamp lies in the future")
     data=obj.get("fields",{})
     if not isinstance(data,dict):raise ValueError("Missing screenshot fields object")
-    result={"observed":observed,"previews":{},"odds_count":0,"complete_odds":False,"notes":[]}
+    result={"observed":observed,"cutoff":obj.get("cutoff_jst",""),"previews":{},"odds_count":0,"complete_odds":False,"notes":[]}
     code=f"{date:%Y%m%d}{int(venue):02d}{int(race):02d}"
     base={"レースコード":code,"取得日時":observed.isoformat()}
     if "exhibition_time" in data or "tilt" in data:
