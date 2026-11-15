@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
-  "venue": 13,
+  "venue": 16,
   "race": 8,
-  "revision": 8,
-  "comment": "Postclose diagnostic rerun and settlement regression; do not add paper bets after cutoff"
+  "revision": 9,
+  "comment": "Kojima 8R 14:20 JST cutoff; preclose paper-only if verified, report predictions even if skipped"
 }
