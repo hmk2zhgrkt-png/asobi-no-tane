@@ -91,3 +91,19 @@ jobs:
               fields=line.split('\\t')
               print('OFFICIAL_TSV_SAMPLE',len(fields),repr(fields[:26]),'last',repr(fields[26:]))
           PY
+      - name: Validate direct official six-boat card conversion
+        run: |
+          python - <<'PY'
+          import sys
+          sys.path.insert(0,'boat-ai/runtime')
+          from source_fetch import fetch_official_card
+          card=fetch_official_card('2026-11-15',24,8)
+          assert card['レースコード']=='202611152408'
+          assert card['艇1_登録番号']=='4934'
+          assert card['艇2_登録番号']=='4114'
+          for i in range(1,7):
+              assert card[f'艇{i}_モーター番号']
+              assert card[f'艇{i}_全国勝率']
+          print('OFFICIAL_CONVERT_OK',card['レースコード'],
+                [(card[f'艇{i}_選手名'],card[f'艇{i}_モーター番号']) for i in range(1,7)])
+          PY
