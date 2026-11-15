@@ -150,3 +150,65 @@ def fetch_official_card(date,venue,race,opener=urlopen):
     with opener(req,timeout=7) as response:
         raw=response.read()
     return parse_boatcast_card(raw,date,venue,race)
+
+def official_txt(kind,date,venue,race=None,opener=urlopen):
+    """Fetch known actual upstream Boatcast endpoints. Never guess missing odds."""
+    date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
+    jo=f'{int(venue):02d}'
+    known={"tkz":"bc_j_tkz","stt":"bc_j_stt","motor_start":"bc_mst"}
+    if kind not in known:raise ValueError('Unsupported upstream endpoint')
+    if kind=="motor_start":
+        filename=f'bc_mst_{jo}.txt'
+    else:
+        if not (1<=int(race)<=12):raise ValueError('Race out of range')
+        filename=f'{known[kind]}_{date:%Y%m%d}_{jo}_{int(race):02d}.txt'
+    url=f'https://race.boatcast.jp/hp_txt/{jo}/{filename}'
+    with opener(Request(url,headers={"User-Agent":"Mozilla/5.0"}),timeout=7) as response:
+        return response.read()
+
+def parse_official_preview(raw,kind,date,venue,race,close,observed):
+    """Validate exact six-boat TSV then expose same keys as BoatraceCSV snapshots."""
+    if kind not in ("tkz","stt"):raise ValueError('Unsupported preview kind')
+    date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
+    lines=raw.decode('utf-8-sig').splitlines()
+    if len(lines)!=8 or lines[0].strip()!='data=' or lines[1].strip()!='1':
+        raise ValueError(f'Bad {kind} source header')
+    if not observed.tzinfo or observed.date()!=date:
+        raise ValueError('Preview must be obtained on race day with verified timezone')
+    result={'レースコード':f'{date:%Y%m%d}{int(venue):02d}{int(race):02d}',
+            'レース日':date.isoformat(),'レース場':f'{int(venue):02d}',
+            'レース回':f'{int(race):02d}R','締切時刻':close,
+            '取得日時':observed.isoformat()}
+    names=set()
+    if kind=="tkz":
+        for boat,line in enumerate(lines[2:],1):
+            fields=line.split(chr(9))
+            if len(fields)<7:raise ValueError('Short official exhibition row')
+            name=unicodedata.normalize('NFKC',fields[0]).strip()
+            if not name or name in names:raise ValueError('Duplicate/missing exhibition racer')
+            names.add(name)
+            ex=float(fields[1])
+            if not 6.0<=ex<=8.5:raise ValueError('Exhibition time outside plausible range')
+            tilt=float(fields[6].replace(' ',''))
+            weight=float(fields[4])
+            result.update({f'艇{boat}_展示タイム':str(ex),f'艇{boat}_体重(kg)':str(weight),
+                           f'艇{boat}_チルト':str(tilt)})
+    else:
+        seen_boats=set();seen_courses=set()
+        for line in lines[2:]:
+            fields=line.split(chr(9))
+            if len(fields)<5:raise ValueError('Short official start-exhibition row')
+            course=int(fields[0]);boat=int(fields[1])
+            if not (1<=boat<=6 and 1<=course<=6) or boat in seen_boats or course in seen_courses:
+                raise ValueError('Unverified entry courses')
+            seen_boats.add(boat);seen_courses.add(course)
+            # 4th column is average ST; 5th column is exhibition ST.
+            st=fields[4].strip()
+            if st.startswith('F'): st='-'+st[1:]
+            if st.startswith('L') or not st:raise ValueError('Missing start-exhibition ST')
+            val=float(st)
+            if not -1<=val<=1:raise ValueError('Invalid exhibition ST')
+            result.update({f'艇{boat}_コース':str(course),f'艇{boat}_スタート展示':str(val)})
+        if seen_boats!=set(range(1,7)) or seen_courses!=set(range(1,7)):
+            raise ValueError('Expected all six entry courses')
+    return result
