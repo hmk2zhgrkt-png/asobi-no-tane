@@ -171,7 +171,7 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
     if kind not in ("tkz","stt"):raise ValueError('Unsupported preview kind')
     date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
     lines=raw.decode('utf-8-sig').splitlines()
-    if len(lines)!=8 or lines[0].strip()!='data=' or lines[1].strip()!='1':
+    if len(lines)<8 or lines[0].strip()!='data=' or lines[1].strip()!='1' or any(x.strip() for x in lines[8:]):
         raise ValueError(f'Bad {kind} source header')
     if not observed.tzinfo or observed.date()!=date:
         raise ValueError('Preview must be obtained on race day with verified timezone')
@@ -181,7 +181,7 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
             '取得日時':observed.isoformat()}
     names=set()
     if kind=="tkz":
-        for boat,line in enumerate(lines[2:],1):
+        for boat,line in enumerate(lines[2:8],1):
             fields=line.split(chr(9))
             if len(fields)<7:raise ValueError('Short official exhibition row')
             name=unicodedata.normalize('NFKC',fields[0]).strip()
@@ -195,7 +195,7 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
                            f'艇{boat}_チルト':str(tilt)})
     else:
         seen_boats=set();seen_courses=set()
-        for line in lines[2:]:
+        for line in lines[2:8]:
             fields=line.split(chr(9))
             if len(fields)<5:raise ValueError('Short official start-exhibition row')
             course=int(fields[0]);boat=int(fields[1])
@@ -212,3 +212,14 @@ def parse_official_preview(raw,kind,date,venue,race,close,observed):
         if seen_boats!=set(range(1,7)) or seen_courses!=set(range(1,7)):
             raise ValueError('Expected all six entry courses')
     return result
+
+def official_motor_cycle(date,venue,opener=urlopen):
+    """Motor replacement start date; never combine with previous motor number generation."""
+    raw=official_txt('motor_start',date,venue,opener=opener)
+    t=raw.decode('utf-8-sig').strip()
+    if len(t)!=8 or not t.isdigit():raise ValueError('Unverified motor cycle timestamp')
+    start=dt.datetime.strptime(t,'%Y%m%d').date()
+    day=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
+    if start>day or (day-start).days>600:
+        raise ValueError('Motor cycle timestamp not compatible with race date')
+    return start.isoformat()
