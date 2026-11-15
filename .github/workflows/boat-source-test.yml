@@ -67,3 +67,20 @@ jobs:
                       print('OFFICIAL_PREVIEW_OK',src,out['レースコード'],len(out))
               except Exception as e:print('OFFICIAL_FAILED',src,repr(str(e)))
           PY
+      - name: Test actual official previews and motor cycle
+        run: |
+          python - <<'PY'
+          from datetime import datetime
+          import sys
+          sys.path.insert(0,'boat-ai/runtime')
+          from source_fetch import official_txt,parse_official_preview,official_motor_cycle
+          stamp=datetime.fromisoformat('2026-11-15T18:27:00+09:00')
+          a=parse_official_preview(official_txt('tkz','2026-11-15',24,8),'tkz','2026-11-15',24,8,'18:33',stamp)
+          b=parse_official_preview(official_txt('stt','2026-11-15',24,8),'stt','2026-11-15',24,8,'18:33',stamp)
+          assert len([a[f'艇{i}_展示タイム'] for i in range(1,7)])==6
+          assert sorted(int(b[f'艇{i}_コース']) for i in range(1,7))==list(range(1,7))
+          assert len([b[f'艇{i}_スタート展示'] for i in range(1,7)])==6
+          cycle=official_motor_cycle('2026-11-15',24)
+          assert cycle=='2026-05-24'
+          print('PREVIEW_FALLBACK_PASS',a['レースコード'],cycle)
+          PY
