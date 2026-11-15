@@ -133,7 +133,7 @@ def parse_boatcast_card(raw, date, venue, race):
             day=slot//2+1;run=slot%2+1
             prefix=f'{p}節D{day}走{run}_'
             record=clean(cols[25+slot]) if 25+slot<len(cols) else ''
-            bits=record.split(',')
+            bits=['']*5 if record in ('','-') else record.split(',')
             if len(bits)!=5:raise ValueError(f'Malformed history slot boat {i} index {slot}')
             for label,val in zip(('R番号','進入','枠','ST','着順'),bits):
                 val=val.strip()
