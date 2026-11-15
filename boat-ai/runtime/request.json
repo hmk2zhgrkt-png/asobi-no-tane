@@ -2,6 +2,6 @@
   "date": "2026-11-15",
   "venue": 18,
   "race": 5,
-  "comment": "Replay user's Nov 15 Tokuyama 5R with corrected complete auto_predict.py; no paper bets after cutoff",
-  "revision": 2
+  "comment": "Retry Tokuyama 5R with per-venue active motor-cohort validation for motor 69",
+  "revision": 3
 }
