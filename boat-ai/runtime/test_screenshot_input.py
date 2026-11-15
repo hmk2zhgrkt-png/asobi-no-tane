@@ -25,6 +25,8 @@ with tempfile.TemporaryDirectory() as d:
     odds=overlay_screenshot([],read,'previews/od3',code,close)[0]
     assert odds['3連単_1-3-2']=='9.1'
     assert odds_coverage(odds)==2
+    stale=dict(odds,**{'3連単_2-3-4':'33.0'})
+    assert odds_coverage(overlay_screenshot([stale],read,'previews/od3',code,close)[0])==2
     weather=overlay_screenshot([],read,'previews/sui',code,close)[0]
     assert weather['風速(m)']=='3.0' and weather['波の高さ(cm)']=='2.0'
     st=overlay_screenshot([],read,'previews/stt',code,close)[0]
