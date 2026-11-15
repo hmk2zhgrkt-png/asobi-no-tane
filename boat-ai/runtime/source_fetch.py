@@ -90,7 +90,7 @@ def parse_boatcast_card(raw, date, venue, race):
     """
     date=dt.date.fromisoformat(str(date)) if not isinstance(date,dt.date) else date
     lines=raw.decode('utf-8-sig').splitlines()
-    if len(lines)!=8 or lines[0].strip()!='data=' or lines[1].strip()!='1\\t6':
+    if len(lines)!=8 or lines[0].strip()!='data=' or lines[1].split()!=['1','6']:
         raise ValueError('Unexpected upstream race card header/length')
     def clean(x):
         return unicodedata.normalize('NFKC',str(x).strip()).replace('　',' ').strip()
@@ -102,7 +102,7 @@ def parse_boatcast_card(raw, date, venue, race):
     code=f'{date:%Y%m%d}{int(venue):02d}{int(race):02d}'
     result={'レースコード':code,'レース日':date.isoformat(),'レース場コード':f'{int(venue):02d}','レース回':f'{int(race):02d}R'}
     for i,line in enumerate(lines[2:],1):
-        cols=line.split('\\t')
+        cols=line.split(chr(9))
         if len(cols)<38:
             raise ValueError(f'Incomplete TSV boat {i}: only {len(cols)} columns')
         p=f'艇{i}_'
