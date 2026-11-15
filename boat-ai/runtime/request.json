@@ -1,7 +1,7 @@
 {
   "date": "2026-11-15",
-  "venue": 16,
-  "race": 8,
-  "revision": 11,
-  "comment": "Post-race Kojima 8R official result reconciliation; strictly replay only, no paper tickets"
+  "venue": 24,
+  "race": 3,
+  "revision": 12,
+  "comment": "Omura 3R live preclose paper-only request; report both probability and EV top3 with venue course prior"
 }
