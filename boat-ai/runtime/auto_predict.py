@@ -15,6 +15,7 @@ import pandas as pd
 import joblib
 from venue_context import adjust_120, context as venue_context
 from source_fetch import fetch_csv, SourceUnavailable, check_upstream_card, fetch_official_card, official_txt, parse_official_preview, official_motor_cycle, official_race_title
+from screenshot_input import read_screenshot, overlay_screenshot, odds_coverage
 
 VENUES=['桐生','戸田','江戸川','平和島','多摩川','浜名湖','蒲郡','常滑','津','三国','びわこ','住之江','尼崎','鳴門','丸亀','児島','宮島','徳山','下関','若松','芦屋','福岡','唐津','大村']
 BASE='https://boatracecsv.github.io/data/'
@@ -135,10 +136,11 @@ def race_meeting_day(title_row):
     return None
 
 
-def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,lookback_workers=12):
+def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,lookback_workers=12,screenshot_path=None):
     if not (1<=venue_code<=24 and 1<=race<=12):raise ValueError('venue 1..24, race 1..12')
     if date<dt.date(2026,11,1):raise ValueError('baseline starts 2026-10-31; replay after this date only')
     name=VENUES[venue_code-1];code=f'{date:%Y%m%d}{venue_code:02d}{race:02d}'
+    screenshot=read_screenshot(screenshot_path,date,venue_code,race)
     kinds=['programs/race_cards','programs/title','programs/motor_stats','previews/tkz','previews/stt','previews/sui','previews/od3']
     today={}
     for k in kinds:
@@ -151,6 +153,17 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
                 except (ValueError,HTTPError,URLError,TimeoutError,OSError) as title_error:
                     print(f'OPTIONAL_TITLE_UNAVAILABLE: {type(title_error).__name__}: {title_error}')
         except SourceUnavailable as e:
+            if screenshot and k in ('previews/sui','previews/od3') and k in screenshot['previews']:
+                today[k]=[]
+                print(f'SCREENSHOT_FALLBACK: {k} for {code}')
+                continue
+            if screenshot and k in ('previews/tkz','previews/stt') and k in screenshot['previews']:
+                fields=screenshot['previews'][k]
+                needed=('艇1_展示タイム','艇6_展示タイム','艇1_チルト','艇6_チルト') if k=='previews/tkz' else ('艇1_スタート展示','艇6_スタート展示','艇1_コース','艇6_コース')
+                if all(field in fields for field in needed):
+                    today[k]=[]
+                    print(f'SCREENSHOT_FALLBACK: complete {k} for {code}')
+                    continue
             if source_root is None and k=='programs/race_cards':
                 try:
                     today[k]=[fetch_official_card(date,venue_code,race)]
@@ -185,13 +198,26 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
                     raise RuntimeError(f'CSV multi-origin failure: {e}; official preview fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
             raise RuntimeError(f'CSV multi-origin failure: {e}') from e
     cards=get_by_code(today['programs/race_cards'],code)
+    if screenshot:
+        title_rows=[z for z in today['programs/title'] if z.get('レースコード')==code]
+        if title_rows and ':' in str(title_rows[0].get('電話投票締切予定','')):
+            verified_cutoff=str(title_rows[0]['電話投票締切予定'])
+        else:
+            verified_cutoff=str(screenshot.get('cutoff',''))
+        if len(verified_cutoff)!=5 or verified_cutoff[2]!=':':
+            raise ValueError('Screenshot overlay needs a verified official or screenshot cutoff')
+        official_close=dt.datetime.combine(date,dt.time.fromisoformat(verified_cutoff),JST)
+        for kind in ('previews/tkz','previews/stt','previews/sui','previews/od3'):
+            today[kind]=overlay_screenshot(today[kind],screenshot,kind,code,official_close)
     ts=[get_by_code(today[k],code) for k in ('previews/tkz','previews/stt','previews/sui','previews/od3')]
     t,st,weather,odds=ts
     close=dt.datetime.combine(date,dt.time.fromisoformat(t['締切時刻']),JST)
     obs=[datetime_jst(z['取得日時']) for z in ts]
     if any(x>close for x in obs):raise ValueError('Post-cutoff preview is not allowed')
     odds_values={c:number(odds.get('3連単_'+'-'.join(map(str,c)))) for c in PERMS}
-    if any(pd.isna(v) or v<=1 for v in odds_values.values()):raise ValueError('Full valid 120-way odds unavailable')
+    visible_odds=sum(1 for v in odds_values.values() if pd.notna(v) and v>1)
+    if visible_odds==0:raise ValueError('No verified odds were available in screenshots or live data')
+    if any(pd.notna(v) and v<=1 for v in odds_values.values()):raise ValueError('Invalid nonpositive/low odds')
     # Motor generation verified against current-period snapshots; ignore old-cycle historical IDs.
     motor_starts={}
     for row in today['programs/motor_stats']:
@@ -331,9 +357,10 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     for combo,prob,base_prob in zip(PERMS,p,p_before_venue):
         odds_value=odds_values[combo]
         outcome.append({'trifecta':'-'.join(map(str,combo)),'probability':float(prob),
-                        'observed_odds':float(odds_value),'estimated_roi_proxy_pct':float(prob*odds_value*100),
+                        'observed_odds':float(odds_value) if pd.notna(odds_value) else np.nan,
+                        'estimated_roi_proxy_pct':float(prob*odds_value*100) if pd.notna(odds_value) else np.nan,
                         'base_model_probability':float(base_prob),
-                        'base_model_estimated_roi_pct':float(base_prob*odds_value*100)})
+                        'base_model_estimated_roi_pct':float(base_prob*odds_value*100) if pd.notna(odds_value) else np.nan})
     out=Path(out_dir);out.mkdir(parents=True,exist_ok=True)
     df.to_csv(out/'features6.csv',index=False,encoding='utf-8-sig')
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
@@ -342,7 +369,8 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     rankings={'venue':name,'date':date.isoformat(),'race':race,
               'venue_adjustment':venue_context(name),
               'hit_rate_top3':pred.sort_values('probability',ascending=False).head(3).to_dict(orient='records'),
-              'expected_return_top3':pred.head(3).to_dict(orient='records')}
+              'expected_return_top3':pred.dropna(subset=['estimated_roi_proxy_pct']).head(3).to_dict(orient='records'),
+              'odds_coverage':visible_odds,'expected_return_scope':'all_120' if visible_odds==120 else 'screenshot_visible_only'}
     (out/'rankings.json').write_text(json.dumps(rankings,ensure_ascii=False,indent=2),encoding='utf-8')
     now=dt.datetime.now(JST)
     current=(now<close-dt.timedelta(minutes=1) and date==now.date())
@@ -354,13 +382,14 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     has_daily_gap=any(not gathered.get(('programs/race_cards',start+dt.timedelta(days=i))) or not gathered.get(('results/realtime',start+dt.timedelta(days=i))) for i in range(days_total))
     runner_coverage=X.notna().sum(axis=1).tolist()
     # Opt for safe PAPER_SKIP if any source cannot be verified, rather than treating a model's missing values as zero.
-    source_ok=(not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
+    source_ok=(visible_odds==120 and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
     # Structural NaNs (e.g. no previous meeting) are legitimate; missing baseline racer counts are rejected above.
     missing=sorted({k for k in FEATURES if df[k].isna().any()})
     skip_reasons=[]
     if date!=now.date():skip_reasons.append('not the current race day')
     if now>=close-dt.timedelta(minutes=1):skip_reasons.append('too late: within 1 minute of cutoff or postclose')
     if has_daily_gap:skip_reasons.append('missing daily archived results or race card downloads')
+    if visible_odds<120:skip_reasons.append(f'only {visible_odds}/120 screenshot-visible odds: no full-odds paper bets')
     if not today['programs/motor_stats']:skip_reasons.append('no motor stats source')
     if dayn is None:skip_reasons.append('unverified meeting day')
     if any(not a['cycle_source'] for a in audit):skip_reasons.append('unverified motor replacement cycle')
@@ -371,7 +400,8 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'status':status,'preclose_snapshot_asof_jst':max(obs).isoformat(),'deadline_jst':close.isoformat(),
               'model_ran':True,'probability_sum':float(p.sum()),'estimated_inputs_present':int(X.notna().sum().sum()),
               'total_model_inputs':int(X.size),'structurally_missing_fields':missing,
-              'all120_odds':True,'history_cutoff':racers0['asof'],'days_updated':days_total,
+              'all120_odds':visible_odds==120,'odds_count':visible_odds,'expected_return_scope':'all_120' if visible_odds==120 else 'screenshot_visible_only',
+              'screenshot_data_used':bool(screenshot),'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
               'venue_adjustment_backtested':False,'skip_reasons':skip_reasons,
@@ -389,9 +419,10 @@ if __name__=='__main__':
     a.add_argument('--out',default='boat-ai/runtime/auto_out')
     a.add_argument('--offline-source-root',help='For deterministic tests only')
     a.add_argument('--workers',type=int,default=12)
+    a.add_argument('--screenshot-input',default='boat-ai/runtime/screenshot_input.json')
     x=a.parse_args()
     try:
-        calculate(dateparse(x.date),x.venue,x.race,x.snapshots,x.models,x.out,x.offline_source_root,x.workers)
+        calculate(dateparse(x.date),x.venue,x.race,x.snapshots,x.models,x.out,x.offline_source_root,x.workers,x.screenshot_input)
     except (ValueError,RuntimeError,FileNotFoundError,KeyError,TimeoutError) as e:
         out=Path(x.out);out.mkdir(parents=True,exist_ok=True)
         report={'date':x.date,'venue_code':x.venue,'race':x.race,'status':'DATA_NOT_READY_SKIP',
