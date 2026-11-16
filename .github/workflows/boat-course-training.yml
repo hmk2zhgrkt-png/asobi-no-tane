@@ -23,7 +23,7 @@ permissions:
 jobs:
   pilot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -33,12 +33,17 @@ jobs:
         run: |
           python -m py_compile boat-ai/runtime/historical_course_dataset.py
           python boat-ai/runtime/test_historical_course_dataset.py
+      - name: Install official LZH decoder and parser
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full
+          python -m pip install --disable-pip-version-check boatrace-lzh
       - name: Fetch sample of public archival results for joining
         env:
           START: ${{ inputs.start || '2026-05-01' }}
           END: ${{ inputs.end || '2026-05-14' }}
         run: |
-          python boat-ai/runtime/historical_course_dataset.py --start "$START" --end "$END" --out boat-ai/runtime/course_training_pilot
+          python boat-ai/runtime/historical_course_dataset.py --start "$START" --end "$END" --official-lzh --out boat-ai/runtime/course_training_pilot
       - name: Install evaluation dependency
         run: python -m pip install --disable-pip-version-check scikit-learn
       - name: Evaluate strictly time-split pre-race course prior
