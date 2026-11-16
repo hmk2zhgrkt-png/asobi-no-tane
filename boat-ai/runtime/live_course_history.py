@@ -73,6 +73,24 @@ def build(target,base,fetch=official_day):
     auditfile.write_text(json.dumps(report,indent=2,ensure_ascii=False)+'\n',encoding='utf-8')
     return report
 
+def iter_cache_rows(base,target_date):
+    """Yield checksum-verified monthly live history labels strictly before race date."""
+    target=dt.date.fromisoformat(str(target_date))
+    for f in sorted(Path(base).glob('*.csv.gz')):
+        auditfile=f.with_name(f.name.replace('.csv.gz','.audit.json'))
+        if not auditfile.exists():raise ValueError('Missing K cache audit '+f.name)
+        audit=json.loads(auditfile.read_text(encoding='utf-8'))
+        if hashlib.sha256(f.read_bytes()).hexdigest()!=audit['sha256']:
+            raise ValueError('K cache checksum mismatch '+f.name)
+        count=0
+        with gzip.open(f,'rt',encoding='utf-8-sig',newline='') as inp:
+            for row in csv.DictReader(inp):
+                count+=1
+                if row['date']<target.isoformat():
+                    yield row
+        if count!=audit['racer_rows']:
+            raise ValueError('K cache row-count mismatch '+f.name)
+
 def racer_motor_updates(base,target_date,venue_name_lookup):
     """Return actual completed-race deltas from cache up through target_date-1.
 
