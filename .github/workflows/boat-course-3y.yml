@@ -1,0 +1,51 @@
+name: Three-year course history monthly collection
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/collect_course_month.py'
+      - 'boat-ai/runtime/test_collect_course_month.py'
+      - '.github/workflows/boat-course-3y.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: boat-course-3y-collect
+  cancel-in-progress: false
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test month boundaries and official result labels
+        run: |
+          python boat-ai/runtime/test_collect_course_month.py
+          python boat-ai/runtime/test_historical_course_dataset.py
+      - name: Install official K-result archive decoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -qq -y p7zip-full
+          python -m pip install --disable-pip-version-check boatrace-lzh
+      - name: Collect first pilot month (2026-05)
+        run: python boat-ai/runtime/collect_course_month.py --month 2026-05
+      - name: Save one month's labels and audit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_history_3y/2026-05.csv.gz boat-ai/runtime/course_history_3y/2026-05.audit.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Archive May 2026 official racer course history'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Upload compressed month backup
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: historical-course-may-2026
+          path: boat-ai/runtime/course_history_3y/
+          if-no-files-found: warn
+          retention-days: 30
