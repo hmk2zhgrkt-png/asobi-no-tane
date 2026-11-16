@@ -263,6 +263,22 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     # Model outputs are exploratory and paper bets remain disabled.
     gathered={} if fast_snapshot else recent_updates(start,date-dt.timedelta(days=1),source_root,workers=lookback_workers)
     newer_racers,newer_motors=history_deltas(gathered,date)
+    official_k_days=[]
+    official_k_error=None
+    if fast_snapshot:
+        from live_course_history import racer_motor_updates
+        cache=Path(__file__).with_name('course_history_daily')
+        if cache.is_dir():
+            try:
+                extra_racers,extra_motors,official_k_days=racer_motor_updates(cache,date,VENUES)
+                newer_racers.extend(extra_racers)
+                newer_motors.extend(extra_motors)
+                print(f'FAST_K_HISTORY: {len(official_k_days)} completed days, {len(extra_racers)} six-boat labels before {date}')
+            except (ValueError,OSError,UnicodeError) as exc:
+                official_k_error=str(exc)
+                print(f'FAST_K_HISTORY_INVALID: {official_k_error}')
+        else:
+            official_k_error='No prebuilt official K history cache'
     new_by_racer={};new_by_motor={}
     for r in newer_racers:new_by_racer.setdefault(r[1],[]).append(r)
     for m in newer_motors:new_by_motor.setdefault((m[1],m[2]),[]).append(m)
@@ -429,7 +445,12 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     result_day_count=sum(1 for day in (start+dt.timedelta(days=i) for i in range(days_total)) if gathered.get(('results/realtime',day)))
     # Missing race results on legitimate no-race days are fine, but missing downloads are independently reported.
     downloaded=len([1 for (kind,_),v in gathered.items() if kind=='results/realtime' and v]);
-    has_daily_gap=any(not gathered.get(('programs/race_cards',start+dt.timedelta(days=i))) or not gathered.get(('results/realtime',start+dt.timedelta(days=i))) for i in range(days_total))
+    missing_k_days=[(start+dt.timedelta(days=i)).isoformat() for i in range(days_total)
+                    if (start+dt.timedelta(days=i)).isoformat() not in set(official_k_days)]
+    has_daily_gap=(bool(missing_k_days) or official_k_error is not None) if fast_snapshot else any(
+        not gathered.get(('programs/race_cards',start+dt.timedelta(days=i))) or
+        not gathered.get(('results/realtime',start+dt.timedelta(days=i)))
+        for i in range(days_total))
     runner_coverage=X.notna().sum(axis=1).tolist()
     # Opt for safe PAPER_SKIP if any source cannot be verified, rather than treating a model's missing values as zero.
     live_critical=['exhibition_time_pre','exhibition_st','entry_course_pre','wind_speed_m_pre','wave_cm_pre','tilt_pre']
@@ -440,7 +461,9 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     skip_reasons=[]
     if date!=now.date():skip_reasons.append('not the current race day')
     if now>=close-dt.timedelta(minutes=1):skip_reasons.append('too late: within 1 minute of cutoff or postclose')
-    if has_daily_gap:skip_reasons.append('missing daily archived results or race card downloads')
+    if has_daily_gap:
+        skip_reasons.append('incomplete cached prior-day official K history' if fast_snapshot
+                            else 'missing daily archived results or race card downloads')
     if visible_odds<120:skip_reasons.append(f'only {visible_odds}/120 screenshot-visible odds: no full-odds paper bets')
     if not complete_live_inputs:skip_reasons.append('missing verified screenshot/exhibition/weather model inputs')
     if course_adjusted:skip_reasons.append('experimental per-racer actual-course adjustment is not backtested: no paper bets')
@@ -456,7 +479,11 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'total_model_inputs':int(X.size),'structurally_missing_fields':missing,
               'all120_odds':visible_odds==120,'odds_count':visible_odds,'expected_return_scope':'all_120' if visible_odds==120 else 'screenshot_visible_only',
               'screenshot_data_used':bool(screenshot),'fast_screenshot_mode':fast_snapshot,
-              'history_since_baseline_fully_verified':not fast_snapshot and not has_daily_gap,
+              'history_since_baseline_fully_verified':not has_daily_gap,
+              'official_k_history_days':len(official_k_days),
+              'official_k_history_latest':max(official_k_days) if official_k_days else None,
+              'official_k_missing_days':missing_k_days if fast_snapshot else [],
+              'official_k_cache_error':official_k_error,
               'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
