@@ -5,6 +5,8 @@ on:
       - '.github/workflows/boat-k-daily-cache.yml'
       - 'boat-ai/runtime/live_course_history.py'
       - 'boat-ai/runtime/test_live_course_history.py'
+      - 'boat-ai/runtime/sync_official_results.py'
+      - 'boat-ai/runtime/test_sync_official_results.py'
   workflow_dispatch:
   schedule:
     - cron: '0 17 * * *'  # 02:00 JST next day; finished races only
@@ -26,6 +28,7 @@ jobs:
         run: |
           python -m py_compile boat-ai/runtime/live_course_history.py boat-ai/runtime/auto_predict.py
           python boat-ai/runtime/test_live_course_history.py
+          python boat-ai/runtime/test_sync_official_results.py
       - name: Install official K-file reader
         run: |
           sudo apt-get update -qq
@@ -41,6 +44,17 @@ jobs:
           git add boat-ai/runtime/course_history_daily/
           if git diff --cached --quiet; then echo 'Cache unchanged'; exit 0; fi
           git commit -m 'Cache official completed race entry and finish for fast AI history'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Match saved race predictions with yesterday's official six-boat final results
+        run: python boat-ai/runtime/sync_official_results.py
+      - name: Commit confirmed official outcome verification
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/validation_results.csv
+          if git diff --cached --quiet; then echo 'No new verified results'; exit 0; fi
+          git commit -m 'Verify model race outcomes against immutable official K results'
           git pull --rebase origin main
           git push origin HEAD:main
       - name: Backup daily history checkpoint
