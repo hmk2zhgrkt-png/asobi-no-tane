@@ -1,0 +1,43 @@
+name: Racer actual-course re-score validation
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/course_adjust.py'
+      - 'boat-ai/runtime/course_context.json'
+      - 'boat-ai/runtime/test_course_adjust.py'
+      - '.github/workflows/course-rescore.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rescore:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check source code and tests
+        run: |
+          python -m py_compile boat-ai/runtime/course_adjust.py
+          python boat-ai/runtime/test_course_adjust.py
+      - name: Re-score exact archived Amagasaki 2R prediction, not a new wager
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=json.loads(Path('boat-ai/runtime/latest_results/report.json').read_text())
+          expected=('2026-11-16',13,2)
+          assert (report['date'],report['venue_code'],report['race'])==expected, 'Latest prediction race changed: safe skip'
+          assert report.get('model_ran')
+          PY
+          python boat-ai/runtime/course_adjust.py --predictions boat-ai/runtime/latest_results/predictions120.csv --course-context boat-ai/runtime/course_context.json --out boat-ai/runtime/course_replay/20261116-13-02
+      - name: Persist reproducible replay-only results
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_replay/20261116-13-02/
+          if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
+          git commit -m 'Archive course-adjusted 120-way Amagasaki 2R replay'
+          git pull --rebase origin main
+          git push origin HEAD:main
