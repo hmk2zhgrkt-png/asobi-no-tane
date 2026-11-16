@@ -16,6 +16,48 @@
   "top5": [
     {
       "trifecta": "1-3-6",
+      "probability": 0.04391516585535774
+    },
+    {
+      "trifecta": "1-3-5",
+      "probability": 0.04128754374068835
+    },
+    {
+      "trifecta": "1-3-4",
+      "probability": 0.040431315215469714
+    },
+    {
+      "trifecta": "1-3-2",
+      "probability": 0.03962157103204769
+    },
+    {
+      "trifecta": "1-2-3",
+      "probability": 0.03948375689624594
+    }
+  ],
+  "sum_probability": 1.0,
+  "exhibition_f_positive_experiment": {
+    "enabled": true,
+    "status": "UNVALIDATED_POSTMODEL_SENSITIVITY",
+    "meaning": "Exhibition F.01 through F.04 is a SMALL positive indicator; other exhibition starts are neutral",
+    "positive_exhibition_boats": [
+      1,
+      3
+    ],
+    "threshold_seconds": 0.04,
+    "role_multipliers": {
+      "first": 1.06,
+      "second": 1.04,
+      "third": 1.025
+    },
+    "model_retrained": false,
+    "backtested": false,
+    "does_not_affect_actual_race_f": true,
+    "no_bets": true
+  },
+  "original_top5_without_f_experiment": [
+    {
+      "trifecta": "1-3-6",
       "probability": 0.04236998838039929
     },
     {
@@ -35,7 +77,6 @@
       "probability": 0.038227465877513314
     }
   ],
-  "sum_probability": 1.0,
   "entrant_elo": [
     {
       "boat": 1,
