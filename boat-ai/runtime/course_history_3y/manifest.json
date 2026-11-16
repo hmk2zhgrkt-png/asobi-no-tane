@@ -1,0 +1,341 @@
+{
+  "period_start": "2023-11-01",
+  "period_end": "2026-10-31",
+  "total_months": 36,
+  "audited_months": 36,
+  "no_audit_months": [],
+  "days_requested": 1096,
+  "days_downloaded": 1096,
+  "days_missing": 0,
+  "clean_six_boat_races": 151352,
+  "racer_rows": 908112,
+  "by_month": [
+    {
+      "month": "2023-11",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3636,
+      "racer_rows": 21816,
+      "sha256": "c58e6d3f43bc7d25649b5ca83783e81f544b1420c80e8f587961db3507f6a845"
+    },
+    {
+      "month": "2023-12",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4448,
+      "racer_rows": 26688,
+      "sha256": "33dd1b1d9e8b7b18bc330fc3900abfd90ca409a2fc1f9958e7a37afd066ea3b5"
+    },
+    {
+      "month": "2024-01",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4491,
+      "racer_rows": 26946,
+      "sha256": "9a86cf951fd2cd05a1efb2c04a05c29419bf8c634dded5c71c1f995cc6668ff4"
+    },
+    {
+      "month": "2024-02",
+      "days_requested": 29,
+      "days_downloaded": 29,
+      "days_missing": 0,
+      "clean_six_boat_races": 3993,
+      "racer_rows": 23958,
+      "sha256": "895f353f5bf582a7ed5ce805e3fdf0c01f5e3578d45b5009c93ec499305946e0"
+    },
+    {
+      "month": "2024-03",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 3934,
+      "racer_rows": 23604,
+      "sha256": "5e20fcfeb7f531c93f340e90173b463823c9cbf4905e0804e3aa530b3f778c43"
+    },
+    {
+      "month": "2024-04",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 4043,
+      "racer_rows": 24258,
+      "sha256": "60900ba10f8fc45c9bb2296d7a78056c4597aff5e0472da9c48d766d04b3e4ab"
+    },
+    {
+      "month": "2024-05",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4348,
+      "racer_rows": 26088,
+      "sha256": "65b65b1d12a5498f1148e0b22e9b39f4e2423676528d2f7e6f43c2fe94ed30c0"
+    },
+    {
+      "month": "2024-06",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 4216,
+      "racer_rows": 25296,
+      "sha256": "27459d419fee0f0de23cfe334c1471091cdc22f6c4e0922b4a303c99178acd3c"
+    },
+    {
+      "month": "2024-07",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4480,
+      "racer_rows": 26880,
+      "sha256": "45e804ef05d7161ae52b9a1c30d71eae36944cab2191538c614ab22d6c252327"
+    },
+    {
+      "month": "2024-08",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4476,
+      "racer_rows": 26856,
+      "sha256": "fe17e1dc370b914ea0850319fb2471cc4402c06bd896fa02771916a22b83b75d"
+    },
+    {
+      "month": "2024-09",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3988,
+      "racer_rows": 23928,
+      "sha256": "adaad717635e71e880107423f82c3d207460f22d1d557f964ab232a44ed654ba"
+    },
+    {
+      "month": "2024-10",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 3899,
+      "racer_rows": 23394,
+      "sha256": "d5af8ed4fe5c2a941c31bdabcfb7f497238d30fec5ddfbd12ea99c3fead8be94"
+    },
+    {
+      "month": "2024-11",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3788,
+      "racer_rows": 22728,
+      "sha256": "65559892bd437d9f798bdc6e0e1bb2c2b3261b112e6d8ec86995a19a8a057c83"
+    },
+    {
+      "month": "2024-12",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4475,
+      "racer_rows": 26850,
+      "sha256": "e769bd574b741900a29b2a77533b613191994fd1d0180b7e835d43dd66784996"
+    },
+    {
+      "month": "2025-01",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4446,
+      "racer_rows": 26676,
+      "sha256": "a7baab216709dbd2e4e890261d09f69f8e5111bcb512f40ce6564f3f1cb24bcb"
+    },
+    {
+      "month": "2025-02",
+      "days_requested": 28,
+      "days_downloaded": 28,
+      "days_missing": 0,
+      "clean_six_boat_races": 3951,
+      "racer_rows": 23706,
+      "sha256": "8fe1cbdf7dd8b6c1bc7b760a44c92eb65a4314e75d37d9e728c83d4aea637ea6"
+    },
+    {
+      "month": "2025-03",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4064,
+      "racer_rows": 24384,
+      "sha256": "37e4582b08071b6c63807541bcdffbb9420dcb49124eb94f7d7932cd0250d8e6"
+    },
+    {
+      "month": "2025-04",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3813,
+      "racer_rows": 22878,
+      "sha256": "1bdd7e8f75d5f8824f97634aa53bf12af8562fa429c11a4839f38d9f8a6ec6f4"
+    },
+    {
+      "month": "2025-05",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4551,
+      "racer_rows": 27306,
+      "sha256": "8953bb14caab2274b329d99ee68f95d945d5b0ef0a40d1697a33d9bceb593c79"
+    },
+    {
+      "month": "2025-06",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 4409,
+      "racer_rows": 26454,
+      "sha256": "1351e5badb1c1fa0bf7a1c1661d5c893e0cd757a6488f2e282fa678ee3dc03a4"
+    },
+    {
+      "month": "2025-07",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4733,
+      "racer_rows": 28398,
+      "sha256": "843bfaee4f8ec33f33f4dffa13556d2d5b143c1d4e00af6e59028ba499ab1cbb"
+    },
+    {
+      "month": "2025-08",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4666,
+      "racer_rows": 27996,
+      "sha256": "01134d0976d145289bbfa8994a4a9e4c5b519f5084e1350fb5509cf2cd0a64e3"
+    },
+    {
+      "month": "2025-09",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3871,
+      "racer_rows": 23226,
+      "sha256": "ca8b5ee708e00a6f884370e43e5963e73c07140b11cb82166de84c0112a54c81"
+    },
+    {
+      "month": "2025-10",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 3839,
+      "racer_rows": 23034,
+      "sha256": "92a704a9a8e19a46ccd3fa0ec8eaa70ffb82d2580cd1a0eb152f9b47c8c15f7d"
+    },
+    {
+      "month": "2025-11",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3652,
+      "racer_rows": 21912,
+      "sha256": "a8471a5db1f8c17d9e6f491fe150544cf1a9988b74d315e4fcf9a42ce7b4884d"
+    },
+    {
+      "month": "2025-12",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4307,
+      "racer_rows": 25842,
+      "sha256": "eb9ea9892dda72f345a007a38e8d885777fdd40acb2378036bd71a4c731192c9"
+    },
+    {
+      "month": "2026-01",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4653,
+      "racer_rows": 27918,
+      "sha256": "63fdf08b76f35ea391b6bcdf8db276184fd050a1aeb52a9b999c184a50be618c"
+    },
+    {
+      "month": "2026-02",
+      "days_requested": 28,
+      "days_downloaded": 28,
+      "days_missing": 0,
+      "clean_six_boat_races": 3872,
+      "racer_rows": 23232,
+      "sha256": "47bf9360de8f0084062d8efa78d1666455a989a88711ec1657dce16e3e6e4772"
+    },
+    {
+      "month": "2026-03",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4310,
+      "racer_rows": 25860,
+      "sha256": "91679b9bd5231a45572a101ad9b3dadaee7325aa9d43ef606132d558fc66f734"
+    },
+    {
+      "month": "2026-04",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 3940,
+      "racer_rows": 23640,
+      "sha256": "306ba653f8f665dd3966b00efab62f0b2335ab976485592c9542e30c746492bf"
+    },
+    {
+      "month": "2026-05",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4296,
+      "racer_rows": 25776,
+      "sha256": "5b824ce21590b02503aa18f159f38a1e73a516ac492b3d436a11499d296ae749"
+    },
+    {
+      "month": "2026-06",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 4219,
+      "racer_rows": 25314,
+      "sha256": "7e0a5a7b0f0cfcc10dedbbe8d5a21beb1152d46d4f7594a037402709d920a433"
+    },
+    {
+      "month": "2026-07",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4510,
+      "racer_rows": 27060,
+      "sha256": "f5f6e11333c87952042e841d0d3e1762030e5f576c396b2492591699a6f0b599"
+    },
+    {
+      "month": "2026-08",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4545,
+      "racer_rows": 27270,
+      "sha256": "435c9f4a1191d10ddecf473358ef210847801766ada65b884bc3b8817df85178"
+    },
+    {
+      "month": "2026-09",
+      "days_requested": 30,
+      "days_downloaded": 30,
+      "days_missing": 0,
+      "clean_six_boat_races": 4275,
+      "racer_rows": 25650,
+      "sha256": "ba10009e83d53a2185c88ad73d2eebec6eb106540f0a3670b5cb4b9c9aafaef0"
+    },
+    {
+      "month": "2026-10",
+      "days_requested": 31,
+      "days_downloaded": 31,
+      "days_missing": 0,
+      "clean_six_boat_races": 4215,
+      "racer_rows": 25290,
+      "sha256": "87085bdde9272d06cc38687a8748c173d9abe26242053529674ee6a20cebe098"
+    }
+  ],
+  "replay_only": true,
+  "production_model_retrained": false,
+  "caution": "Actual entry and finish are postrace labels; never mix into preclose model inputs."
+}

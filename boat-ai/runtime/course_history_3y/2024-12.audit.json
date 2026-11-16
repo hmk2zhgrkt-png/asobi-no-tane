@@ -1,0 +1,233 @@
+{
+  "month": "2024-12",
+  "start": "2024-12-01",
+  "end": "2024-12-31",
+  "days_requested": 31,
+  "days_downloaded": 31,
+  "days_missing": 0,
+  "clean_six_boat_races": 4475,
+  "racer_rows": 26850,
+  "file": "2024-12.csv.gz",
+  "sha256": "e769bd574b741900a29b2a77533b613191994fd1d0180b7e835d43dd66784996",
+  "days": [
+    {
+      "date": "2024-12-01",
+      "status": "ok",
+      "complete_races": 102,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2024-12-02",
+      "status": "ok",
+      "complete_races": 136,
+      "invalid_or_disqualified_race": 4,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2024-12-03",
+      "status": "ok",
+      "complete_races": 171,
+      "non_six_boat_race": 1,
+      "invalid_or_disqualified_race": 8
+    },
+    {
+      "date": "2024-12-04",
+      "status": "ok",
+      "complete_races": 159,
+      "invalid_or_disqualified_race": 15,
+      "non_six_boat_race": 6
+    },
+    {
+      "date": "2024-12-05",
+      "status": "ok",
+      "complete_races": 142,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2024-12-06",
+      "status": "ok",
+      "complete_races": 144,
+      "invalid_or_disqualified_race": 12
+    },
+    {
+      "date": "2024-12-07",
+      "status": "ok",
+      "complete_races": 182,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2024-12-08",
+      "status": "ok",
+      "complete_races": 161,
+      "invalid_or_disqualified_race": 17,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2024-12-09",
+      "status": "ok",
+      "complete_races": 122,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2024-12-10",
+      "status": "ok",
+      "complete_races": 143,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2024-12-11",
+      "status": "ok",
+      "invalid_or_disqualified_race": 11,
+      "complete_races": 155,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2024-12-12",
+      "status": "ok",
+      "complete_races": 155,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2024-12-13",
+      "status": "ok",
+      "complete_races": 141,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2024-12-14",
+      "status": "ok",
+      "complete_races": 175,
+      "non_six_boat_race": 4,
+      "invalid_or_disqualified_race": 13
+    },
+    {
+      "date": "2024-12-15",
+      "status": "ok",
+      "complete_races": 166,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2024-12-16",
+      "status": "ok",
+      "complete_races": 131,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2024-12-17",
+      "status": "ok",
+      "complete_races": 113,
+      "non_six_boat_race": 3,
+      "invalid_or_disqualified_race": 4
+    },
+    {
+      "date": "2024-12-18",
+      "status": "ok",
+      "complete_races": 117,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 7
+    },
+    {
+      "date": "2024-12-19",
+      "status": "ok",
+      "complete_races": 116,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 6
+    },
+    {
+      "date": "2024-12-20",
+      "status": "ok",
+      "invalid_or_disqualified_race": 12,
+      "complete_races": 119,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2024-12-21",
+      "status": "ok",
+      "complete_races": 119,
+      "invalid_or_disqualified_race": 6,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2024-12-22",
+      "status": "ok",
+      "complete_races": 110,
+      "non_six_boat_race": 5,
+      "invalid_or_disqualified_race": 5
+    },
+    {
+      "date": "2024-12-23",
+      "status": "ok",
+      "complete_races": 121,
+      "non_six_boat_race": 3,
+      "invalid_or_disqualified_race": 8
+    },
+    {
+      "date": "2024-12-24",
+      "status": "ok",
+      "complete_races": 127,
+      "invalid_or_disqualified_race": 14,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2024-12-25",
+      "status": "ok",
+      "complete_races": 138,
+      "invalid_or_disqualified_race": 14,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2024-12-26",
+      "status": "ok",
+      "complete_races": 162,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 9
+    },
+    {
+      "date": "2024-12-27",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 13,
+      "non_six_boat_race": 8
+    },
+    {
+      "date": "2024-12-28",
+      "status": "ok",
+      "complete_races": 173,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 8
+    },
+    {
+      "date": "2024-12-29",
+      "status": "ok",
+      "complete_races": 178,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 7
+    },
+    {
+      "date": "2024-12-30",
+      "status": "ok",
+      "complete_races": 164,
+      "invalid_or_disqualified_race": 14,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2024-12-31",
+      "status": "ok",
+      "complete_races": 183,
+      "invalid_or_disqualified_race": 17,
+      "non_six_boat_race": 4
+    }
+  ],
+  "data_source": "BOAT RACE official K performance LZH",
+  "label_only": true,
+  "caution": "Actual entry, ST and finish known only after race; no same-race outcome leakage allowed."
+}

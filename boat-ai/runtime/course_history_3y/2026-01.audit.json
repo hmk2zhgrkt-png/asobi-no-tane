@@ -1,0 +1,231 @@
+{
+  "month": "2026-01",
+  "start": "2026-01-01",
+  "end": "2026-01-31",
+  "days_requested": 31,
+  "days_downloaded": 31,
+  "days_missing": 0,
+  "clean_six_boat_races": 4653,
+  "racer_rows": 27918,
+  "file": "2026-01.csv.gz",
+  "sha256": "63fdf08b76f35ea391b6bcdf8db276184fd050a1aeb52a9b999c184a50be618c",
+  "days": [
+    {
+      "date": "2026-01-01",
+      "status": "ok",
+      "complete_races": 134,
+      "invalid_or_disqualified_race": 10
+    },
+    {
+      "date": "2026-01-02",
+      "status": "ok",
+      "complete_races": 168,
+      "invalid_or_disqualified_race": 21,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-03",
+      "status": "ok",
+      "complete_races": 205,
+      "invalid_or_disqualified_race": 18,
+      "non_six_boat_race": 5
+    },
+    {
+      "date": "2026-01-04",
+      "status": "ok",
+      "complete_races": 210,
+      "invalid_or_disqualified_race": 17,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-01-05",
+      "status": "ok",
+      "complete_races": 178,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-06",
+      "status": "ok",
+      "complete_races": 184,
+      "invalid_or_disqualified_race": 8
+    },
+    {
+      "date": "2026-01-07",
+      "status": "ok",
+      "complete_races": 178,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2026-01-08",
+      "status": "ok",
+      "invalid_or_disqualified_race": 8,
+      "complete_races": 134,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-09",
+      "status": "ok",
+      "invalid_or_disqualified_race": 6,
+      "complete_races": 123,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2026-01-10",
+      "status": "ok",
+      "complete_races": 90,
+      "non_six_boat_race": 2,
+      "invalid_or_disqualified_race": 5
+    },
+    {
+      "date": "2026-01-11",
+      "status": "ok",
+      "complete_races": 113,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-12",
+      "status": "ok",
+      "complete_races": 170,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-01-13",
+      "status": "ok",
+      "complete_races": 134,
+      "invalid_or_disqualified_race": 14,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-14",
+      "status": "ok",
+      "complete_races": 165,
+      "invalid_or_disqualified_race": 14,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-01-15",
+      "status": "ok",
+      "complete_races": 141,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2026-01-16",
+      "status": "ok",
+      "invalid_or_disqualified_race": 5,
+      "complete_races": 135,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2026-01-17",
+      "status": "ok",
+      "complete_races": 171,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-18",
+      "status": "ok",
+      "complete_races": 162,
+      "invalid_or_disqualified_race": 17,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-01-19",
+      "status": "ok",
+      "complete_races": 157,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-20",
+      "status": "ok",
+      "complete_races": 132,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-01-21",
+      "status": "ok",
+      "complete_races": 136,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2026-01-22",
+      "status": "ok",
+      "complete_races": 129,
+      "non_six_boat_race": 2,
+      "invalid_or_disqualified_race": 7
+    },
+    {
+      "date": "2026-01-23",
+      "status": "ok",
+      "complete_races": 140,
+      "invalid_or_disqualified_race": 13,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2026-01-24",
+      "status": "ok",
+      "invalid_or_disqualified_race": 10,
+      "complete_races": 141,
+      "non_six_boat_race": 5
+    },
+    {
+      "date": "2026-01-25",
+      "status": "ok",
+      "complete_races": 186,
+      "invalid_or_disqualified_race": 6
+    },
+    {
+      "date": "2026-01-26",
+      "status": "ok",
+      "complete_races": 151,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 6
+    },
+    {
+      "date": "2026-01-27",
+      "status": "ok",
+      "complete_races": 134,
+      "invalid_or_disqualified_race": 6,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2026-01-28",
+      "status": "ok",
+      "complete_races": 122,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-29",
+      "status": "ok",
+      "complete_races": 129,
+      "invalid_or_disqualified_race": 13,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-01-30",
+      "status": "ok",
+      "complete_races": 146,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-01-31",
+      "status": "ok",
+      "complete_races": 155,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 2
+    }
+  ],
+  "data_source": "BOAT RACE official K performance LZH",
+  "label_only": true,
+  "caution": "Actual entry, ST and finish known only after race; no same-race outcome leakage allowed."
+}

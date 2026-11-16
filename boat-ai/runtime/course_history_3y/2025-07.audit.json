@@ -1,0 +1,228 @@
+{
+  "month": "2025-07",
+  "start": "2025-07-01",
+  "end": "2025-07-31",
+  "days_requested": 31,
+  "days_downloaded": 31,
+  "days_missing": 0,
+  "clean_six_boat_races": 4733,
+  "racer_rows": 28398,
+  "file": "2025-07.csv.gz",
+  "sha256": "843bfaee4f8ec33f33f4dffa13556d2d5b143c1d4e00af6e59028ba499ab1cbb",
+  "days": [
+    {
+      "date": "2025-07-01",
+      "status": "ok",
+      "complete_races": 137,
+      "invalid_or_disqualified_race": 7
+    },
+    {
+      "date": "2025-07-02",
+      "status": "ok",
+      "invalid_or_disqualified_race": 10,
+      "complete_races": 168,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2025-07-03",
+      "status": "ok",
+      "complete_races": 153,
+      "invalid_or_disqualified_race": 15
+    },
+    {
+      "date": "2025-07-04",
+      "status": "ok",
+      "complete_races": 153,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2025-07-05",
+      "status": "ok",
+      "complete_races": 168,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-06",
+      "status": "ok",
+      "complete_races": 169,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-07",
+      "status": "ok",
+      "complete_races": 137,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2025-07-08",
+      "status": "ok",
+      "complete_races": 151,
+      "non_six_boat_race": 2,
+      "invalid_or_disqualified_race": 3
+    },
+    {
+      "date": "2025-07-09",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 6
+    },
+    {
+      "date": "2025-07-10",
+      "status": "ok",
+      "complete_races": 146,
+      "invalid_or_disqualified_race": 10
+    },
+    {
+      "date": "2025-07-11",
+      "status": "ok",
+      "complete_races": 152,
+      "invalid_or_disqualified_race": 4
+    },
+    {
+      "date": "2025-07-12",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 6
+    },
+    {
+      "date": "2025-07-13",
+      "status": "ok",
+      "complete_races": 178,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2025-07-14",
+      "status": "ok",
+      "complete_races": 146,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-15",
+      "status": "ok",
+      "complete_races": 148,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-16",
+      "status": "ok",
+      "complete_races": 144,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2025-07-17",
+      "status": "ok",
+      "complete_races": 149,
+      "invalid_or_disqualified_race": 6,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-18",
+      "status": "ok",
+      "complete_races": 171,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-19",
+      "status": "ok",
+      "complete_races": 179,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 4
+    },
+    {
+      "date": "2025-07-20",
+      "status": "ok",
+      "complete_races": 192,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2025-07-21",
+      "status": "ok",
+      "complete_races": 153,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 6
+    },
+    {
+      "date": "2025-07-22",
+      "status": "ok",
+      "complete_races": 152,
+      "non_six_boat_race": 4,
+      "invalid_or_disqualified_race": 12
+    },
+    {
+      "date": "2025-07-23",
+      "status": "ok",
+      "complete_races": 135,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-24",
+      "status": "ok",
+      "complete_races": 148,
+      "invalid_or_disqualified_race": 6,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2025-07-25",
+      "status": "ok",
+      "complete_races": 162,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2025-07-26",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 9,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2025-07-27",
+      "status": "ok",
+      "complete_races": 140,
+      "non_six_boat_race": 2,
+      "invalid_or_disqualified_race": 2
+    },
+    {
+      "date": "2025-07-28",
+      "status": "ok",
+      "complete_races": 137,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 7
+    },
+    {
+      "date": "2025-07-29",
+      "status": "ok",
+      "complete_races": 167,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2025-07-30",
+      "status": "ok",
+      "complete_races": 99,
+      "invalid_or_disqualified_race": 12,
+      "non_six_boat_race": 3
+    },
+    {
+      "date": "2025-07-31",
+      "status": "ok",
+      "complete_races": 149,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 2
+    }
+  ],
+  "data_source": "BOAT RACE official K performance LZH",
+  "label_only": true,
+  "caution": "Actual entry, ST and finish known only after race; no same-race outcome leakage allowed."
+}
