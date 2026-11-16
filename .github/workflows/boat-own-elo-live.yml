@@ -4,6 +4,7 @@ on:
     paths:
       - 'boat-ai/runtime/score_own_elo_live.py'
       - 'boat-ai/runtime/score_conditional_live.py'
+      - 'boat-ai/runtime/archive_research.py'
       - '.github/workflows/boat-own-elo-live.yml'
       - 'boat-ai/runtime/request.json'
   workflow_dispatch:
@@ -47,11 +48,13 @@ jobs:
               assert len(row['top5'])==5
           print('CONDITIONAL_ELO_SIDE_BY_SIDE_PASS',obj['date'],obj['venue'],obj['race'])
           PY
+      - name: Preserve research-score time and all 120 combinations separately
+        run: python boat-ai/runtime/archive_research.py
       - name: Save race-specific experimental Elo predictions
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add boat-ai/runtime/latest_results/own_elo_research.json boat-ai/runtime/latest_results/conditional_elo_research.json
+          git add boat-ai/runtime/latest_results/own_elo_research.json boat-ai/runtime/latest_results/conditional_elo_research.json boat-ai/runtime/preclose_archive/
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Archive preclose own-Elo research TOP5 for requested race'
           git pull --rebase origin main
