@@ -10,7 +10,7 @@ on:
       - '.github/workflows/boat-forward-audit.yml'
   workflow_dispatch:
   schedule:
-    - cron: '45 15 * * *' # 00:45 JST; review user-recorded results if available
+    - cron: '45 17 * * *' # 02:45 JST; after 02:00 K source update and official outcome verification
 permissions:
   contents: write
 concurrency:
