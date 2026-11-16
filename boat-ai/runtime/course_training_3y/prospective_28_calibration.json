@@ -1,0 +1,13 @@
+{
+  "status": "WAITING_FOR_ENOUGH_PROSPECTIVE_SAMPLES",
+  "prospective_completed_races": 0,
+  "need_training_races": 300,
+  "need_independent_future_test_races": 100,
+  "third_party_exhibition_archives_used": false,
+  "production_temperature_updated": false,
+  "user_requested_F_bonus_backtested": false,
+  "real_bets": false,
+  "reference": "Existing 28-feature predictions plus original pre-F adjustment, both archived at true inference time",
+  "remaining_races_to_first_full_evaluation": 400,
+  "reason": "Do not choose calibration or F adjustment strength from a few results"
+}
