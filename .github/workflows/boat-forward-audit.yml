@@ -1,0 +1,56 @@
+name: Verify preclose archive and forward model/F audits
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/archive_preclose.py'
+      - 'boat-ai/runtime/archive_research.py'
+      - 'boat-ai/runtime/audit_forward_models.py'
+      - 'boat-ai/runtime/test_forward_audit.py'
+      - '.github/workflows/boat-forward-audit.yml'
+  workflow_dispatch:
+  schedule:
+    - cron: '45 15 * * *' # 00:45 JST; review user-recorded results if available
+permissions:
+  contents: write
+concurrency:
+  group: boat-forward-prospective-audit
+  cancel-in-progress: false
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test archival time trust boundaries and 120-way F evidence
+        run: |
+          python -m py_compile boat-ai/runtime/archive_preclose.py boat-ai/runtime/archive_research.py boat-ai/runtime/audit_forward_models.py
+          python boat-ai/runtime/test_forward_audit.py
+      - name: Preserve one archived race as retrospective sample
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=Path('boat-ai/runtime/latest_results/report.json')
+          if report.exists() and json.loads(report.read_text(encoding='utf-8')).get('model_ran'):
+              import subprocess
+              subprocess.run(['python','boat-ai/runtime/archive_preclose.py'],check=True)
+          else:
+              print('No completed race snapshot; archival sample skipped')
+          PY
+          if test -f boat-ai/runtime/latest_results/conditional_elo_research.json; then
+             python boat-ai/runtime/archive_research.py
+          fi
+      - name: Recalculate matched prospective comparison and F exposure counts
+        run: python boat-ai/runtime/audit_forward_models.py
+      - name: Commit auditable research state
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/preclose_archive/ boat-ai/runtime/course_training_3y/prospective_f_and_model_audit.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Audit archived genuine preclose predictions and evidence available for F bonus'
+          git pull --rebase origin main
+          git push origin HEAD:main
