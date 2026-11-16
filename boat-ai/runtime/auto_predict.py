@@ -291,6 +291,19 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     title=[z for z in title if z.get('レースコード')==code]
     dayn=race_meeting_day(title[0]) if title else None
     meeting_day_source='official title' if dayn is not None else None
+    meeting_day_validation=None
+    if fast_snapshot and official_k_error is None:
+        from meeting_day_infer import infer_meeting_day
+        try:
+            inferred,evidence=infer_meeting_day(cards,date,venue_code,cache)
+            meeting_day_validation=evidence
+            if inferred is not None:
+                if dayn is not None and dayn!=inferred:
+                    raise ValueError('Verified meeting day and official title disagree')
+                dayn=inferred
+                meeting_day_source='verified yesterday K matching prior-day official card'
+        except (OSError,ValueError,KeyError,TypeError) as err:
+            meeting_day_validation={'verified':False,'error':str(err)[:250]}
     if screenshot and screenshot.get('meeting_day') is not None:
         screenshot_day=int(screenshot['meeting_day'])
         if dayn is not None and dayn!=screenshot_day:
@@ -511,6 +524,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
               'meeting_day':dayn,'meeting_day_source':meeting_day_source,
+              'meeting_day_verification':meeting_day_validation,
               'venue_adjustment_backtested':False,'course_adjustment_applied':course_adjusted,
               'course_adjustment_details':course_report,'model_retrained':False,'skip_reasons':skip_reasons,
               'paper_candidate_count':len(candidates),
