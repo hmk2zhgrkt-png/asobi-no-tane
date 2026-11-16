@@ -1,0 +1,42 @@
+{
+  "status": "PAIRED_FORWARD_AUDIT",
+  "rules": "Only models actually scored before cutoff count as forward predictions; all model tuning is frozen before comparing.",
+  "matched_prospective_research_scorecard": {},
+  "prospective_research_race_count": 0,
+  "source_checks": {
+    "archived_base_events": 1,
+    "archived_research_events": 1,
+    "completed_research_events": 1,
+    "retrospective_research_excluded": 1,
+    "base_events_scored_after_cutoff": 1,
+    "events_with_result": 1,
+    "meeting_day_missing": 1
+  },
+  "postclose_research_replays_excluded": [
+    {
+      "race": [
+        "2026-11-16",
+        15,
+        11
+      ],
+      "path": "boat-ai/runtime/preclose_archive/20261116-15-11/research-223806-7e89e86fe29457.json"
+    }
+  ],
+  "F01_to_F04_exhibition_exploratory": {
+    "n_boat_exposures": 0,
+    "groups": {
+      "F01_to_F04": {
+        "n": 0,
+        "winner": 0,
+        "top3": 0
+      }
+    },
+    "sufficient_to_estimate_benefit": false,
+    "minimum_samples_per_group": 200,
+    "conclusion": "Insufficient paired preclose exhibition F samples; DO NOT claim bonus improves forecasts",
+    "official_K_data_has_exhibition_ST": false,
+    "rule_applied_as_unvalidated_user_requested_experiment": true
+  },
+  "missing_data_policy": "No fictitious meeting day, preclose exhibition, current race results or motor stats are filled.",
+  "no_bets": true
+}
