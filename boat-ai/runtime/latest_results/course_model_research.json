@@ -1,7 +1,7 @@
 {
   "date": "2026-11-16",
   "venue_code": 24,
-  "race": 5,
+  "race": 8,
   "status": "RESEARCH_ONLY_NOT_VALIDATED_AGAINST_INCUMBENT",
   "three_year_source_end": "2026-10-31",
   "existing_28_feature_model_unchanged": true,
@@ -13,24 +13,24 @@
       "name": "incumbent",
       "top5": [
         {
-          "trifecta": "1-2-6",
-          "score": 0.0563333031
+          "trifecta": "1-2-3",
+          "score": 0.0669530023
+        },
+        {
+          "trifecta": "1-3-2",
+          "score": 0.0557641401
         },
         {
           "trifecta": "1-2-4",
-          "score": 0.0513993738
-        },
-        {
-          "trifecta": "1-2-3",
-          "score": 0.0428880281
-        },
-        {
-          "trifecta": "1-3-6",
-          "score": 0.0419526006
+          "score": 0.0538861673
         },
         {
           "trifecta": "1-3-4",
-          "score": 0.0382781992
+          "score": 0.0538741578
+        },
+        {
+          "trifecta": "1-2-5",
+          "score": 0.0477338928
         }
       ],
       "sum_probability": 1.0,
@@ -40,24 +40,24 @@
       "name": "course_model_research_only",
       "top5": [
         {
-          "trifecta": "1-2-6",
-          "score": 0.0550331334
+          "trifecta": "1-2-3",
+          "score": 0.0535076454
         },
         {
           "trifecta": "1-2-4",
-          "score": 0.0525327778
-        },
-        {
-          "trifecta": "1-2-3",
-          "score": 0.043366409
+          "score": 0.0460732803
         },
         {
           "trifecta": "1-2-5",
-          "score": 0.0410206008
+          "score": 0.045939222
         },
         {
-          "trifecta": "1-3-6",
-          "score": 0.0335543207
+          "trifecta": "1-3-2",
+          "score": 0.0452806801
+        },
+        {
+          "trifecta": "1-3-4",
+          "score": 0.0435390993
         }
       ],
       "sum_probability": 1.0,
@@ -67,24 +67,24 @@
       "name": "experimental_blend_0.25",
       "top5": [
         {
-          "trifecta": "1-2-6",
-          "score": 0.0560082607
+          "trifecta": "1-2-3",
+          "score": 0.0635916631
+        },
+        {
+          "trifecta": "1-3-2",
+          "score": 0.0531432751
         },
         {
           "trifecta": "1-2-4",
-          "score": 0.0516827248
+          "score": 0.0519329456
         },
         {
-          "trifecta": "1-2-3",
-          "score": 0.0430076234
-        },
-        {
-          "trifecta": "1-3-6",
-          "score": 0.0398530306
+          "trifecta": "1-3-4",
+          "score": 0.0512903932
         },
         {
           "trifecta": "1-2-5",
-          "score": 0.0381665103
+          "score": 0.0472852251
         }
       ],
       "sum_probability": 1.0,
@@ -94,54 +94,54 @@
       "name": "experimental_blend_0.5",
       "top5": [
         {
-          "trifecta": "1-2-6",
-          "score": 0.0556832183
+          "trifecta": "1-2-3",
+          "score": 0.0602303238
+        },
+        {
+          "trifecta": "1-3-2",
+          "score": 0.0505224101
         },
         {
           "trifecta": "1-2-4",
-          "score": 0.0519660758
+          "score": 0.0499797238
         },
         {
-          "trifecta": "1-2-3",
-          "score": 0.0431272186
+          "trifecta": "1-3-4",
+          "score": 0.0487066286
         },
         {
           "trifecta": "1-2-5",
-          "score": 0.0391178738
-        },
-        {
-          "trifecta": "1-3-6",
-          "score": 0.0377534606
+          "score": 0.0468365574
         }
       ],
-      "sum_probability": 1.0,
+      "sum_probability": 0.9999999999999999,
       "historical_backtest_with_incumbent": false
     },
     {
       "name": "experimental_blend_0.75",
       "top5": [
         {
-          "trifecta": "1-2-6",
-          "score": 0.0553581758
+          "trifecta": "1-2-3",
+          "score": 0.0568689846
         },
         {
           "trifecta": "1-2-4",
-          "score": 0.0522494268
+          "score": 0.0480265021
         },
         {
-          "trifecta": "1-2-3",
-          "score": 0.0432468138
+          "trifecta": "1-3-2",
+          "score": 0.0479015451
         },
         {
           "trifecta": "1-2-5",
-          "score": 0.0400692373
+          "score": 0.0463878897
         },
         {
-          "trifecta": "1-3-6",
-          "score": 0.0356538907
+          "trifecta": "1-3-4",
+          "score": 0.0461228639
         }
       ],
-      "sum_probability": 1.0,
+      "sum_probability": 1.0000000000000002,
       "historical_backtest_with_incumbent": false
     }
   ],
