@@ -8,15 +8,14 @@
   "preclose_snapshot_asof_jst": "2026-11-16T16:55:00+09:00",
   "deadline_jst": "2026-11-16T17:10:00+09:00",
   "model_ran": true,
-  "probability_sum": 1.0000000000000007,
-  "estimated_inputs_present": 138,
+  "probability_sum": 0.9999999999999998,
+  "estimated_inputs_present": 144,
   "total_model_inputs": 168,
   "structurally_missing_fields": [
     "last5_prior_exh_mean",
     "last_stint_exh",
     "stint_last_exh_change",
-    "stint_prior_exh_mean",
-    "stint_prior_top2_mean"
+    "stint_prior_exh_mean"
   ],
   "all120_odds": false,
   "odds_count": 0,
@@ -40,7 +39,7 @@
       "cycle_source": "2026-05-24",
       "cycle_prior_runs": 98,
       "recent_racer_runs": 17,
-      "meeting_prior_runs": 0,
+      "meeting_prior_runs": 8,
       "meeting_relative_exhibition_n": 0,
       "base_motor_cycle_matches_source": true,
       "motor_generation_provenance": "direct motor_stats row"
@@ -52,7 +51,7 @@
       "cycle_source": "2026-05-24",
       "cycle_prior_runs": 108,
       "recent_racer_runs": 20,
-      "meeting_prior_runs": 0,
+      "meeting_prior_runs": 8,
       "meeting_relative_exhibition_n": 0,
       "base_motor_cycle_matches_source": true,
       "motor_generation_provenance": "direct motor_stats row"
@@ -64,7 +63,7 @@
       "cycle_source": "2026-05-24",
       "cycle_prior_runs": 100,
       "recent_racer_runs": 19,
-      "meeting_prior_runs": 0,
+      "meeting_prior_runs": 8,
       "meeting_relative_exhibition_n": 0,
       "base_motor_cycle_matches_source": true,
       "motor_generation_provenance": "direct motor_stats row"
@@ -76,7 +75,7 @@
       "cycle_source": "2026-05-24",
       "cycle_prior_runs": 108,
       "recent_racer_runs": 18,
-      "meeting_prior_runs": 0,
+      "meeting_prior_runs": 7,
       "meeting_relative_exhibition_n": 0,
       "base_motor_cycle_matches_source": true,
       "motor_generation_provenance": "direct motor_stats row"
@@ -88,7 +87,7 @@
       "cycle_source": "2026-05-24",
       "cycle_prior_runs": 106,
       "recent_racer_runs": 23,
-      "meeting_prior_runs": 0,
+      "meeting_prior_runs": 7,
       "meeting_relative_exhibition_n": 0,
       "base_motor_cycle_matches_source": true,
       "motor_generation_provenance": "direct motor_stats row"
@@ -100,7 +99,7 @@
       "cycle_source": "2026-05-24",
       "cycle_prior_runs": 103,
       "recent_racer_runs": 18,
-      "meeting_prior_runs": 0,
+      "meeting_prior_runs": 9,
       "meeting_relative_exhibition_n": 0,
       "base_motor_cycle_matches_source": true,
       "motor_generation_provenance": "direct motor_stats row"
@@ -124,14 +123,15 @@
     "adjustment_strength": 0.2,
     "validated_backtest": false
   },
+  "meeting_day": 6,
+  "meeting_day_source": "preclose screenshot meeting-history table",
   "venue_adjustment_backtested": false,
   "course_adjustment_applied": false,
   "course_adjustment_details": null,
   "model_retrained": false,
   "skip_reasons": [
     "only 0/120 screenshot-visible odds: no full-odds paper bets",
-    "fast screenshot mode with K history is not validated for paper bets",
-    "unverified meeting day"
+    "fast screenshot mode with K history is not validated for paper bets"
   ],
   "paper_candidate_count": 0,
   "note": "The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting."
