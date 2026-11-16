@@ -290,6 +290,13 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     title=today['programs/title']
     title=[z for z in title if z.get('レースコード')==code]
     dayn=race_meeting_day(title[0]) if title else None
+    meeting_day_source='official title' if dayn is not None else None
+    if screenshot and screenshot.get('meeting_day') is not None:
+        screenshot_day=int(screenshot['meeting_day'])
+        if dayn is not None and dayn!=screenshot_day:
+            raise ValueError('Screenshot meeting day disagrees with official title')
+        dayn=screenshot_day
+        meeting_day_source='preclose screenshot meeting-history table'
     if dayn is None and title and '最終' in str(title[0].get('日次','')):
         # The official card contains D1..D7 past-race slots even on the final day.
         # Infer only from recorded finished earlier-day races, not today's outcomes.
@@ -488,6 +495,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
+              'meeting_day':dayn,'meeting_day_source':meeting_day_source,
               'venue_adjustment_backtested':False,'course_adjustment_applied':course_adjusted,
               'course_adjustment_details':course_report,'model_retrained':False,'skip_reasons':skip_reasons,
               'paper_candidate_count':len(candidates),
