@@ -1,7 +1,7 @@
 {
   "venue": "大村",
   "date": "2026-11-16",
-  "race": 4,
+  "race": 5,
   "venue_adjustment": {
     "source": "https://kyoutei-navi.com/category/place/",
     "source_period": "2021-01-01/2025-12-31",
@@ -23,69 +23,69 @@
   "racer_course_adjustment": null,
   "hit_rate_top3": [
     {
+      "trifecta": "1-2-6",
+      "probability": 0.04873181044161103,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.04731761762881273,
+      "base_model_estimated_roi_pct": null
+    },
+    {
       "trifecta": "1-2-4",
-      "probability": 0.05816851458560804,
+      "probability": 0.04681588399291471,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.05661075534874955,
+      "base_model_probability": 0.04545729119556921,
       "base_model_estimated_roi_pct": null
     },
     {
-      "trifecta": "1-2-5",
-      "probability": 0.052207733987146315,
+      "trifecta": "1-2-3",
+      "probability": 0.0388012430587401,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.050809605112216265,
-      "base_model_estimated_roi_pct": null
-    },
-    {
-      "trifecta": "1-4-2",
-      "probability": 0.043009656336741205,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.04185785299587947,
+      "base_model_probability": 0.03767523442979625,
       "base_model_estimated_roi_pct": null
     }
   ],
   "hit_rate_top5": [
     {
+      "trifecta": "1-2-6",
+      "probability": 0.04873181044161103,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.04731761762881273,
+      "base_model_estimated_roi_pct": null
+    },
+    {
       "trifecta": "1-2-4",
-      "probability": 0.05816851458560804,
+      "probability": 0.04681588399291471,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.05661075534874955,
-      "base_model_estimated_roi_pct": null
-    },
-    {
-      "trifecta": "1-2-5",
-      "probability": 0.052207733987146315,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.050809605112216265,
-      "base_model_estimated_roi_pct": null
-    },
-    {
-      "trifecta": "1-4-2",
-      "probability": 0.043009656336741205,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.04185785299587947,
+      "base_model_probability": 0.04545729119556921,
       "base_model_estimated_roi_pct": null
     },
     {
       "trifecta": "1-2-3",
-      "probability": 0.041329117417587734,
+      "probability": 0.0388012430587401,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.04022231909435213,
+      "base_model_probability": 0.03767523442979625,
       "base_model_estimated_roi_pct": null
     },
     {
-      "trifecta": "1-4-5",
-      "probability": 0.03968129855472827,
+      "trifecta": "1-3-6",
+      "probability": 0.03549782871055037,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.03861862900240208,
+      "base_model_probability": 0.03446768487272693,
+      "base_model_estimated_roi_pct": null
+    },
+    {
+      "trifecta": "1-3-4",
+      "probability": 0.03410220584570065,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.033112562859517275,
       "base_model_estimated_roi_pct": null
     }
   ],
