@@ -1,10 +1,134 @@
 {
   "date": "2026-11-16",
+  "venue": "徳山",
   "venue_code": 18,
   "race": 12,
-  "status": "DATA_NOT_READY_SKIP",
-  "model_ran": false,
+  "race_code": "202611161812",
+  "status": "REPLAY_OR_UNVERIFIED_NO_BETS",
+  "preclose_snapshot_asof_jst": "2026-11-16T14:05:00+09:00",
+  "deadline_jst": "2026-11-16T14:13:00+09:00",
+  "model_ran": true,
+  "probability_sum": 1.0000000000000004,
+  "estimated_inputs_present": 144,
+  "total_model_inputs": 168,
+  "structurally_missing_fields": [
+    "last_stint_exh",
+    "stint_last_exh_change",
+    "stint_prior_exh_mean",
+    "stint_prior_top2_mean"
+  ],
+  "all120_odds": false,
+  "odds_count": 0,
+  "expected_return_scope": "screenshot_visible_only",
+  "screenshot_data_used": true,
+  "fast_screenshot_mode": true,
+  "history_since_baseline_fully_verified": false,
+  "history_cutoff": "2026-10-31",
+  "days_updated": 15,
+  "downloaded_result_days": 0,
+  "missing_published_result_days": true,
+  "motor_sources": [
+    {
+      "boat": 1,
+      "racer_id": 4477,
+      "motor": 19,
+      "cycle_source": "2026-04-20",
+      "cycle_prior_runs": 116,
+      "recent_racer_runs": 12,
+      "meeting_prior_runs": 0,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 2,
+      "racer_id": 4464,
+      "motor": 13,
+      "cycle_source": "2026-04-20",
+      "cycle_prior_runs": 111,
+      "recent_racer_runs": 10,
+      "meeting_prior_runs": 0,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 3,
+      "racer_id": 4926,
+      "motor": 46,
+      "cycle_source": "2026-04-20",
+      "cycle_prior_runs": 126,
+      "recent_racer_runs": 14,
+      "meeting_prior_runs": 0,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 4,
+      "racer_id": 5278,
+      "motor": 56,
+      "cycle_source": "2026-04-20",
+      "cycle_prior_runs": 118,
+      "recent_racer_runs": 10,
+      "meeting_prior_runs": 0,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 5,
+      "racer_id": 4144,
+      "motor": 57,
+      "cycle_source": "2026-04-20",
+      "cycle_prior_runs": 101,
+      "recent_racer_runs": 10,
+      "meeting_prior_runs": 0,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 6,
+      "racer_id": 4885,
+      "motor": 20,
+      "cycle_source": "2026-04-20",
+      "cycle_prior_runs": 103,
+      "recent_racer_runs": 12,
+      "meeting_prior_runs": 0,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    }
+  ],
+  "venue_context": {
+    "source": "https://kyoutei-navi.com/category/place/",
+    "source_period": "2021-01-01/2025-12-31",
+    "course_win_rates_pct": [
+      63,
+      13.5,
+      9.4,
+      8.4,
+      4.6,
+      1.1
+    ],
+    "surface": "普通",
+    "water": "海水",
+    "tidal_influence": "大きい",
+    "method": "bounded first-place course prior",
+    "adjustment_strength": 0.2,
+    "validated_backtest": false
+  },
+  "venue_adjustment_backtested": false,
+  "course_adjustment_applied": false,
+  "course_adjustment_details": null,
+  "model_retrained": false,
+  "skip_reasons": [
+    "too late: within 1 minute of cutoff or postclose",
+    "missing daily archived results or race card downloads",
+    "only 0/120 screenshot-visible odds: no full-odds paper bets",
+    "unverified meeting day"
+  ],
   "paper_candidate_count": 0,
-  "reason": "RuntimeError: CSV multi-origin failure: programs/race_cards 2026-11-16: all 3 delivery paths failed: boatracecsv.github.io: HTTPError 404 | raw.githubusercontent.com: HTTPError 404 | cdn.jsdelivr.net: HTTPError 404; official card fallback failed: ValueError Invalid upstream numeric field",
-  "note": "No prediction or bet was made. Check freshness and required source fields."
+  "note": "The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting."
 }

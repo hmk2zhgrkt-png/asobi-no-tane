@@ -1,90 +1,91 @@
 {
-  "venue": "尼崎",
+  "venue": "徳山",
   "date": "2026-11-16",
-  "race": 2,
+  "race": 12,
   "venue_adjustment": {
     "source": "https://kyoutei-navi.com/category/place/",
     "source_period": "2021-01-01/2025-12-31",
     "course_win_rates_pct": [
-      59.2,
-      11.9,
-      11.8,
-      9.8,
-      5.5,
-      1.7
+      63,
+      13.5,
+      9.4,
+      8.4,
+      4.6,
+      1.1
     ],
-    "surface": "静水面",
-    "water": "淡水",
-    "tidal_influence": "なし",
+    "surface": "普通",
+    "water": "海水",
+    "tidal_influence": "大きい",
     "method": "bounded first-place course prior",
     "adjustment_strength": 0.2,
     "validated_backtest": false
   },
+  "racer_course_adjustment": null,
   "hit_rate_top3": [
     {
-      "trifecta": "1-2-3",
-      "probability": 0.0800399735131265,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.07879519881285159,
-      "base_model_estimated_roi_pct": null
-    },
-    {
       "trifecta": "1-3-2",
-      "probability": 0.07814097470529607,
+      "probability": 0.04212611829041597,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.07692573306916507,
+      "base_model_probability": 0.04079052111037055,
       "base_model_estimated_roi_pct": null
     },
     {
-      "trifecta": "1-3-5",
-      "probability": 0.05654240854852984,
+      "trifecta": "1-2-5",
+      "probability": 0.04208876896243839,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.05566306593302692,
+      "base_model_probability": 0.04075435593272886,
+      "base_model_estimated_roi_pct": null
+    },
+    {
+      "trifecta": "1-2-4",
+      "probability": 0.04135693701514004,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.04004572651926808,
       "base_model_estimated_roi_pct": null
     }
   ],
   "hit_rate_top5": [
     {
-      "trifecta": "1-2-3",
-      "probability": 0.0800399735131265,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.07879519881285159,
-      "base_model_estimated_roi_pct": null
-    },
-    {
       "trifecta": "1-3-2",
-      "probability": 0.07814097470529607,
+      "probability": 0.04212611829041597,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.07692573306916507,
-      "base_model_estimated_roi_pct": null
-    },
-    {
-      "trifecta": "1-3-5",
-      "probability": 0.05654240854852984,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.05566306593302692,
-      "base_model_estimated_roi_pct": null
-    },
-    {
-      "trifecta": "1-3-6",
-      "probability": 0.05458921397355312,
-      "observed_odds": null,
-      "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.053740247270046795,
+      "base_model_probability": 0.04079052111037055,
       "base_model_estimated_roi_pct": null
     },
     {
       "trifecta": "1-2-5",
-      "probability": 0.04865299878942006,
+      "probability": 0.04208876896243839,
       "observed_odds": null,
       "estimated_roi_proxy_pct": null,
-      "base_model_probability": 0.047896351587685994,
+      "base_model_probability": 0.04075435593272886,
+      "base_model_estimated_roi_pct": null
+    },
+    {
+      "trifecta": "1-2-4",
+      "probability": 0.04135693701514004,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.04004572651926808,
+      "base_model_estimated_roi_pct": null
+    },
+    {
+      "trifecta": "1-3-5",
+      "probability": 0.040518023180346203,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.03923341022057589,
+      "base_model_estimated_roi_pct": null
+    },
+    {
+      "trifecta": "1-3-4",
+      "probability": 0.039813503078292,
+      "observed_odds": null,
+      "estimated_roi_proxy_pct": null,
+      "base_model_probability": 0.038551226737697036,
       "base_model_estimated_roi_pct": null
     }
   ],
