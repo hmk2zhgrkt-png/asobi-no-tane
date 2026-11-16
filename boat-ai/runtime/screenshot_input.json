@@ -41,5 +41,8 @@
     ],
     "wind_speed_m": 1,
     "wave_cm": 1
-  }
+  },
+  "meeting_day": 6,
+  "meeting_day_source": "user screenshot 17:04 JST: meeting day 6 includes completed 1R results for boat 4/5, seven-day table",
+  "meeting_day_observed_at_jst": "2026-11-16T17:04:00+09:00"
 }
