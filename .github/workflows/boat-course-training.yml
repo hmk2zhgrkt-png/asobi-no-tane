@@ -1,0 +1,76 @@
+name: Historical actual-course labels and evaluation pilot
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/historical_course_dataset.py'
+      - 'boat-ai/runtime/test_historical_course_dataset.py'
+      - 'boat-ai/runtime/historical_course_evaluate.py'
+      - '.github/workflows/boat-course-training.yml'
+  workflow_dispatch:
+    inputs:
+      start:
+        description: 'First date, inclusive YYYY-MM-DD'
+        required: false
+        default: '2026-05-01'
+        type: string
+      end:
+        description: 'Last date, inclusive YYYY-MM-DD'
+        required: false
+        default: '2026-05-14'
+        type: string
+permissions:
+  contents: write
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test six-racer course-to-result joins and safe historical feature cutoff
+        run: |
+          python -m py_compile boat-ai/runtime/historical_course_dataset.py
+          python boat-ai/runtime/test_historical_course_dataset.py
+      - name: Fetch sample of public archival results for joining
+        env:
+          START: ${{ inputs.start || '2026-05-01' }}
+          END: ${{ inputs.end || '2026-05-14' }}
+        run: |
+          python boat-ai/runtime/historical_course_dataset.py --start "$START" --end "$END" --out boat-ai/runtime/course_training_pilot
+      - name: Evaluate strictly time-split pre-race course prior
+        run: |
+          if [ -f boat-ai/runtime/historical_course_evaluate.py ]; then
+            python boat-ai/runtime/historical_course_evaluate.py --source boat-ai/runtime/course_training_pilot/course_history_features_research_only.csv --out boat-ai/runtime/course_training_pilot
+          fi
+      - name: Save lightweight audit in repository
+        run: |
+          python - <<'PY'
+          import json,pathlib
+          path=pathlib.Path('boat-ai/runtime/course_training_pilot')
+          audit=json.loads((path/'audit.json').read_text())
+          # Historical rows are saved to job artifact to prevent large uncontrolled commits.
+          report={'data_join':{k:v for k,v in audit.items() if k!='coverage_by_day'},
+                  'coverage_by_day':audit['coverage_by_day']}
+          evalpath=path/'evaluation.json'
+          if evalpath.exists():report['evaluation']=json.loads(evalpath.read_text())
+          pathlib.Path('boat-ai/runtime/course_training_pilot_report.json').write_text(
+              json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_training_pilot_report.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Store historical racer actual-course pilot coverage and evaluation'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Keep detailed joined data as artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: historical-course-pilot
+          path: boat-ai/runtime/course_training_pilot/
+          if-no-files-found: warn
+          retention-days: 30
