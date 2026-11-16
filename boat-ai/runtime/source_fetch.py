@@ -100,6 +100,11 @@ def parse_boatcast_card(raw, date, venue, race):
         if not t:raise ValueError('Missing required upstream numeric field')
         try:return str(float(t)) if decimal else str(int(t))
         except ValueError:raise ValueError('Invalid upstream numeric field')
+    def optional_rate(x):
+        value=clean(x)
+        if value in ('','-','--','---','----','－','－－','－.－'):
+            return ''
+        return numeric(x,True)
     code=f'{date:%Y%m%d}{int(venue):02d}{int(race):02d}'
     result={'レースコード':code,'レース日':date.isoformat(),'レース場コード':f'{int(venue):02d}','レース回':f'{int(race):02d}R'}
     for i,line in enumerate(lines[2:],1):
@@ -123,8 +128,8 @@ def parse_boatcast_card(raw, date, venue, race):
             p+'モーター3連対率':numeric(cols[19],True),
             p+'ボートフラグ':clean(cols[20]) or '0',
             p+'ボート番号':numeric(cols[21]),
-            p+'ボート2連対率':numeric(cols[22],True),
-            p+'ボート3連対率':numeric(cols[23],True),
+            p+'ボート2連対率':optional_rate(cols[22]),
+            p+'ボート3連対率':optional_rate(cols[23]),
             p+'早見':clean(cols[24]).replace('R',''),
         })
         places=clean(cols[3]).split(':',1)
