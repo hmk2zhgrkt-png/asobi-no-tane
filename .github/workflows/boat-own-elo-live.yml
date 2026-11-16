@@ -4,6 +4,7 @@ on:
     paths:
       - 'boat-ai/runtime/score_own_elo_live.py'
       - '.github/workflows/boat-own-elo-live.yml'
+      - 'boat-ai/runtime/request.json'
   workflow_dispatch:
 permissions:
   contents: write
