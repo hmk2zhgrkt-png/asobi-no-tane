@@ -203,28 +203,28 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
                     try:
                         period=official_motor_cycle(date,venue_code)
                         cards=get_by_code(today['programs/race_cards'],code)
-                    today[k]=[{'場コード':f'{venue_code:02d}','モーター番号':str(int(cards[f"艇{boat}_モーター番号"])),
-                               'モーター期起算日':period} for boat in range(1,7)]
-                    print(f'OFFICIAL_FALLBACK: verified motor cycle {period} for {code}')
-                    continue
-                except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
-                    raise RuntimeError(f'CSV multi-origin failure: {e}; official motor start fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
-            if source_root is None and k in ('previews/tkz','previews/stt'):
-                try:
-                    # The official racing schedule is needed to certify deadline;
-                    # never create a guessed pre-close snapshot timestamp.
-                    title=get_by_code(today['programs/title'],code)
-                    cutoff=str(title['電話投票締切予定']).strip()
-                    if len(cutoff)!=5 or cutoff[2]!=':':
-                        raise ValueError('Missing verified race deadline')
-                    raw=official_txt(k.split('/')[-1],date,venue_code,race)
-                    observed=dt.datetime.now(JST)
-                    today[k]=[parse_official_preview(raw,k.split('/')[-1],date,venue_code,race,cutoff,observed)]
-                    print(f'OFFICIAL_FALLBACK: {k} for {code} captured {observed.isoformat()}')
-                    continue
-                except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
-                    raise RuntimeError(f'CSV multi-origin failure: {e}; official preview fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
-            raise RuntimeError(f'CSV multi-origin failure: {e}') from e
+                        today[k]=[{'場コード':f'{venue_code:02d}','モーター番号':str(int(cards[f"艇{boat}_モーター番号"])),
+                                   'モーター期起算日':period} for boat in range(1,7)]
+                        print(f'OFFICIAL_FALLBACK: verified motor cycle {period} for {code}')
+                        continue
+                    except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
+                        raise RuntimeError(f'CSV multi-origin failure: {e}; official motor start fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
+                if source_root is None and k in ('previews/tkz','previews/stt'):
+                    try:
+                        # The official racing schedule is needed to certify deadline;
+                        # never create a guessed pre-close snapshot timestamp.
+                        title=get_by_code(today['programs/title'],code)
+                        cutoff=str(title['電話投票締切予定']).strip()
+                        if len(cutoff)!=5 or cutoff[2]!=':':
+                            raise ValueError('Missing verified race deadline')
+                        raw=official_txt(k.split('/')[-1],date,venue_code,race)
+                        observed=dt.datetime.now(JST)
+                        today[k]=[parse_official_preview(raw,k.split('/')[-1],date,venue_code,race,cutoff,observed)]
+                        print(f'OFFICIAL_FALLBACK: {k} for {code} captured {observed.isoformat()}')
+                        continue
+                    except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
+                        raise RuntimeError(f'CSV multi-origin failure: {e}; official preview fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
+                raise RuntimeError(f'CSV multi-origin failure: {e}') from e
     cards=get_by_code(today['programs/race_cards'],code)
     if screenshot:
         title_rows=[z for z in today['programs/title'] if z.get('レースコード')==code]
