@@ -1,0 +1,700 @@
+{
+  "status": "DESCRIPTIVE_ANALYSIS",
+  "races_checked": 151352,
+  "input": "2023-11-01..2026-10-31 official K result labels",
+  "warning": "Frequencies are retrospective labels, not pre-race forecasts or errors of the production AI.",
+  "by_venue": {
+    "all": {
+      "total_clean_races": 151352,
+      "races_with_boat1_winner": 83589,
+      "boat5_second_given_boat1_wins_count": 9749,
+      "boat5_second_given_boat1_wins_rate": 0.11663,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11447,
+        0.11882
+      ],
+      "finish_1_5_2_count": 3142,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        28261,
+        24068,
+        15704,
+        9749,
+        5807
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        54,
+        28562,
+        24399,
+        16174,
+        10053,
+        4347
+      ],
+      "boat5_second_any_first_count": 18094
+    },
+    "venue_01": {
+      "total_clean_races": 6491,
+      "races_with_boat1_winner": 3281,
+      "boat5_second_given_boat1_wins_count": 414,
+      "boat5_second_given_boat1_wins_rate": 0.126181,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11525,
+        0.13798
+      ],
+      "finish_1_5_2_count": 132,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1141,
+        966,
+        539,
+        414,
+        221
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        6,
+        1140,
+        999,
+        571,
+        407,
+        158
+      ],
+      "boat5_second_any_first_count": 859
+    },
+    "venue_02": {
+      "total_clean_races": 6510,
+      "races_with_boat1_winner": 2799,
+      "boat5_second_given_boat1_wins_count": 351,
+      "boat5_second_given_boat1_wins_rate": 0.125402,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11364,
+        0.13819
+      ],
+      "finish_1_5_2_count": 117,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        952,
+        740,
+        550,
+        351,
+        206
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        955,
+        756,
+        541,
+        376,
+        170
+      ],
+      "boat5_second_any_first_count": 882
+    },
+    "venue_03": {
+      "total_clean_races": 5637,
+      "races_with_boat1_winner": 2746,
+      "boat5_second_given_boat1_wins_count": 365,
+      "boat5_second_given_boat1_wins_rate": 0.132921,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.12073,
+        0.14613
+      ],
+      "finish_1_5_2_count": 106,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        931,
+        774,
+        471,
+        365,
+        205
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        0,
+        931,
+        774,
+        471,
+        365,
+        205
+      ],
+      "boat5_second_any_first_count": 724
+    },
+    "venue_12": {
+      "total_clean_races": 6440,
+      "races_with_boat1_winner": 3746,
+      "boat5_second_given_boat1_wins_count": 418,
+      "boat5_second_given_boat1_wins_rate": 0.111586,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.1019,
+        0.12207
+      ],
+      "finish_1_5_2_count": 126,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1218,
+        1143,
+        699,
+        418,
+        268
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        0,
+        1249,
+        1158,
+        738,
+        411,
+        190
+      ],
+      "boat5_second_any_first_count": 733
+    },
+    "venue_13": {
+      "total_clean_races": 6553,
+      "races_with_boat1_winner": 3863,
+      "boat5_second_given_boat1_wins_count": 466,
+      "boat5_second_given_boat1_wins_rate": 0.120632,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11074,
+        0.13128
+      ],
+      "finish_1_5_2_count": 124,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1287,
+        1062,
+        754,
+        466,
+        294
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        4,
+        1290,
+        1073,
+        783,
+        501,
+        212
+      ],
+      "boat5_second_any_first_count": 816
+    },
+    "venue_14": {
+      "total_clean_races": 5991,
+      "races_with_boat1_winner": 2919,
+      "boat5_second_given_boat1_wins_count": 346,
+      "boat5_second_given_boat1_wins_rate": 0.118534,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10731,
+        0.13076
+      ],
+      "finish_1_5_2_count": 112,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        992,
+        806,
+        565,
+        346,
+        210
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        989,
+        807,
+        589,
+        359,
+        174
+      ],
+      "boat5_second_any_first_count": 741
+    },
+    "venue_15": {
+      "total_clean_races": 6833,
+      "races_with_boat1_winner": 3862,
+      "boat5_second_given_boat1_wins_count": 413,
+      "boat5_second_given_boat1_wins_rate": 0.106939,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.09758,
+        0.11708
+      ],
+      "finish_1_5_2_count": 129,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1331,
+        1076,
+        752,
+        413,
+        290
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        2,
+        1345,
+        1064,
+        789,
+        429,
+        233
+      ],
+      "boat5_second_any_first_count": 756
+    },
+    "venue_21": {
+      "total_clean_races": 6446,
+      "races_with_boat1_winner": 3867,
+      "boat5_second_given_boat1_wins_count": 521,
+      "boat5_second_given_boat1_wins_rate": 0.13473,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.12433,
+        0.14585
+      ],
+      "finish_1_5_2_count": 165,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1154,
+        1159,
+        809,
+        521,
+        224
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        2,
+        1171,
+        1177,
+        810,
+        527,
+        180
+      ],
+      "boat5_second_any_first_count": 864
+    },
+    "venue_22": {
+      "total_clean_races": 6367,
+      "races_with_boat1_winner": 3694,
+      "boat5_second_given_boat1_wins_count": 386,
+      "boat5_second_given_boat1_wins_rate": 0.104494,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.09504,
+        0.11477
+      ],
+      "finish_1_5_2_count": 137,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1368,
+        1141,
+        614,
+        386,
+        185
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        2,
+        1371,
+        1180,
+        627,
+        399,
+        115
+      ],
+      "boat5_second_any_first_count": 704
+    },
+    "venue_24": {
+      "total_clean_races": 6871,
+      "races_with_boat1_winner": 4295,
+      "boat5_second_given_boat1_wins_count": 483,
+      "boat5_second_given_boat1_wins_rate": 0.112456,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10335,
+        0.12225
+      ],
+      "finish_1_5_2_count": 143,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1490,
+        1303,
+        741,
+        483,
+        278
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        1490,
+        1327,
+        753,
+        500,
+        224
+      ],
+      "boat5_second_any_first_count": 737
+    },
+    "venue_16": {
+      "total_clean_races": 6415,
+      "races_with_boat1_winner": 3599,
+      "boat5_second_given_boat1_wins_count": 413,
+      "boat5_second_given_boat1_wins_rate": 0.114754,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10475,
+        0.12558
+      ],
+      "finish_1_5_2_count": 120,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1172,
+        966,
+        761,
+        413,
+        287
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        0,
+        1183,
+        953,
+        813,
+        429,
+        221
+      ],
+      "boat5_second_any_first_count": 726
+    },
+    "venue_18": {
+      "total_clean_races": 6382,
+      "races_with_boat1_winner": 4027,
+      "boat5_second_given_boat1_wins_count": 400,
+      "boat5_second_given_boat1_wins_rate": 0.09933,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.09047,
+        0.10895
+      ],
+      "finish_1_5_2_count": 129,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1497,
+        1146,
+        750,
+        400,
+        234
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        1513,
+        1175,
+        759,
+        427,
+        152
+      ],
+      "boat5_second_any_first_count": 671
+    },
+    "venue_08": {
+      "total_clean_races": 6935,
+      "races_with_boat1_winner": 4033,
+      "boat5_second_given_boat1_wins_count": 487,
+      "boat5_second_given_boat1_wins_rate": 0.120754,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11106,
+        0.13117
+      ],
+      "finish_1_5_2_count": 171,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1302,
+        1151,
+        757,
+        487,
+        336
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        3,
+        1326,
+        1168,
+        812,
+        508,
+        216
+      ],
+      "boat5_second_any_first_count": 856
+    },
+    "venue_10": {
+      "total_clean_races": 6411,
+      "races_with_boat1_winner": 3369,
+      "boat5_second_given_boat1_wins_count": 328,
+      "boat5_second_given_boat1_wins_rate": 0.097358,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.0878,
+        0.10783
+      ],
+      "finish_1_5_2_count": 116,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1230,
+        936,
+        662,
+        328,
+        213
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        0,
+        1236,
+        956,
+        667,
+        359,
+        151
+      ],
+      "boat5_second_any_first_count": 641
+    },
+    "venue_20": {
+      "total_clean_races": 6428,
+      "races_with_boat1_winner": 3725,
+      "boat5_second_given_boat1_wins_count": 413,
+      "boat5_second_given_boat1_wins_rate": 0.110872,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10119,
+        0.12136
+      ],
+      "finish_1_5_2_count": 128,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1215,
+        1124,
+        683,
+        413,
+        290
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        8,
+        1231,
+        1152,
+        723,
+        414,
+        197
+      ],
+      "boat5_second_any_first_count": 762
+    },
+    "venue_11": {
+      "total_clean_races": 6209,
+      "races_with_boat1_winner": 3354,
+      "boat5_second_given_boat1_wins_count": 396,
+      "boat5_second_given_boat1_wins_rate": 0.118068,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10758,
+        0.12943
+      ],
+      "finish_1_5_2_count": 127,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1155,
+        962,
+        650,
+        396,
+        191
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        1165,
+        963,
+        653,
+        407,
+        165
+      ],
+      "boat5_second_any_first_count": 763
+    },
+    "venue_05": {
+      "total_clean_races": 6433,
+      "races_with_boat1_winner": 3479,
+      "boat5_second_given_boat1_wins_count": 426,
+      "boat5_second_given_boat1_wins_rate": 0.122449,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11197,
+        0.13376
+      ],
+      "finish_1_5_2_count": 145,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1183,
+        985,
+        618,
+        426,
+        267
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        1188,
+        1003,
+        641,
+        433,
+        213
+      ],
+      "boat5_second_any_first_count": 806
+    },
+    "venue_07": {
+      "total_clean_races": 6572,
+      "races_with_boat1_winner": 3723,
+      "boat5_second_given_boat1_wins_count": 452,
+      "boat5_second_given_boat1_wins_rate": 0.121407,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.1113,
+        0.13229
+      ],
+      "finish_1_5_2_count": 161,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1169,
+        1108,
+        748,
+        452,
+        246
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        4,
+        1203,
+        1132,
+        768,
+        463,
+        153
+      ],
+      "boat5_second_any_first_count": 832
+    },
+    "venue_17": {
+      "total_clean_races": 6651,
+      "races_with_boat1_winner": 3711,
+      "boat5_second_given_boat1_wins_count": 432,
+      "boat5_second_given_boat1_wins_rate": 0.116411,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10649,
+        0.12713
+      ],
+      "finish_1_5_2_count": 140,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1223,
+        1124,
+        688,
+        432,
+        244
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        1,
+        1245,
+        1142,
+        688,
+        443,
+        192
+      ],
+      "boat5_second_any_first_count": 817
+    },
+    "venue_04": {
+      "total_clean_races": 6000,
+      "races_with_boat1_winner": 2706,
+      "boat5_second_given_boat1_wins_count": 341,
+      "boat5_second_given_boat1_wins_rate": 0.126016,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11404,
+        0.13905
+      ],
+      "finish_1_5_2_count": 96,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        832,
+        733,
+        569,
+        341,
+        231
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        0,
+        845,
+        746,
+        583,
+        356,
+        176
+      ],
+      "boat5_second_any_first_count": 751
+    },
+    "venue_19": {
+      "total_clean_races": 6364,
+      "races_with_boat1_winner": 3849,
+      "boat5_second_given_boat1_wins_count": 443,
+      "boat5_second_given_boat1_wins_rate": 0.115095,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10539,
+        0.12556
+      ],
+      "finish_1_5_2_count": 165,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1268,
+        1171,
+        679,
+        443,
+        288
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        6,
+        1280,
+        1186,
+        720,
+        450,
+        207
+      ],
+      "boat5_second_any_first_count": 736
+    },
+    "venue_09": {
+      "total_clean_races": 9618,
+      "races_with_boat1_winner": 5364,
+      "boat5_second_given_boat1_wins_count": 619,
+      "boat5_second_given_boat1_wins_rate": 0.115399,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.10712,
+        0.12423
+      ],
+      "finish_1_5_2_count": 209,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1939,
+        1489,
+        977,
+        619,
+        340
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        7,
+        1959,
+        1497,
+        997,
+        637,
+        267
+      ],
+      "boat5_second_any_first_count": 1114
+    },
+    "venue_06": {
+      "total_clean_races": 6795,
+      "races_with_boat1_winner": 3578,
+      "boat5_second_given_boat1_wins_count": 436,
+      "boat5_second_given_boat1_wins_rate": 0.121856,
+      "boat5_second_given_boat1_wins_95pct_wilson": [
+        0.11154,
+        0.13298
+      ],
+      "finish_1_5_2_count": 144,
+      "second_boat_counts_given_boat1_wins": [
+        0,
+        1212,
+        1003,
+        668,
+        436,
+        259
+      ],
+      "second_actual_course_counts_given_boat1_wins": [
+        3,
+        1257,
+        1011,
+        678,
+        453,
+        176
+      ],
+      "boat5_second_any_first_count": 803
+    }
+  },
+  "time_splits": {
+    "historical_before_2026_09": {
+      "one_first_races": 78896,
+      "boat5_second": 9159,
+      "boat5_second_conditional_rate": 0.11609,
+      "95pct_wilson": [
+        0.11387,
+        0.11834
+      ]
+    },
+    "validation_test_2026_09_10": {
+      "one_first_races": 4693,
+      "boat5_second": 590,
+      "boat5_second_conditional_rate": 0.125719,
+      "95pct_wilson": [
+        0.11654,
+        0.13551
+      ]
+    }
+  }
+}
