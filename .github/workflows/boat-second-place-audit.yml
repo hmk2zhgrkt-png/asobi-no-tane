@@ -1,0 +1,31 @@
+name: Historical outer-frame 2nd place diagnostic
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/audit_second_place.py'
+      - '.github/workflows/boat-second-place-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install basic numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy scikit-learn joblib
+      - name: Compare outer-frame second place in all completed races
+        run: python boat-ai/runtime/audit_second_place.py
+      - name: Persist reproducible descriptive statistical report
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_training_3y/outer_second_place_audit.json
+          if git diff --cached --quiet; then echo 'Already stored'; exit 0; fi
+          git commit -m 'Audit historical second-place rates for boat 5 and actual course 5'
+          git pull --rebase origin main
+          git push origin HEAD:main
