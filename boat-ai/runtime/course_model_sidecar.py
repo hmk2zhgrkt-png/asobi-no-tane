@@ -80,6 +80,11 @@ def compare_rows(base_rows,entry_rows,model_file,history_root,date,venue,race):
     new=candidate_120(loaded['models'],x)
     combo=['-'.join(map(str,p)) for p in PERMS]
     old=np.array([lookup[c] for c in combo],dtype=float);old/=old.sum()
+    # Apply user-directed exhibition F.01..F.04 experiment to research candidate;
+    # incumbent probabilities were already adjusted by auto_predict.
+    from exhibition_f_bonus import adjust_combo_probs,details as exhibition_f_details
+    st_values=[float(e['exhibition_st']) for e in sorted(entry_rows,key=lambda e:int(e['boat']))]
+    new=np.asarray(adjust_combo_probs(PERMS,new,st_values),dtype=float)
     weights={'incumbent':old,'course_model_research_only':new}
     for alpha in (0.25,0.5,0.75):
         weights[f'experimental_blend_{alpha:g}']=old*(1-alpha)+new*alpha
@@ -94,6 +99,7 @@ def compare_rows(base_rows,entry_rows,model_file,history_root,date,venue,race):
        'candidate_training_end':'2026-06-30',
        'model_input_note':'Trained with starting boat/frame proxy; NOT same-race realized course or pre-race exhibition course',
        'source_data_lag_note':'Source: immutable K through 2026-10-31 + checksum-verified completed K cache if present; absent days remain unavailable',
+       'exhibition_f_positive_experiment':exhibition_f_details(st_values),
        'alternatives':out,
        'no_paper_or_real_bets':True}
 
