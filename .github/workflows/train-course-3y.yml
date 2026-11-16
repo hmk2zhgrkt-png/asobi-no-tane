@@ -35,7 +35,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add boat-ai/runtime/course_training_3y/evaluation.json
+          git add boat-ai/runtime/course_training_3y/evaluation.json boat-ai/runtime/course_training_3y/candidate_research_only.joblib
           if ! git diff --cached --quiet; then
             git commit -m 'Archive three-year trained race course history holdout comparison'
             git pull --rebase origin main
