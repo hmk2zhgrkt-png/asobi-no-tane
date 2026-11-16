@@ -1,16 +1,18 @@
 {
   "status": "PAIRED_FORWARD_AUDIT",
-  "rules": "Only models actually scored before cutoff count as forward predictions; all model tuning is frozen before comparing.",
+  "rules": "Only one latest genuinely preclose model score per event; replays and postrace re-scores excluded.",
   "matched_prospective_research_scorecard": {},
   "prospective_research_race_count": 0,
+  "prospective_base_race_count": 0,
   "source_checks": {
-    "archived_base_events": 2,
-    "archived_research_events": 1,
-    "completed_research_events": 1,
-    "retrospective_research_excluded": 1,
-    "base_events_scored_after_cutoff": 2,
-    "events_with_result": 2,
-    "meeting_day_missing": 2
+    "archived_base_events": 3,
+    "archived_research_events": 2,
+    "completed_research_events": 2,
+    "retrospective_research_excluded": 2,
+    "base_events_scored_after_cutoff": 3,
+    "events_with_result": 3,
+    "meeting_day_missing": 0,
+    "multiple_versions_of_same_race_deduplicated": 0
   },
   "postclose_research_replays_excluded": [
     {
@@ -20,12 +22,25 @@
         11
       ],
       "path": "boat-ai/runtime/preclose_archive/20261116-15-11/research-223806-7e89e86fe29457.json"
+    },
+    {
+      "race": [
+        "2026-11-16",
+        15,
+        11
+      ],
+      "path": "boat-ai/runtime/preclose_archive/20261116-15-11/research-225034-975c246343d466.json"
     }
   ],
   "F01_to_F04_exhibition_exploratory": {
     "n_boat_exposures": 0,
     "groups": {
       "F01_to_F04": {
+        "n": 0,
+        "winner": 0,
+        "top3": 0
+      },
+      "other": {
         "n": 0,
         "winner": 0,
         "top3": 0
