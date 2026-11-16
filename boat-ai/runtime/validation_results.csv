@@ -5,3 +5,4 @@ date,venue,venue_code,race,actual_trifecta,payout_per_100_yen,model_ran,hit_rate
 2026-11-16,大村,24,4,2-1-3,,true,40,0.006999743386710531,false,0,0,user_report
 2026-11-16,大村,24,5,5-2-6,32900,true,71,0.00293756866941077,false,0,0,user_report
 2026-11-16,大村,24,8,1-3-5,,true,6,0.04772325444239083,false,0,0,user_report
+2026-11-16,丸亀,15,11,1-4-6,,true,20,0.014566775063793457,false,0,0,user_report
