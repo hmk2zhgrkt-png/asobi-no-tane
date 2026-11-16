@@ -29,6 +29,8 @@ with tempfile.TemporaryDirectory() as tmp:
     prospective=dt.datetime(2026,11,16,20,10,tzinfo=dt.timezone(dt.timedelta(hours=9)))
     base=archive_base(root,out,scored_at=prospective)
     assert base['prospective_model_generated_before_cutoff']
+    second_preclose=archive_base(root,out,scored_at=prospective+dt.timedelta(minutes=1))
+    assert second_preclose['prospective_model_generated_before_cutoff']
     post=archive_base(root,out,scored_at=prospective+dt.timedelta(minutes=8))
     assert not post['prospective_model_generated_before_cutoff']
     research={
@@ -40,6 +42,9 @@ with tempfile.TemporaryDirectory() as tmp:
             'EXP_blend_28feature_0.25','EXP_blend_28feature_0.5','EXP_blend_28feature_0.75']}}
     model=d/'research.json';model.write_text(json.dumps(research))
     archive_alt(model,out)
+    model.write_text(json.dumps(dict(research,scored_at_jst=(prospective+dt.timedelta(minutes=1)).isoformat(),
+                                    prospective_scored_before_cutoff=True)))
+    archive_alt(model,out)
     model.write_text(json.dumps(dict(research,scored_at_jst=(prospective+dt.timedelta(minutes=8)).isoformat(),
                                     prospective_scored_before_cutoff=False)))
     archive_alt(model,out)
@@ -48,6 +53,8 @@ with tempfile.TemporaryDirectory() as tmp:
         w.writeheader();w.writerow(dict(date='2026-11-16',venue_code=15,race=11,actual_trifecta='1-2-3'))
     j=audit(out,d/'results.csv')
     assert j['prospective_research_race_count']==1
+    assert j['prospective_base_race_count']==1
+    assert j['source_checks']['multiple_versions_of_same_race_deduplicated']==2
     assert j['source_checks']['retrospective_research_excluded']==1
     assert j['source_checks']['base_events_scored_after_cutoff']==1
     assert j['F01_to_F04_exhibition_exploratory']['sufficient_to_estimate_benefit'] is False
