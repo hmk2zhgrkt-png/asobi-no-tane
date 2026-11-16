@@ -114,6 +114,18 @@ jobs:
               --report boat-ai/runtime/latest_results/report.json \
               --out boat-ai/runtime/latest_results/course_model_research.json || echo 'Research sidecar unavailable; incumbent prediction stays unchanged'
           fi
+      - name: Record immutable preclose inputs and model inference time for future matched backtests
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report=Path('boat-ai/runtime/latest_results/report.json')
+          if report.exists() and json.loads(report.read_text()).get('model_ran'):
+              import subprocess
+              subprocess.run(['python','boat-ai/runtime/archive_preclose.py'],check=True)
+          else:
+              print('SAFE_ARCHIVE_SKIP: no valid completed model')
+          PY
       - name: Apply 120 percent EV threshold only to preclose paper bets
         run: |
           python boat-ai/runtime/paper_ledger_v2.py --report boat-ai/runtime/latest_results/report.json --candidates boat-ai/runtime/latest_results/paper_candidates.csv --ledger boat-ai/runtime/paper_ledger.csv
@@ -137,6 +149,7 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add boat-ai/runtime/latest_results/
+          if test -d boat-ai/runtime/preclose_archive; then git add boat-ai/runtime/preclose_archive/; fi
           if test -f boat-ai/runtime/paper_ledger.csv; then git add boat-ai/runtime/paper_ledger.csv; fi
           if git diff --cached --quiet; then echo 'No changed report/ledger'; exit 0; fi
           git commit -m 'Store race AI inference and paper-only decisions'
