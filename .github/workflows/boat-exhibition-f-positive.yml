@@ -1,0 +1,26 @@
+name: Exhibition F.01–F.04 positive experiment tests
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/exhibition_f_bonus.py'
+      - 'boat-ai/runtime/test_exhibition_f_bonus.py'
+      - '.github/workflows/boat-exhibition-f-positive.yml'
+      - 'boat-ai/runtime/auto_predict.py'
+      - 'boat-ai/runtime/course_model_sidecar.py'
+      - 'boat-ai/runtime/score_own_elo_live.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify precise F04 meaning, probability normalization and 3-model source syntax
+        run: |
+          python -m py_compile boat-ai/runtime/exhibition_f_bonus.py boat-ai/runtime/auto_predict.py boat-ai/runtime/course_model_sidecar.py boat-ai/runtime/score_own_elo_live.py
+          python boat-ai/runtime/test_exhibition_f_bonus.py
