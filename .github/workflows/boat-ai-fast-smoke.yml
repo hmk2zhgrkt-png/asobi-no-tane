@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'boat-ai/runtime/auto_predict.py'
+      - 'boat-ai/runtime/source_fetch.py'
       - '.github/workflows/boat-ai-fast-smoke.yml'
   workflow_dispatch:
 permissions:
