@@ -25,6 +25,20 @@ jobs:
           echo '9edf35ceaed65514ab8fdc08042f8c4462f4663e5e0ee17dcec7a16b5fd7c22d  boat-ai/runtime/model_bundle.zip' | sha256sum -c -
           mkdir -p boat-ai/runtime/model
           python -m zipfile -e boat-ai/runtime/model_bundle.zip boat-ai/runtime/model
+      - name: Diagnose official racer card numeric fields if needed
+        run: |
+          python - <<'PY'
+          import urllib.request
+          u='https://race.boatcast.jp/hp_txt/18/bc_j_str3_20261116_18_12.txt'
+          with urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as response:
+              raw=response.read().decode('utf-8-sig')
+          rows=raw.splitlines()
+          print('upstream_rows',len(rows))
+          for number,row in enumerate(rows[2:8],1):
+              cols=row.split(chr(9))
+              indexes=[0,4,9,10,11,12,13,14,15,17,18,19,21,22,23]
+              print('boat',number,'cols',len(cols),'numeric_fields',{str(i):cols[i].strip() if i<len(cols) else 'ABSENT' for i in indexes})
+          PY
       - name: Time one-shot screenshot fast replay without network retries
         env:
           BOAT_AI_FAST_SCREENSHOT: '1'
