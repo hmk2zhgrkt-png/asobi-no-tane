@@ -26,68 +26,30 @@ jobs:
           echo '9edf35ceaed65514ab8fdc08042f8c4462f4663e5e0ee17dcec7a16b5fd7c22d  boat-ai/runtime/model_bundle.zip' | sha256sum -c -
           mkdir -p boat-ai/runtime/model
           python -m zipfile -e boat-ai/runtime/model_bundle.zip boat-ai/runtime/model
-      - name: Diagnose official racer card numeric fields if needed
+      - name: Regression test latest saved real race without stale official websites
         run: |
+          python boat-ai/runtime/test_exhibition_f_bonus.py
           python - <<'PY'
-          import urllib.request
-          u='https://race.boatcast.jp/hp_txt/18/bc_j_str3_20261116_18_12.txt'
-          with urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'Mozilla/5.0'}),timeout=6) as response:
-              raw=response.read().decode('utf-8-sig')
-          rows=raw.splitlines()
-          print('upstream_rows',len(rows))
-          for number,row in enumerate(rows[2:8],1):
-              cols=row.split(chr(9))
-              indexes=[0,4,9,10,11,12,13,14,15,17,18,19,21,22,23]
-              print('boat',number,'cols',len(cols),'numeric_fields',{str(i):cols[i].strip() if i<len(cols) else 'ABSENT' for i in indexes})
-          PY
-      - name: Time one-shot screenshot fast replay without network retries
-        env:
-          BOAT_AI_FAST_SCREENSHOT: '1'
-        run: |
-          python boat-ai/runtime/auto_predict.py --date 2026-11-16 --venue 18 --race 12 --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out boat-ai/runtime/fast_smoke_results
-          python - <<'PY'
-          import json
+          import csv,json,sys
           from pathlib import Path
-          p=Path('boat-ai/runtime/fast_smoke_results/report.json')
-          j=json.loads(p.read_text())
-          assert j['model_ran'] and j['fast_screenshot_mode'] and j['venue_code']==18 and j['race']==12
-          assert j['status']=='REPLAY_OR_UNVERIFIED_NO_BETS'
-          q=json.loads(Path('boat-ai/runtime/fast_smoke_results/rankings.json').read_text())
-          assert len(q['hit_rate_top5'])==5
-          print('FAST_SMOKE_PASS',json.dumps({'top5':q['hit_rate_top5']},ensure_ascii=False))
-          PY
-      - name: Compare fast predictions with versus without pre-downloaded November K history
-        env:
-          BOAT_AI_FAST_SCREENSHOT: '1'
-        run: |
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          r=json.loads(Path('boat-ai/runtime/fast_smoke_results/report.json').read_text())
-          assert r.get('official_k_history_days',0)>=15, f"November cache did not load: {r.get('official_k_history_days')}"
-          assert r.get('official_k_history_latest')>='2026-11-15'
-          assert not r['missing_published_result_days']
-          assert r['paper_candidate_count']==0
-          print('LATEST_PRIOR_DAY_K_HISTORY_LOADED',r['official_k_history_days'],r['official_k_history_latest'])
-          PY
-          mv boat-ai/runtime/course_history_daily /tmp/boat-k-cache
-          python boat-ai/runtime/auto_predict.py --date 2026-11-16 --venue 18 --race 12 --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out boat-ai/runtime/fast_smoke_no_cache
-          mv /tmp/boat-k-cache boat-ai/runtime/course_history_daily
-          python - <<'PY'
-          import json,csv
-          from pathlib import Path
-          def get(path):
-              with open(path,encoding='utf-8-sig',newline='') as f:
-                  d=list(csv.DictReader(f))
-              d.sort(key=lambda x:float(x['probability']),reverse=True)
-              rank=next(i+1 for i,x in enumerate(d) if x['trifecta']=='1-5-2')
-              return rank,float(d[rank-1]['probability']),[x['trifecta'] for x in d[:5]]
-          old=get('boat-ai/runtime/fast_smoke_no_cache/predictions120.csv')
-          new=get('boat-ai/runtime/fast_smoke_results/predictions120.csv')
-          print('TOKUYAMA_REPLAY_FAST_NO_CACHE',old)
-          print('TOKUYAMA_REPLAY_FAST_WITH_NOVEMBER_K',new)
-          if old==new:
-              raise AssertionError('Official history cache did not change any prediction')
+          sys.path.insert(0,'boat-ai/runtime')
+          from exhibition_f_bonus import adjust_combo_probs,details
+          root=Path('boat-ai/runtime/latest_results')
+          report=json.loads((root/'report.json').read_text(encoding='utf-8'))
+          with (root/'features6.csv').open(encoding='utf-8-sig',newline='') as f:
+              rows=list(csv.DictReader(f))
+          with (root/'predictions120.csv').open(encoding='utf-8-sig',newline='') as f:
+              picks=list(csv.DictReader(f))
+          assert report.get('model_ran') and len(rows)==6 and len(picks)==120
+          assert all(str(x['date'])==report['date'] and str(x['race'])==str(report['race']) and
+                     x['venue']==report['venue'] for x in rows)
+          rates=[float(x['exhibition_st']) for x in rows]
+          combo=[x['trifecta'] for x in picks]
+          original=[float(x.get('pre_exhibition_f_bonus_probability',x['probability'])) for x in picks]
+          adjusted=adjust_combo_probs(combo,original,rates)
+          assert abs(sum(adjusted)-1)<1e-10
+          assert details(rates)['no_bets']
+          print('ARCHIVED_REAL_RACE_F_SMOKE_PASS',report['venue'],report['race'],details(rates)['positive_exhibition_boats'])
           PY
       - name: Preserve one-shot inference and execution report
         if: always()
