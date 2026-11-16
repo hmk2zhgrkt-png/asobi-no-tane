@@ -91,6 +91,7 @@ jobs:
           done
       - name: Archive independent 3-year racer-course research alternatives
         run: |
+          rm -f boat-ai/runtime/latest_results/course_model_research.json
           python - <<'PY'
           import json
           from pathlib import Path
