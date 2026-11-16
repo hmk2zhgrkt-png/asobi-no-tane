@@ -21,6 +21,29 @@ jobs:
           python-version: '3.11'
       - name: Install fast Elo model dependencies
         run: python -m pip install --disable-pip-version-check numpy scikit-learn joblib
+      - name: Verify current race matches the 28-feature model report
+        run: |
+          matched=0
+          for attempt in $(seq 1 12); do
+            git pull --ff-only origin main >/dev/null 2>&1 || true
+            if python - <<'PY'
+          import json
+          from pathlib import Path
+          req=json.loads(Path('boat-ai/runtime/request.json').read_text())
+          p=Path('boat-ai/runtime/latest_results/report.json')
+          if not p.exists():raise SystemExit(1)
+          report=json.loads(p.read_text())
+          if (not report.get('model_ran') or
+              str(req['date'])!=str(report['date']) or
+              int(req['venue'])!=int(report['venue_code']) or
+              int(req['race'])!=int(report['race'])):
+              raise SystemExit(1)
+          print('IDENTITY_CONFIRMED',req['date'],req['venue'],req['race'])
+          PY
+            then matched=1; break; fi
+            sleep 3
+          done
+          if [ "$matched" != 1 ]; then echo 'SAFE_SKIP: 28-feature scorer for this race is not yet present'; exit 1; fi
       - name: Score live race using all strictly earlier dates
         run: |
           python boat-ai/runtime/score_own_elo_live.py
