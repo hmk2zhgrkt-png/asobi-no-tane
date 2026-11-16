@@ -96,18 +96,22 @@ def join_day(cards,results,date):
     audit["joined_racer_rows"]=len(joined)
     return joined,dict(audit)
 
-def build(start,end,root=None,max_days=45):
+def build(start,end,root=None,max_days=45,official_lzh=False):
     if end<start or (end-start).days>=max_days:raise ValueError("Refuse invalid/excessive requested date range")
     allrows=[];report=[]
     for n in range((end-start).days+1):
         day=start+dt.timedelta(days=n)
         try:
-            cards=get_daily("programs/race_cards",day,root=root)
-            results=get_daily("results/realtime",day,root=root)
-            rows,stats=join_day(cards,results,day)
+            if official_lzh:
+                from official_lzh_course import official_day
+                rows,stats=official_day(day)
+            else:
+                cards=get_daily("programs/race_cards",day,root=root)
+                results=get_daily("results/realtime",day,root=root)
+                rows,stats=join_day(cards,results,day)
             allrows.extend(rows)
             report.append(dict(date=day.isoformat(),status="ok",**stats))
-        except (FileNotFoundError,ValueError,UnicodeError) as err:
+        except (FileNotFoundError,ValueError,UnicodeError,OSError,RuntimeError,ImportError) as err:
             report.append(dict(date=day.isoformat(),status="unavailable",reason=str(err)[:350]))
     allrows.sort(key=lambda r:(r["date"],r["race_code"],r["boat"]))
     return allrows,report
@@ -175,8 +179,9 @@ if __name__=="__main__":
     ap.add_argument("--end",required=True)
     ap.add_argument("--source-root",default=None)
     ap.add_argument("--max-days",type=int,default=45)
+    ap.add_argument("--official-lzh",action="store_true",help="Use BOAT RACE official K LZH directly; one archive per day")
     ap.add_argument("--out",required=True)
     args=ap.parse_args()
-    rows,days=build(dt.date.fromisoformat(args.start),dt.date.fromisoformat(args.end),args.source_root,args.max_days)
+    rows,days=build(dt.date.fromisoformat(args.start),dt.date.fromisoformat(args.end),args.source_root,args.max_days,args.official_lzh)
     summary=write(rows,days,args.out)
     print(json.dumps({k:v for k,v in summary.items() if k!="coverage_by_day"},ensure_ascii=False))
