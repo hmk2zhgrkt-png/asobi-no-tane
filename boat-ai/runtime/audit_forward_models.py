@@ -50,9 +50,10 @@ def audit(archive,results):
     contexts={'archived_base_events':0,'archived_research_events':0,
               'completed_research_events':0,'retrospective_research_excluded':0,
               'base_events_scored_after_cutoff':0,'events_with_result':0,
-              'meeting_day_missing':0}
+              'meeting_day_missing':0,
+              'multiple_versions_of_same_race_deduplicated':0}
     retrospective=[]
-    prospective_rows=[]
+    base_selected={};research_selected={}
     for path in sorted(archive.rglob('*.json')):
         obj=json.loads(path.read_text(encoding='utf-8'))
         key=(obj['date'],int(obj['venue_code']),int(obj['race']))
@@ -65,32 +66,49 @@ def audit(archive,results):
                 contexts['retrospective_research_excluded']+=1
                 retrospective.append({'race':key,'path':str(path)})
                 continue
-            for name,v in obj['models'].items():
-                comparison[name].append(rank_metrics(v['all120'],outcome['actual_trifecta']))
-            prospective_rows.append({'race':key,'models':list(obj['models'])})
+            scored=dt.datetime.fromisoformat(obj['scored_at_jst'])
+            existing=research_selected.get(key)
+            if existing is not None:
+                contexts['multiple_versions_of_same_race_deduplicated']+=1
+            if existing is None or scored>existing[0]:
+                research_selected[key]=(scored,obj)
             continue
         contexts['archived_base_events']+=1
         if not outcome:continue
         contexts['events_with_result']+=1
-        if not obj['source_report'].get('meeting_day'):
-            contexts['meeting_day_missing']+=1
         if not obj['prospective_model_generated_before_cutoff']:
             contexts['base_events_scored_after_cutoff']+=1
             continue
-        # This is exploratory only: no 3-year K exhibition archives exist.
-        outcome_boats=[int(x) for x in outcome['actual_trifecta'].split('-')]
+        scored=dt.datetime.fromisoformat(obj['model_scored_at_jst'])
+        previous=base_selected.get(key)
+        if previous is not None:
+            contexts['multiple_versions_of_same_race_deduplicated']+=1
+        if previous is None or scored>previous[0]:
+            base_selected[key]=(scored,obj)
+    # One latest genuinely scored preclose prediction per event, never duplicate
+    # the same race just because a user sent multiple progress screenshots.
+    for key,(_,obj) in base_selected.items():
+        if not obj['source_report'].get('meeting_day'):
+            contexts['meeting_day_missing']+=1
+        outcome_boats=[int(x) for x in known[key]['actual_trifecta'].split('-')]
         for row in obj['features6']:
-            b=int(row['boat']);st=float(row['exhibition_st'])
-            grp='F01_to_F04' if -0.040000001<=st<0 else 'other'
-            f_early[grp]['n']+=1
-            f_early[grp]['winner']+=int(b==outcome_boats[0])
-            f_early[grp]['top3']+=int(b in outcome_boats)
+            boat=int(row['boat']);st=float(row['exhibition_st'])
+            group='F01_to_F04' if -0.040000001<=st<0 else 'other'
+            f_early[group]['n']+=1
+            f_early[group]['winner']+=int(boat==outcome_boats[0])
+            f_early[group]['top3']+=int(boat in outcome_boats)
+    for key,(_,obj) in research_selected.items():
+        for name,value in obj['models'].items():
+            comparison[name].append(rank_metrics(value['all120'],known[key]['actual_trifecta']))
+    for group in ('F01_to_F04','other'):
+        f_early[group] # Explicitly include empty control group.
     sample=sum(x['n'] for x in f_early.values())
     sufficient=(f_early['F01_to_F04']['n']>=200 and f_early['other']['n']>=200)
     return {'status':'PAIRED_FORWARD_AUDIT',
-      'rules':'Only models actually scored before cutoff count as forward predictions; all model tuning is frozen before comparing.',
+      'rules':'Only one latest genuinely preclose model score per event; replays and postrace re-scores excluded.',
       'matched_prospective_research_scorecard':summarize(comparison),
-      'prospective_research_race_count':len(prospective_rows),
+      'prospective_research_race_count':len(research_selected),
+      'prospective_base_race_count':len(base_selected),
       'source_checks':contexts,
       'postclose_research_replays_excluded':retrospective[:25],
       'F01_to_F04_exhibition_exploratory':{
