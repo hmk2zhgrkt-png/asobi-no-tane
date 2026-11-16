@@ -455,7 +455,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     # Opt for safe PAPER_SKIP if any source cannot be verified, rather than treating a model's missing values as zero.
     live_critical=['exhibition_time_pre','exhibition_st','entry_course_pre','wind_speed_m_pre','wave_cm_pre','tilt_pre']
     complete_live_inputs=bool(X[live_critical].notna().all().all())
-    source_ok=(not course_adjusted and visible_odds==120 and complete_live_inputs and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
+    source_ok=(not fast_snapshot and not course_adjusted and visible_odds==120 and complete_live_inputs and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
     # Structural NaNs (e.g. no previous meeting) are legitimate; missing baseline racer counts are rejected above.
     missing=sorted({k for k in FEATURES if df[k].isna().any()})
     skip_reasons=[]
@@ -466,6 +466,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
                             else 'missing daily archived results or race card downloads')
     if visible_odds<120:skip_reasons.append(f'only {visible_odds}/120 screenshot-visible odds: no full-odds paper bets')
     if not complete_live_inputs:skip_reasons.append('missing verified screenshot/exhibition/weather model inputs')
+    if fast_snapshot:skip_reasons.append('fast screenshot mode with K history is not validated for paper bets')
     if course_adjusted:skip_reasons.append('experimental per-racer actual-course adjustment is not backtested: no paper bets')
     if not today['programs/motor_stats']:skip_reasons.append('no motor stats source')
     if dayn is None:skip_reasons.append('unverified meeting day')
