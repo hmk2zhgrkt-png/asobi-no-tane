@@ -112,11 +112,55 @@ def build(start,end,root=None,max_days=45):
     allrows.sort(key=lambda r:(r["date"],r["race_code"],r["boat"]))
     return allrows,report
 
+
+def add_prior_features(rows):
+    """Historical, as-of-previous-date actual-course finish frequencies.
+
+    Same-day outcomes are deliberately withheld even if another race is earlier.
+    Inference can use these priors with verified PRE-RACE exhibition entry course;
+    training may not use current race's ACTUAL course as a feature.
+    """
+    by_day=collections.defaultdict(list)
+    for row in rows:by_day[row["date"]].append(row)
+    history=collections.defaultdict(lambda:[0,0,0,0])
+    enriched=[]
+    for day in sorted(by_day):
+        current=by_day[day]
+        for row in current:
+            key=(int(row["racer_id"]),int(row["actual_course"]))
+            n,w,top2,top3=history[key]
+            enriched.append(dict(row,
+                prior_actual_course_starts=n,
+                prior_actual_course_wins=w,
+                prior_actual_course_top2=top2,
+                prior_actual_course_top3=top3,
+                prior_course_win_rate=(w+1)/(n+6),
+                prior_course_top2_rate=(top2+2)/(n+6),
+                prior_course_top3_rate=(top3+3)/(n+6),
+                prior_data_latest_date_before=day))
+        for row in current:
+            key=(int(row["racer_id"]),int(row["actual_course"]))
+            count=history[key];place=int(row["finish_place"])
+            count[0]+=1
+            count[1]+=int(place==1)
+            count[2]+=int(place<=2)
+            count[3]+=int(place<=3)
+    return enriched
+
 def write(rows,days,out):
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     with (out/"historical_course_labels.csv").open("w",encoding="utf-8-sig",newline="") as f:
         writer=csv.DictWriter(f,fieldnames=COLUMNS)
         writer.writeheader();writer.writerows(rows)
+    historical=add_prior_features(rows)
+    prior_columns=list(COLUMNS)+["prior_actual_course_starts","prior_actual_course_wins",
+         "prior_actual_course_top2","prior_actual_course_top3","prior_course_win_rate",
+         "prior_course_top2_rate","prior_course_top3_rate","prior_data_latest_date_before"]
+    with (out/"course_history_features_research_only.csv").open("w",encoding="utf-8-sig",newline="") as f:
+        writer=csv.DictWriter(f,fieldnames=prior_columns)
+        writer.writeheader();writer.writerows(historical)
+    # WARNING: the record includes the realized course, which was unknown before
+    # starting time. This table is NOT fit-ready for a race-day prediction model.
     summary={"days_requested":len(days),"days_successful":sum(d["status"]=="ok" for d in days),
              "days_unavailable":sum(d["status"]=="unavailable" for d in days),
              "complete_races":len(rows)//6,"racer_rows":len(rows),
