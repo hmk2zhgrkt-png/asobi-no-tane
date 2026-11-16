@@ -46,6 +46,8 @@ jobs:
           fi
       - name: Recalculate matched prospective comparison and F exposure counts
         run: python boat-ai/runtime/audit_forward_models.py
+      - name: Install numerical support for prospective-only calibration
+        run: python -m pip install --disable-pip-version-check numpy
       - name: Guard probability temperature and F bonus until 300 training plus 100 future races
         run: |
           python -m py_compile boat-ai/runtime/calibrate_forward_models.py
