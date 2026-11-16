@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-16",
+  "venue": 13,
+  "race": 2,
+  "asof": "2026-11-15",
+  "source_method": "3-year actual entry-course racer statistics from ikachi.org; rates may be rounded",
+  "model_retrained": false,
+  "entries": [
+    {
+      "boat": 1,
+      "racer_id": 4389,
+      "entry_course": 1,
+      "starts": 103,
+      "win_pct": 32,
+      "top2_pct": 65,
+      "top3_pct": 78.6,
+      "source": "https://ikachi.org/kyotei/racer/4389"
+    },
+    {
+      "boat": 2,
+      "racer_id": 3696,
+      "entry_course": 2,
+      "starts": 111,
+      "win_pct": 6.3,
+      "top2_pct": 30.6,
+      "top3_pct": 56.8,
+      "source": "https://ikachi.org/kyotei/racer/3696"
+    },
+    {
+      "boat": 3,
+      "racer_id": 4117,
+      "entry_course": 3,
+      "starts": 108,
+      "win_pct": 12,
+      "top2_pct": 38,
+      "top3_pct": 67.6,
+      "source": "https://ikachi.org/kyotei/racer/4117"
+    },
+    {
+      "boat": 4,
+      "racer_id": 5440,
+      "entry_course": 6,
+      "starts": 147,
+      "win_pct": 0,
+      "top2_pct": 2.7,
+      "top3_pct": 2.7,
+      "source": "https://ikachi.org/kyotei/racer/5440"
+    },
+    {
+      "boat": 5,
+      "racer_id": 4116,
+      "entry_course": 4,
+      "starts": 113,
+      "win_pct": 10.6,
+      "top2_pct": 25.7,
+      "top3_pct": 43.4,
+      "source": "https://ikachi.org/kyotei/racer/4116"
+    },
+    {
+      "boat": 6,
+      "racer_id": 3505,
+      "entry_course": 5,
+      "starts": 116,
+      "win_pct": 5.2,
+      "top2_pct": 17.2,
+      "top3_pct": 28.4,
+      "source": "https://ikachi.org/kyotei/racer/3505"
+    }
+  ]
+}
