@@ -1,2 +1,3 @@
 date,venue,venue_code,race,actual_trifecta,payout_per_100_yen,model_ran,hit_rate_rank,model_probability,hit_rate_top3_hit,paper_stake_yen,paper_return_yen,result_source
 2026-11-16,尼崎,13,1,1-3-2,1040,true,4,0.045271064867024154,false,0,0,user_report
+2026-11-16,尼崎,13,2,1-3-2,850,true,2,0.07814097470529607,true,0,0,user_report
