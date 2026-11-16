@@ -23,7 +23,11 @@ def course_features(root,date,entry_rows):
     histories=defaultdict(History)
     courses=defaultdict(History)
     target_racers={int(e['racer_id']) for e in entry_rows}
-    for row in iter_verified_rows(root):
+    from itertools import chain
+    from live_course_history import iter_cache_rows
+    live_cache=Path(__file__).with_name('course_history_daily')
+    additional=iter_cache_rows(live_cache,date) if live_cache.is_dir() else ()
+    for row in chain(iter_verified_rows(root),additional):
         day=dt.date.fromisoformat(row['date'])
         if day>=date:break
         rid=int(row['racer_id'])
@@ -89,7 +93,7 @@ def compare_rows(base_rows,entry_rows,model_file,history_root,date,venue,race):
        'three_year_source_end':'2026-10-31','existing_28_feature_model_unchanged':True,
        'candidate_training_end':'2026-06-30',
        'model_input_note':'Trained with starting boat/frame proxy; NOT same-race realized course or pre-race exhibition course',
-       'source_data_lag_note':'Published K history through 2026-10-31; newer completed races not included',
+       'source_data_lag_note':'Source: immutable K through 2026-10-31 + checksum-verified completed K cache if present; absent days remain unavailable',
        'alternatives':out,
        'no_paper_or_real_bets':True}
 
