@@ -1,86 +1,39 @@
 {
-  "data_join": {
-    "days_requested": 14,
-    "days_successful": 0,
-    "days_unavailable": 14,
-    "complete_races": 0,
-    "racer_rows": 0,
-    "caution": "Actual course/finish/ST are postrace labels, never pre-race features."
-  },
-  "coverage_by_day": [
-    {
-      "date": "2026-05-01",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/01.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-02",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/02.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-03",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/03.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-04",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/04.csv (HTTPError:404,HTTPError:404,HTTPError:403)"
-    },
-    {
-      "date": "2026-05-05",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/05.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-06",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/06.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-07",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/07.csv (HTTPError:404,HTTPError:404,HTTPError:403)"
-    },
-    {
-      "date": "2026-05-08",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/08.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-09",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/09.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-10",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/10.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-11",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/11.csv (HTTPError:404,HTTPError:404,HTTPError:403)"
-    },
-    {
-      "date": "2026-05-12",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/12.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-13",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/13.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    },
-    {
-      "date": "2026-05-14",
-      "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/14.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
-    }
-  ],
+  "source": "BOAT RACE official K performance LZH",
+  "from": "2026-05-01",
+  "to": "2026-05-14",
+  "days_requested": 14,
+  "days_successful": 14,
+  "days_unavailable": 0,
+  "complete_races": 2092,
+  "racer_rows": 12552,
   "evaluation": {
-    "status": "NO_DATA",
-    "reason": "No joined actual entry course/finish rows"
-  }
+    "status": "EVALUATED",
+    "train_dates": [
+      "2026-05-01",
+      "2026-05-10"
+    ],
+    "holdout_dates": [
+      "2026-05-11",
+      "2026-05-14"
+    ],
+    "train_races": 1525,
+    "holdout_races": 567,
+    "benchmark_frame_only": {
+      "winner_log_loss": 1.343246,
+      "winner_top1_accuracy": 0.559083
+    },
+    "experimental_frame_plus_prior_actual_course": {
+      "winner_log_loss": 1.390568,
+      "winner_top1_accuracy": 0.557319
+    },
+    "log_loss_improvement": -0.047322,
+    "production_model_retrained": false,
+    "production_28_feature_model_compared": false,
+    "realized_course_never_used_as_current_pre_race_feature": true,
+    "only_boat_number_as_proxy": true
+  },
+  "artifact_run_id": 43792718707,
+  "artifact_name": "historical-course-pilot",
+  "status": "Pilot generated and evaluated; trained candidate underperformed benchmark and was NOT deployed. Saving audit from verified GitHub Actions logs after concurrent report commits conflicted."
 }
