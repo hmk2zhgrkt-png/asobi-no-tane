@@ -3,6 +3,7 @@ on:
   push:
     paths:
       - 'boat-ai/runtime/score_own_elo_live.py'
+      - 'boat-ai/runtime/score_conditional_live.py'
       - '.github/workflows/boat-own-elo-live.yml'
       - 'boat-ai/runtime/request.json'
   workflow_dispatch:
@@ -31,11 +32,26 @@ jobs:
           assert r['base_28feature_model_unchanged'] and r['no_bets']
           print('ELO_LIVE_PASS',json.dumps(r['top5'],ensure_ascii=False))
           PY
+      - name: Score conditional second-and-third model and experimental 28-feature blend
+        run: |
+          python boat-ai/runtime/score_conditional_live.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          obj=json.loads(Path('boat-ai/runtime/latest_results/conditional_elo_research.json').read_text())
+          assert obj['production_changed'] is False
+          assert obj['automatic_live_betting_allowed'] is False
+          for row in obj['models'].values():
+              assert len(row['all120'])==120
+              assert abs(sum(row['all120'].values())-1)<1e-8
+              assert len(row['top5'])==5
+          print('CONDITIONAL_ELO_SIDE_BY_SIDE_PASS',obj['date'],obj['venue'],obj['race'])
+          PY
       - name: Save race-specific experimental Elo predictions
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add boat-ai/runtime/latest_results/own_elo_research.json
+          git add boat-ai/runtime/latest_results/own_elo_research.json boat-ai/runtime/latest_results/conditional_elo_research.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'Archive preclose own-Elo research TOP5 for requested race'
           git pull --rebase origin main
