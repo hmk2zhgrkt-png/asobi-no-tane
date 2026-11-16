@@ -16,6 +16,7 @@ import joblib
 from venue_context import adjust_120, context as venue_context
 from source_fetch import fetch_csv, SourceUnavailable, check_upstream_card, fetch_official_card, official_txt, parse_official_preview, official_motor_cycle, official_race_title
 from screenshot_input import read_screenshot, overlay_screenshot, odds_coverage
+from course_adjust import rescore as rescore_course, report as course_adjust_report
 
 VENUES=['桐生','戸田','江戸川','平和島','多摩川','浜名湖','蒲郡','常滑','津','三国','びわこ','住之江','尼崎','鳴門','丸亀','児島','宮島','徳山','下関','若松','芦屋','福岡','唐津','大村']
 BASE='https://boatracecsv.github.io/data/'
@@ -367,6 +368,19 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
                         'estimated_roi_proxy_pct':float(prob*odds_value*100) if pd.notna(odds_value) else np.nan,
                         'base_model_probability':float(base_prob),
                         'base_model_estimated_roi_pct':float(base_prob*odds_value*100) if pd.notna(odds_value) else np.nan})
+    course_adjusted=False
+    course_report=None
+    course_path=Path(__file__).with_name('course_context.json')
+    if course_path.is_file():
+        course_data=json.loads(course_path.read_text(encoding='utf-8'))
+        verified_entries=[{'boat':int(x['boat']),'racer_id':int(x['racer_id']),
+                           'entry_course':int(x['entry_course_pre'])} for x in entries]
+        updated=rescore_course(outcome,course_data,date,venue_code,race,verified_entries)
+        if updated is not None:
+            outcome=updated
+            course_adjusted=True
+            course_report=course_adjust_report(outcome)
+            print(f'COURSE_ADJUSTED: verified racer-entry course data for {code}; model NOT retrained')
     out=Path(out_dir);out.mkdir(parents=True,exist_ok=True)
     df.to_csv(out/'features6.csv',index=False,encoding='utf-8-sig')
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
@@ -376,6 +390,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         return frame.astype(object).where(pd.notna(frame),None).to_dict(orient='records')
     rankings={'venue':name,'date':date.isoformat(),'race':race,
               'venue_adjustment':venue_context(name),
+              'racer_course_adjustment':course_report if course_adjusted else None,
               'hit_rate_top3':json_records(pred.sort_values('probability',ascending=False).head(3)),
               'hit_rate_top5':json_records(pred.sort_values('probability',ascending=False).head(5)),
               'expected_return_top3':json_records(pred.dropna(subset=['estimated_roi_proxy_pct']).head(3)),
@@ -393,7 +408,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     # Opt for safe PAPER_SKIP if any source cannot be verified, rather than treating a model's missing values as zero.
     live_critical=['exhibition_time_pre','exhibition_st','entry_course_pre','wind_speed_m_pre','wave_cm_pre','tilt_pre']
     complete_live_inputs=bool(X[live_critical].notna().all().all())
-    source_ok=(visible_odds==120 and complete_live_inputs and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
+    source_ok=(not course_adjusted and visible_odds==120 and complete_live_inputs and not has_daily_gap and len(today['programs/motor_stats'])>0 and dayn is not None and all(len(a['cycle_source'])>0 for a in audit))
     # Structural NaNs (e.g. no previous meeting) are legitimate; missing baseline racer counts are rejected above.
     missing=sorted({k for k in FEATURES if df[k].isna().any()})
     skip_reasons=[]
@@ -402,6 +417,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     if has_daily_gap:skip_reasons.append('missing daily archived results or race card downloads')
     if visible_odds<120:skip_reasons.append(f'only {visible_odds}/120 screenshot-visible odds: no full-odds paper bets')
     if not complete_live_inputs:skip_reasons.append('missing verified screenshot/exhibition/weather model inputs')
+    if course_adjusted:skip_reasons.append('experimental per-racer actual-course adjustment is not backtested: no paper bets')
     if not today['programs/motor_stats']:skip_reasons.append('no motor stats source')
     if dayn is None:skip_reasons.append('unverified meeting day')
     if any(not a['cycle_source'] for a in audit):skip_reasons.append('unverified motor replacement cycle')
@@ -416,7 +432,8 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'screenshot_data_used':bool(screenshot),'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
-              'venue_adjustment_backtested':False,'skip_reasons':skip_reasons,
+              'venue_adjustment_backtested':False,'course_adjustment_applied':course_adjusted,
+              'course_adjustment_details':course_report,'model_retrained':False,'skip_reasons':skip_reasons,
               'paper_candidate_count':len(candidates),
               'note':'The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting.'}
     (out/'report.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding='utf-8')
