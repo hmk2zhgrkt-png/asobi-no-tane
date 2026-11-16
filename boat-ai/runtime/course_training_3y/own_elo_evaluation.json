@@ -1,0 +1,170 @@
+{
+  "status": "COMPLETED_RESEARCH",
+  "provenance": "BOAT RACE official K result archives, independently computed Elo. No third-party Elo used.",
+  "races_total": 151352,
+  "races_train": 133807,
+  "races_validation": 9055,
+  "races_final_holdout": 8490,
+  "train_last_date": "2026-06-30",
+  "validation_dates": [
+    "2026-07-01",
+    "2026-08-31"
+  ],
+  "final_holdout_dates": [
+    "2026-09-01",
+    "2026-10-31"
+  ],
+  "elo_update_rule": "Each race compares 15 pairwise finish orders; K=24 distributed across 5 comparisons; whole-day updates after all pre-date features captured.",
+  "strict_prior_day": true,
+  "same_day_race_results_in_inputs": false,
+  "first_race_initial_elo": 1500,
+  "elo_features": [
+    "elo_centered",
+    "elo_field_advantage",
+    "elo_rank_fraction",
+    "elo_log_races"
+  ],
+  "baseline": "frame+venue+prior racer/course 3yr logistic, saved before Elo research",
+  "candidate": "same history features PLUS independent Elo, same training dates and classifier hyperparameters",
+  "models": {
+    "baseline_prior_course": {
+      "validation": {
+        "races": 9055,
+        "winner_top1_accuracy": 0.5486471562672557,
+        "winner_log_loss": 1.2466435432434082,
+        "trifecta_top1_hit_rate": 0.09000552181115405,
+        "trifecta_top3_hit_rate": 0.21623412479293208,
+        "trifecta_top5_hit_rate": 0.30701270016565435,
+        "trifecta_top10_hit_rate": 0.4575372722252899,
+        "trifecta_log_loss": 4.039254665374756,
+        "mean_trifecta_true_rank": 23.752070679182772,
+        "prob_sum_max_abs_error": 5.364418029785156e-07
+      },
+      "final_holdout": {
+        "races": 8490,
+        "winner_top1_accuracy": 0.5539458186101296,
+        "winner_log_loss": 1.2344152927398682,
+        "trifecta_top1_hit_rate": 0.08091872791519435,
+        "trifecta_top3_hit_rate": 0.2133097762073027,
+        "trifecta_top5_hit_rate": 0.30647820965842165,
+        "trifecta_top10_hit_rate": 0.4603062426383981,
+        "trifecta_log_loss": 4.021910190582275,
+        "mean_trifecta_true_rank": 23.21060070671378,
+        "prob_sum_max_abs_error": 5.364418029785156e-07
+      },
+      "holdout_boat1_wins": {
+        "races": 4693,
+        "winner_top1_accuracy": 0.9993607500532709,
+        "winner_log_loss": 0.5465996265411377,
+        "trifecta_top1_hit_rate": 0.1459620711698274,
+        "trifecta_top3_hit_rate": 0.3831238014063499,
+        "trifecta_top5_hit_rate": 0.5474110377157468,
+        "trifecta_top10_hit_rate": 0.8071595994033667,
+        "trifecta_log_loss": 3.253091335296631,
+        "mean_trifecta_true_rank": 6.506072874493927,
+        "prob_sum_max_abs_error": 5.364418029785156e-07
+      },
+      "holdout_boat1_loses": {
+        "races": 3797,
+        "winner_top1_accuracy": 0.003423755596523571,
+        "winner_log_loss": 2.084538698196411,
+        "trifecta_top1_hit_rate": 0.0005267316302343956,
+        "trifecta_top3_hit_rate": 0.003423755596523571,
+        "trifecta_top5_hit_rate": 0.008691071898867527,
+        "trifecta_top10_hit_rate": 0.03160389781406373,
+        "trifecta_log_loss": 4.972151756286621,
+        "mean_trifecta_true_rank": 43.85699236239136,
+        "prob_sum_max_abs_error": 4.76837158203125e-07
+      }
+    },
+    "prior_course_plus_elo": {
+      "validation": {
+        "races": 9055,
+        "winner_top1_accuracy": 0.5628934290447267,
+        "winner_log_loss": 1.2099931240081787,
+        "trifecta_top1_hit_rate": 0.09376035339591386,
+        "trifecta_top3_hit_rate": 0.2251794588625069,
+        "trifecta_top5_hit_rate": 0.319712865819989,
+        "trifecta_top10_hit_rate": 0.4826062948647156,
+        "trifecta_log_loss": 3.9583966732025146,
+        "mean_trifecta_true_rank": 22.14986195472115,
+        "prob_sum_max_abs_error": 6.556510925292969e-07
+      },
+      "final_holdout": {
+        "races": 8490,
+        "winner_top1_accuracy": 0.5667844522968198,
+        "winner_log_loss": 1.1988011598587036,
+        "trifecta_top1_hit_rate": 0.08775029446407538,
+        "trifecta_top3_hit_rate": 0.2209658421672556,
+        "trifecta_top5_hit_rate": 0.3234393404004711,
+        "trifecta_top10_hit_rate": 0.47985865724381627,
+        "trifecta_log_loss": 3.9456355571746826,
+        "mean_trifecta_true_rank": 21.7716136631331,
+        "prob_sum_max_abs_error": 5.364418029785156e-07
+      },
+      "holdout_boat1_wins": {
+        "races": 4693,
+        "winner_top1_accuracy": 0.9769870019177498,
+        "winner_log_loss": 0.5483042597770691,
+        "trifecta_top1_hit_rate": 0.15150223737481355,
+        "trifecta_top3_hit_rate": 0.38184530151289153,
+        "trifecta_top5_hit_rate": 0.555082037076497,
+        "trifecta_top10_hit_rate": 0.7937353505220541,
+        "trifecta_log_loss": 3.2072577476501465,
+        "mean_trifecta_true_rank": 6.868101427658214,
+        "prob_sum_max_abs_error": 5.364418029785156e-07
+      },
+      "holdout_boat1_loses": {
+        "races": 3797,
+        "winner_top1_accuracy": 0.0597840400316039,
+        "winner_log_loss": 2.0027997493743896,
+        "trifecta_top1_hit_rate": 0.008954437713984725,
+        "trifecta_top3_hit_rate": 0.022122728469844616,
+        "trifecta_top5_hit_rate": 0.037134579931524886,
+        "trifecta_top10_hit_rate": 0.09191466947590203,
+        "trifecta_log_loss": 4.858252048492432,
+        "mean_trifecta_true_rank": 40.19199367922044,
+        "prob_sum_max_abs_error": 4.76837158203125e-07
+      }
+    }
+  },
+  "comparisons": {
+    "validation": {
+      "races": 9055,
+      "top5_delta_percentage_points": 1.2700165654334628,
+      "top1_delta_percentage_points": 0.375483158475981,
+      "trifecta_logloss_reduction": 0.08085799217224121,
+      "winner_logloss_reduction": 0.03665041923522949
+    },
+    "final_holdout": {
+      "races": 8490,
+      "top5_delta_percentage_points": 1.6961130742049468,
+      "top1_delta_percentage_points": 0.6831566548881035,
+      "trifecta_logloss_reduction": 0.07627463340759277,
+      "winner_logloss_reduction": 0.03561413288116455
+    },
+    "holdout_boat1_wins": {
+      "races": 4693,
+      "top5_delta_percentage_points": 0.7670999360750108,
+      "top1_delta_percentage_points": 0.5540166204986152,
+      "trifecta_logloss_reduction": 0.045833587646484375,
+      "winner_logloss_reduction": -0.0017046332359313965
+    },
+    "holdout_boat1_loses": {
+      "races": 3797,
+      "top5_delta_percentage_points": 2.844350803265736,
+      "top1_delta_percentage_points": 0.8427706083750329,
+      "trifecta_logloss_reduction": 0.11389970779418945,
+      "winner_logloss_reduction": 0.08173894882202148
+    }
+  },
+  "incumbent_28_feature_lightgbm_tested": false,
+  "no_production_deployment": true,
+  "no_bets": true,
+  "conclusion": {
+    "improved_top5_on_both_validation_and_test": true,
+    "reduced_trifecta_logloss_on_both": true,
+    "automatic_deployment": false,
+    "production_decision": "Independent 28-feature baseline still needs fair same-race evaluation; do not swap or blend based on this alone."
+  }
+}
