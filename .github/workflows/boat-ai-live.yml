@@ -81,6 +81,7 @@ jobs:
           r=json.loads(p.read_text())
           if r.get('model_ran'): print('READY')
           elif dt.date.fromisoformat(os.environ['DATE']) != dt.datetime.now(ZoneInfo('Asia/Tokyo')).date(): print('STOP')
+          elif (lambda z: str(z.get('date'))==os.environ['DATE'] and int(z.get('venue',-1))==int(os.environ['VENUE']) and int(z.get('race',-1))==int(os.environ['RACE']))(json.loads(Path('boat-ai/runtime/screenshot_input.json').read_text())) if Path('boat-ai/runtime/screenshot_input.json').exists() else False: print('STOP')
           elif r.get('status')!='DATA_NOT_READY_SKIP': print('STOP')
           else: print('RETRY')
           PY
