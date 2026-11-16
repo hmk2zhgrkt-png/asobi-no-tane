@@ -89,6 +89,24 @@ jobs:
             if [ "$attempt" -eq 20 ]; then break; fi
             sleep 30
           done
+      - name: Archive independent 3-year racer-course research alternatives
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('boat-ai/runtime/latest_results/report.json')
+          if not p.exists() or not json.loads(p.read_text()).get('model_ran'):
+              Path('/tmp/course_sidecar_skip').touch()
+          PY
+          if [ ! -f /tmp/course_sidecar_skip ]; then
+            python boat-ai/runtime/course_model_sidecar.py \
+              --history-root boat-ai/runtime/course_history_3y \
+              --candidate-model boat-ai/runtime/course_training_3y/candidate_research_only.joblib \
+              --features boat-ai/runtime/latest_results/features6.csv \
+              --predictions boat-ai/runtime/latest_results/predictions120.csv \
+              --report boat-ai/runtime/latest_results/report.json \
+              --out boat-ai/runtime/latest_results/course_model_research.json || echo 'Research sidecar unavailable; incumbent prediction stays unchanged'
+          fi
       - name: Apply 120 percent EV threshold only to preclose paper bets
         run: |
           python boat-ai/runtime/paper_ledger_v2.py --report boat-ai/runtime/latest_results/report.json --candidates boat-ai/runtime/latest_results/paper_candidates.csv --ledger boat-ai/runtime/paper_ledger.csv
