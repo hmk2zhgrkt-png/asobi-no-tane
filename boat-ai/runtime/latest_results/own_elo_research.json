@@ -1,11 +1,11 @@
 {
   "status": "RESEARCH_ONLY_PROSPECTIVE_COURSE_ELO",
   "date": "2026-11-16",
-  "venue": "大村",
-  "venue_code": 24,
-  "race": 8,
-  "observed_at_jst": "2026-11-16T18:18:00+09:00",
-  "cutoff_jst": "2026-11-16T18:33:00+09:00",
+  "venue": "丸亀",
+  "venue_code": 15,
+  "race": 11,
+  "observed_at_jst": "2026-11-16T20:06:00+09:00",
+  "cutoff_jst": "2026-11-16T20:14:00+09:00",
   "source": "independent own Elo from official BOAT RACE K histories",
   "historic_races_processed": 153392,
   "historic_last_date": "2026-11-15",
@@ -15,63 +15,63 @@
   "model_inputs": "boat/venue/prior-history + strict pre-day Elo; exhibition not used in this model",
   "top5": [
     {
-      "trifecta": "1-2-3",
-      "probability": 0.059413212670342656
-    },
-    {
-      "trifecta": "1-2-5",
-      "probability": 0.052582522889908646
-    },
-    {
-      "trifecta": "1-2-4",
-      "probability": 0.050739222845467516
-    },
-    {
-      "trifecta": "1-3-2",
-      "probability": 0.04575096884197173
+      "trifecta": "1-3-6",
+      "probability": 0.04236998838039929
     },
     {
       "trifecta": "1-3-5",
-      "probability": 0.043298140415815284
+      "probability": 0.03983482048798338
+    },
+    {
+      "trifecta": "1-3-4",
+      "probability": 0.03900871879946946
+    },
+    {
+      "trifecta": "1-2-3",
+      "probability": 0.03865198130180861
+    },
+    {
+      "trifecta": "1-3-2",
+      "probability": 0.038227465877513314
     }
   ],
   "sum_probability": 1.0,
   "entrant_elo": [
     {
       "boat": 1,
-      "racer_id": 5055,
-      "elo": 1561.82,
-      "races_observed": 692
+      "racer_id": 4337,
+      "elo": 1710.1,
+      "races_observed": 708
     },
     {
       "boat": 2,
-      "racer_id": 5036,
-      "elo": 1575.53,
-      "races_observed": 601
+      "racer_id": 5043,
+      "elo": 1733.58,
+      "races_observed": 692
     },
     {
       "boat": 3,
-      "racer_id": 4053,
-      "elo": 1558.09,
-      "races_observed": 638
+      "racer_id": 4907,
+      "elo": 1844.55,
+      "races_observed": 678
     },
     {
       "boat": 4,
-      "racer_id": 4006,
-      "elo": 1540.13,
-      "races_observed": 557
+      "racer_id": 4847,
+      "elo": 1692.07,
+      "races_observed": 673
     },
     {
       "boat": 5,
-      "racer_id": 5110,
-      "elo": 1575.45,
-      "races_observed": 620
+      "racer_id": 5034,
+      "elo": 1684.07,
+      "races_observed": 762
     },
     {
       "boat": 6,
-      "racer_id": 4376,
-      "elo": 1504.58,
-      "races_observed": 771
+      "racer_id": 4497,
+      "elo": 1758.98,
+      "races_observed": 665
     }
   ],
   "no_bets": true
