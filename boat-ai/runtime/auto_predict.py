@@ -430,6 +430,20 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
             course_adjusted=True
             course_report=course_adjust_report(outcome)
             print(f'COURSE_ADJUSTED: verified racer-entry course data for {code}; model NOT retrained')
+    # User-directed experimental exhibition F.01..F.04 *positive* adjustment.
+    # Do not alter model artifacts or claim this heuristic was backtested.
+    from exhibition_f_bonus import adjust_combo_probs,details as exhibition_f_details
+    st_values=[float(x['exhibition_st']) for x in entries]
+    f_rule=exhibition_f_details(st_values)
+    before_f=[float(x['probability']) for x in outcome]
+    after_f=adjust_combo_probs(PERMS,before_f,st_values)
+    for row,old,corrected in zip(outcome,before_f,after_f):
+        row['pre_exhibition_f_bonus_probability']=old
+        row['probability']=corrected
+        odds=str(row.get('observed_odds','')).strip()
+        row['estimated_roi_proxy_pct']=(corrected*float(odds)*100
+            if odds and odds.lower() not in ('nan','none') else np.nan)
+    p=np.asarray(after_f,dtype=float)
     out=Path(out_dir);out.mkdir(parents=True,exist_ok=True)
     df.to_csv(out/'features6.csv',index=False,encoding='utf-8-sig')
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
@@ -474,6 +488,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     if visible_odds<120:skip_reasons.append(f'only {visible_odds}/120 screenshot-visible odds: no full-odds paper bets')
     if not complete_live_inputs:skip_reasons.append('missing verified screenshot/exhibition/weather model inputs')
     if fast_snapshot:skip_reasons.append('fast screenshot mode with K history is not validated for paper bets')
+    skip_reasons.append('experimental exhibition F bonus has not been backtested; no paper bets')
     if course_adjusted:skip_reasons.append('experimental per-racer actual-course adjustment is not backtested: no paper bets')
     if not today['programs/motor_stats']:skip_reasons.append('no motor stats source')
     if dayn is None:skip_reasons.append('unverified meeting day')
