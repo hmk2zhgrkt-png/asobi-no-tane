@@ -377,6 +377,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     rankings={'venue':name,'date':date.isoformat(),'race':race,
               'venue_adjustment':venue_context(name),
               'hit_rate_top3':json_records(pred.sort_values('probability',ascending=False).head(3)),
+              'hit_rate_top5':json_records(pred.sort_values('probability',ascending=False).head(5)),
               'expected_return_top3':json_records(pred.dropna(subset=['estimated_roi_proxy_pct']).head(3)),
               'odds_coverage':visible_odds,'expected_return_scope':'all_120' if visible_odds==120 else 'screenshot_visible_only'}
     (out/'rankings.json').write_text(json.dumps(rankings,ensure_ascii=False,indent=2),encoding='utf-8')
