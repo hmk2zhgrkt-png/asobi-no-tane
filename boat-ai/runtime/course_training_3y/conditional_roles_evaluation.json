@@ -1,0 +1,114 @@
+{
+  "status": "RESEARCH_EVALUATED",
+  "method": "Observed-first conditional second + observed-first-and-second conditional third; unknown first/second are exhaustively enumerated at inference",
+  "training_races": 133807,
+  "validation_races": 9055,
+  "holdout_races": 8490,
+  "training_end": "2026-06-30",
+  "validation_end": "2026-08-31",
+  "holdout_dates": [
+    "2026-09-01",
+    "2026-10-31"
+  ],
+  "reference": "Previously trained own-Elo course-history first/second/third model",
+  "features": [
+    "boat_fraction",
+    "prior_30d_win",
+    "prior_30d_top2",
+    "prior_30d_top3",
+    "prior_90d_win",
+    "prior_90d_top3",
+    "prior_90d_course_win",
+    "prior_365d_win",
+    "prior_365d_top3",
+    "prior_365d_course_win",
+    "prior_365d_course_top3",
+    "elo_center",
+    "elo_field_advantage",
+    "elo_log_starts"
+  ],
+  "uses_historic_exhibition": false,
+  "same_day_outcome_features": false,
+  "heldout_selection_leakage": false,
+  "chosen_on_validation_only": {
+    "selected_alpha": 0.75,
+    "selected_temperature": 0.85,
+    "validation_logloss": 3.847217559814453,
+    "validation_top5": 0.3382661512976256,
+    "selection_only_from_validation": true
+  },
+  "validation": {
+    "reference": {
+      "races": 9055,
+      "top1": 0.09376035339591386,
+      "top3": 0.2251794588625069,
+      "top5": 0.319712865819989,
+      "top10": 0.4826062948647156,
+      "logloss": 3.9583966732025146,
+      "mean_actual_rank": 22.14986195472115,
+      "max_sum_error": 6.556510925292969e-07
+    },
+    "conditional": {
+      "races": 9055,
+      "top1": 0.09828823854224185,
+      "top3": 0.24207620099392602,
+      "top5": 0.34080618442849253,
+      "top10": 0.5065709552733296,
+      "logloss": 3.8480052947998047,
+      "mean_actual_rank": 19.83854224185533,
+      "max_sum_error": 9.5367431640625e-07
+    },
+    "selected_blend": {
+      "races": 9055,
+      "top1": 0.09872998343456654,
+      "top3": 0.2417448923246825,
+      "top5": 0.3382661512976256,
+      "top10": 0.5069022639425732,
+      "logloss": 3.847217559814453,
+      "mean_actual_rank": 19.903478741027058,
+      "max_sum_error": 1.1920928955078125e-06
+    }
+  },
+  "final_holdout": {
+    "reference": {
+      "races": 8490,
+      "top1": 0.08775029446407538,
+      "top3": 0.2209658421672556,
+      "top5": 0.3234393404004711,
+      "top10": 0.47985865724381627,
+      "logloss": 3.9456355571746826,
+      "mean_actual_rank": 21.7716136631331,
+      "max_sum_error": 5.364418029785156e-07
+    },
+    "conditional": {
+      "races": 8490,
+      "top1": 0.0928150765606596,
+      "top3": 0.23439340400471143,
+      "top5": 0.3374558303886926,
+      "top10": 0.5064782096584217,
+      "logloss": 3.840186595916748,
+      "mean_actual_rank": 19.555005889281507,
+      "max_sum_error": 9.5367431640625e-07
+    },
+    "selected_blend": {
+      "races": 8490,
+      "top1": 0.09210836277974087,
+      "top3": 0.23604240282685512,
+      "top5": 0.3371024734982332,
+      "top10": 0.508833922261484,
+      "logloss": 3.8352038860321045,
+      "mean_actual_rank": 19.536395759717315,
+      "max_sum_error": 1.1324882507324219e-06
+    }
+  },
+  "does_not_compare_incumbent_28_feature_model": true,
+  "production_model_changed": false,
+  "no_bets": true,
+  "wall_seconds": 37.2,
+  "recommendation": {
+    "selected_blend_beats_reference_top5": true,
+    "selected_blend_beats_reference_logloss": true,
+    "production_deployment_allowed": false,
+    "reason": "Full preclose original 28-feature LightGBM historic snapshots unavailable"
+  }
+}
