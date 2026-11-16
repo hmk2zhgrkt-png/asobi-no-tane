@@ -24,7 +24,7 @@ from train_course_3y import (
 )
 from own_elo import FEATURES as ELO_FEATURES,elo_feature_rows
 
-INDEXES=[30,31,32,33,46,48,50,54,56,58,62]  # prior-only historical outcomes
+INDEXES=[30,31,32,38,40,42,46,48,50,52]  # prior-only historical outcomes
 SMALL_NAMES=['boat_fraction','prior_30d_win','prior_30d_top2','prior_30d_top3',
              'prior_90d_win','prior_90d_top3','prior_90d_course_win',
              'prior_365d_win','prior_365d_top3','prior_365d_course_win',
