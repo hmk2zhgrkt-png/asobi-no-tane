@@ -153,6 +153,10 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
                 except (ValueError,HTTPError,URLError,TimeoutError,OSError) as title_error:
                     print(f'OPTIONAL_TITLE_UNAVAILABLE: {type(title_error).__name__}: {title_error}')
         except SourceUnavailable as e:
+            if screenshot and k=='previews/od3' and k not in screenshot['previews']:
+                today[k]=[]
+                print(f'NO_SCREENSHOT_ODDS: probability only for {code}')
+                continue
             if screenshot and k in ('previews/sui','previews/od3') and k in screenshot['previews']:
                 today[k]=[]
                 print(f'SCREENSHOT_FALLBACK: {k} for {code}')
@@ -209,6 +213,8 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         official_close=dt.datetime.combine(date,dt.time.fromisoformat(verified_cutoff),JST)
         for kind in ('previews/tkz','previews/stt','previews/sui','previews/od3'):
             today[kind]=overlay_screenshot(today[kind],screenshot,kind,code,official_close)
+    if not today['previews/od3'] and screenshot and 'previews/od3' not in screenshot['previews']:
+        today['previews/od3']=[{'レースコード':code,'取得日時':screenshot['observed'].isoformat()}]
     ts=[get_by_code(today[k],code) for k in ('previews/tkz','previews/stt','previews/sui','previews/od3')]
     t,st,weather,odds=ts
     close=dt.datetime.combine(date,dt.time.fromisoformat(t['締切時刻']),JST)
@@ -216,7 +222,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     if any(x>close for x in obs):raise ValueError('Post-cutoff preview is not allowed')
     odds_values={c:number(odds.get('3連単_'+'-'.join(map(str,c)))) for c in PERMS}
     visible_odds=sum(1 for v in odds_values.values() if pd.notna(v) and v>1)
-    if visible_odds==0:raise ValueError('No verified odds were available in screenshots or live data')
+    if visible_odds==0 and not screenshot:raise ValueError('No verified odds were available in screenshots or live data')
     if any(pd.notna(v) and v<=1 for v in odds_values.values()):raise ValueError('Invalid nonpositive/low odds')
     # Motor generation verified against current-period snapshots; ignore old-cycle historical IDs.
     motor_starts={}
