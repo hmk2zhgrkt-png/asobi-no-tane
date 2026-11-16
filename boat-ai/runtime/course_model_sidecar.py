@@ -93,14 +93,21 @@ def compare_rows(base_rows,entry_rows,model_file,history_root,date,venue,race):
        'alternatives':out,
        'no_paper_or_real_bets':True}
 
-def run(history_root,model_file,features_file,predictions_file,out_path):
+def run(history_root,model_file,features_file,predictions_file,report_file,out_path):
     with open(features_file,encoding='utf-8-sig',newline='') as f:
         entries=list(csv.DictReader(f))
     with open(predictions_file,encoding='utf-8-sig',newline='') as f:
         base=list(csv.DictReader(f))
-    e=entries[0]
-    result=compare_rows(base,entries,model_file,history_root,e['date'],
-                        {'尼崎':13}.get(e['venue'],int(e['venue']) if e['venue'].isdigit() else 0),e['race'])
+    report=json.loads(Path(report_file).read_text(encoding='utf-8'))
+    if not report.get('model_ran',False):
+        raise ValueError('Incumbent model did not score this race')
+    if not (str(entries[0]['date'])==str(report['date']) and
+            str(entries[0]['race'])==str(report['race']) and
+            str(entries[0]['venue'])==str(report['venue'])):
+        raise ValueError('Incumbent report and archived features are not the same race')
+    enriched=[dict(e,venue_code=int(report['venue_code'])) for e in entries]
+    result=compare_rows(base,enriched,model_file,history_root,
+                        report['date'],report['venue_code'],report['race'])
     target=Path(out_path);target.parent.mkdir(parents=True,exist_ok=True)
     target.write_text(json.dumps(result,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     return result
@@ -112,7 +119,8 @@ if __name__=='__main__':
     p.add_argument('--candidate-model',default='boat-ai/runtime/course_training_3y/candidate_research_only.joblib')
     p.add_argument('--features',default='boat-ai/runtime/latest_results/features6.csv')
     p.add_argument('--predictions',default='boat-ai/runtime/latest_results/predictions120.csv')
+    p.add_argument('--report',default='boat-ai/runtime/latest_results/report.json')
     p.add_argument('--out',default='boat-ai/runtime/course_training_3y/incumbent_sidecar_comparison.json')
     a=p.parse_args()
-    report=run(a.history_root,a.candidate_model,a.features,a.predictions,a.out)
+    report=run(a.history_root,a.candidate_model,a.features,a.predictions,a.report,a.out)
     print(json.dumps(report,ensure_ascii=False))
