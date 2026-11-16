@@ -1,0 +1,51 @@
+name: Boat AI fast screenshot inference smoke test
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/auto_predict.py'
+      - '.github/workflows/boat-ai-fast-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Compile speed-optimized script
+        run: python -m py_compile boat-ai/runtime/auto_predict.py
+      - name: Install prediction dependencies
+        run: python -m pip install --disable-pip-version-check pandas numpy lightgbm scikit-learn joblib
+      - name: Extract known incumbent model
+        run: |
+          echo '9edf35ceaed65514ab8fdc08042f8c4462f4663e5e0ee17dcec7a16b5fd7c22d  boat-ai/runtime/model_bundle.zip' | sha256sum -c -
+          mkdir -p boat-ai/runtime/model
+          python -m zipfile -e boat-ai/runtime/model_bundle.zip boat-ai/runtime/model
+      - name: Time one-shot screenshot fast replay without network retries
+        env:
+          BOAT_AI_FAST_SCREENSHOT: '1'
+        run: |
+          python boat-ai/runtime/auto_predict.py --date 2026-11-16 --venue 18 --race 12 --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out boat-ai/runtime/fast_smoke_results
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('boat-ai/runtime/fast_smoke_results/report.json')
+          j=json.loads(p.read_text())
+          assert j['model_ran'] and j['fast_screenshot_mode'] and j['venue_code']==18 and j['race']==12
+          assert j['status']=='REPLAY_OR_UNVERIFIED_NO_BETS'
+          q=json.loads(Path('boat-ai/runtime/fast_smoke_results/rankings.json').read_text())
+          assert len(q['hit_rate_top5'])==5
+          print('FAST_SMOKE_PASS',json.dumps({'top5':q['hit_rate_top5']},ensure_ascii=False))
+          PY
+      - name: Preserve one-shot inference and execution report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tokuyama12r-fast-verified
+          path: boat-ai/runtime/fast_smoke_results/
+          retention-days: 30
+          if-no-files-found: warn
