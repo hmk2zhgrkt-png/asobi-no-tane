@@ -1,13 +1,13 @@
 {
   "month": "2026-11",
-  "asof": "2026-11-15",
+  "asof": "2026-11-16",
   "file": "2026-11.csv.gz",
-  "sha256": "0be5e8850a9d219ce858c53deb0a7809f5f73acb6e7d2634fa81c1513d2904c1",
-  "days_requested": 15,
-  "days_downloaded": 15,
+  "sha256": "1a353e1505bb7bd4a14ea984d49e3161cdb3c59e7877e9dec9b02412dc767d98",
+  "days_requested": 16,
+  "days_downloaded": 16,
   "days_missing": 0,
-  "racer_rows": 12240,
-  "clean_six_boat_races": 2040,
+  "racer_rows": 12930,
+  "clean_six_boat_races": 2155,
   "days": [
     {
       "date": "2026-11-01",
@@ -109,6 +109,13 @@
       "status": "ok",
       "complete_races": 135,
       "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-11-16",
+      "status": "ok",
+      "complete_races": 115,
+      "invalid_or_disqualified_race": 3,
       "non_six_boat_race": 2
     }
   ],
