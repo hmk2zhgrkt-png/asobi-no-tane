@@ -47,6 +47,18 @@ def read_screenshot(path,date,venue,race):
     data=obj.get("fields",{})
     if not isinstance(data,dict):raise ValueError("Missing screenshot fields object")
     result={"observed":observed,"cutoff":obj.get("cutoff_jst",""),"previews":{},"odds_count":0,"complete_odds":False,"notes":[]}
+    if "meeting_day" in obj:
+        day=int(obj["meeting_day"])
+        day_observed=_stamp(obj["meeting_day_observed_at_jst"])
+        cutoff_text=str(obj.get("cutoff_jst",""))
+        if not 1<=day<=7 or day_observed.date()!=date:
+            raise ValueError("Invalid screenshot meeting day or observation date")
+        if len(cutoff_text)!=5 or day_observed>dt.datetime.combine(date,dt.time.fromisoformat(cutoff_text),JST):
+            raise ValueError("Meeting-day source is not independently preclose")
+        if day_observed>dt.datetime.now(JST)+dt.timedelta(seconds=10):
+            raise ValueError("Meeting-day screenshot observation in the future")
+        result["meeting_day"]=day
+        result["meeting_day_observed"]=day_observed.isoformat()
     code=f"{date:%Y%m%d}{int(venue):02d}{int(race):02d}"
     base={"レースコード":code,"取得日時":observed.isoformat()}
     if "exhibition_time" in data or "tilt" in data:
