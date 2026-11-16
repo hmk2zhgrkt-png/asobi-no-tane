@@ -167,7 +167,8 @@ def assess(models,X,y,keys,boats,subset,include_history):
     p/=p.sum(axis=1,keepdims=True)
     actual_indices=np.argsort(outcomes,axis=1)[:,:3]
     coded=actual_indices[:,0]*36+actual_indices[:,1]*6+actual_indices[:,2]
-    combo_codes=COMBOS[:,0]*36+COMBOS[:,1]*6+COMBOS[:,2]
+    combo_ids=COMBOS.astype(np.int16)
+    combo_codes=combo_ids[:,0]*36+combo_ids[:,1]*6+combo_ids[:,2]
     index_by_code={int(v):i for i,v in enumerate(combo_codes)}
     trueidx=np.array([index_by_code[int(z)] for z in coded])
     sorted_indices=np.argsort(-p,axis=1)
