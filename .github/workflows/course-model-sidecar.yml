@@ -21,7 +21,7 @@ jobs:
       - name: Check Python syntax
         run: |
           python -m py_compile boat-ai/runtime/course_model_sidecar.py
-      - name: Compare candidate and incumbent on saved Amagasaki 2R without wagering
+      - name: Compare candidate and incumbent on saved exact race from latest incumbent report without wagering
         run: |
           python boat-ai/runtime/course_model_sidecar.py --out boat-ai/runtime/course_training_3y/incumbent_sidecar_comparison.json
           python - <<'PY'
@@ -29,7 +29,8 @@ jobs:
           from pathlib import Path
           p=Path('boat-ai/runtime/course_training_3y/incumbent_sidecar_comparison.json')
           d=json.loads(p.read_text())
-          assert d['date']=='2026-11-16' and d['venue_code']==13 and d['race']==2
+          live=json.loads(Path('boat-ai/runtime/latest_results/report.json').read_text())
+          assert d['date']==live['date'] and d['venue_code']==live['venue_code'] and d['race']==live['race']
           assert d['existing_28_feature_model_unchanged'] and d['no_paper_or_real_bets']
           assert len(d['alternatives'])==5
           for a in d['alternatives']:
