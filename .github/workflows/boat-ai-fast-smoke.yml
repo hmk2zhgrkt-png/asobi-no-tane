@@ -56,6 +56,39 @@ jobs:
           assert len(q['hit_rate_top5'])==5
           print('FAST_SMOKE_PASS',json.dumps({'top5':q['hit_rate_top5']},ensure_ascii=False))
           PY
+      - name: Compare fast predictions with versus without pre-downloaded November K history
+        env:
+          BOAT_AI_FAST_SCREENSHOT: '1'
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          r=json.loads(Path('boat-ai/runtime/fast_smoke_results/report.json').read_text())
+          assert r.get('official_k_history_days',0)>=15, f"November cache did not load: {r.get('official_k_history_days')}"
+          assert r.get('official_k_history_latest')>='2026-11-15'
+          assert not r['missing_published_result_days']
+          assert r['paper_candidate_count']==0
+          print('LATEST_PRIOR_DAY_K_HISTORY_LOADED',r['official_k_history_days'],r['official_k_history_latest'])
+          PY
+          mv boat-ai/runtime/course_history_daily /tmp/boat-k-cache
+          python boat-ai/runtime/auto_predict.py --date 2026-11-16 --venue 18 --race 12 --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out boat-ai/runtime/fast_smoke_no_cache
+          mv /tmp/boat-k-cache boat-ai/runtime/course_history_daily
+          python - <<'PY'
+          import json,csv
+          from pathlib import Path
+          def get(path):
+              with open(path,encoding='utf-8-sig',newline='') as f:
+                  d=list(csv.DictReader(f))
+              d.sort(key=lambda x:float(x['probability']),reverse=True)
+              rank=next(i+1 for i,x in enumerate(d) if x['trifecta']=='1-5-2')
+              return rank,float(d[rank-1]['probability']),[x['trifecta'] for x in d[:5]]
+          old=get('boat-ai/runtime/fast_smoke_no_cache/predictions120.csv')
+          new=get('boat-ai/runtime/fast_smoke_results/predictions120.csv')
+          print('TOKUYAMA_REPLAY_FAST_NO_CACHE',old)
+          print('TOKUYAMA_REPLAY_FAST_WITH_NOVEMBER_K',new)
+          if old==new:
+              raise AssertionError('Official history cache did not change any prediction')
+          PY
       - name: Preserve one-shot inference and execution report
         if: always()
         uses: actions/upload-artifact@v4
