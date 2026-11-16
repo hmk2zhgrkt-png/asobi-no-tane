@@ -1,0 +1,82 @@
+{
+  "data_join": {
+    "days_requested": 14,
+    "days_successful": 0,
+    "days_unavailable": 14,
+    "complete_races": 0,
+    "racer_rows": 0,
+    "caution": "Actual course/finish/ST are postrace labels, never pre-race features."
+  },
+  "coverage_by_day": [
+    {
+      "date": "2026-05-01",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/01.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-02",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/02.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-03",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/03.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-04",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/04.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-05",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/05.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-06",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/06.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-07",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/07.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-08",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/08.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-09",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/09.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-10",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/10.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-11",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/11.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-12",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/12.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-13",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/13.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    },
+    {
+      "date": "2026-05-14",
+      "status": "unavailable",
+      "reason": "All sources unavailable for programs/race_cards/2026/05/14.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+    }
+  ]
+}
