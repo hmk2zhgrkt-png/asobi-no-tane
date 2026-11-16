@@ -1,0 +1,41 @@
+name: Score live race with independent 3-year Elo (research)
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/score_own_elo_live.py'
+      - '.github/workflows/boat-own-elo-live.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install fast Elo model dependencies
+        run: python -m pip install --disable-pip-version-check numpy scikit-learn joblib
+      - name: Score live race using all strictly earlier dates
+        run: |
+          python boat-ai/runtime/score_own_elo_live.py
+          python - <<'PY'
+          import json,datetime
+          from pathlib import Path
+          r=json.loads(Path('boat-ai/runtime/latest_results/own_elo_research.json').read_text())
+          assert len(r['top5'])==5 and abs(r['sum_probability']-1)<1e-9
+          assert r['historic_last_date'] < r['date']
+          assert r['base_28feature_model_unchanged'] and r['no_bets']
+          print('ELO_LIVE_PASS',json.dumps(r['top5'],ensure_ascii=False))
+          PY
+      - name: Save race-specific experimental Elo predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/latest_results/own_elo_research.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Archive preclose own-Elo research TOP5 for requested race'
+          git pull --rebase origin main
+          git push origin HEAD:main
