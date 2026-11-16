@@ -1,0 +1,48 @@
+name: Course-history candidate vs current AI research comparison
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/course_model_sidecar.py'
+      - '.github/workflows/course-model-sidecar.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numerical dependencies
+        run: python -m pip install --disable-pip-version-check numpy scikit-learn joblib
+      - name: Check Python syntax
+        run: |
+          python -m py_compile boat-ai/runtime/course_model_sidecar.py
+      - name: Compare candidate and incumbent on saved Amagasaki 2R without wagering
+        run: |
+          python boat-ai/runtime/course_model_sidecar.py --out boat-ai/runtime/course_training_3y/incumbent_sidecar_comparison.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('boat-ai/runtime/course_training_3y/incumbent_sidecar_comparison.json')
+          d=json.loads(p.read_text())
+          assert d['date']=='2026-11-16' and d['venue_code']==13 and d['race']==2
+          assert d['existing_28_feature_model_unchanged'] and d['no_paper_or_real_bets']
+          assert len(d['alternatives'])==5
+          for a in d['alternatives']:
+              assert abs(a['sum_probability']-1)<1e-8
+              assert len(a['top5'])==5
+          print('PASS: Five 120-combination alternatives, no production change or bets')
+          PY
+      - name: Persist research-only side-by-side predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_training_3y/incumbent_sidecar_comparison.json
+          if git diff --cached --quiet; then echo 'No changes'; exit 0; fi
+          git commit -m 'Archive side-by-side 3y course history and incumbent research comparison'
+          git pull --rebase origin main
+          git push origin HEAD:main
