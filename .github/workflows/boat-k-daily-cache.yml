@@ -1,0 +1,53 @@
+name: Official K completed-result daily cache (fast AI)
+on:
+  push:
+    paths:
+      - '.github/workflows/boat-k-daily-cache.yml'
+      - 'boat-ai/runtime/live_course_history.py'
+      - 'boat-ai/runtime/test_live_course_history.py'
+  workflow_dispatch:
+  schedule:
+    - cron: '0 17 * * *'  # 02:00 JST next day; finished races only
+permissions:
+  contents: write
+concurrency:
+  group: boat-k-daily-cache
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 16
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify cache rules
+        run: |
+          python -m py_compile boat-ai/runtime/live_course_history.py boat-ai/runtime/auto_predict.py
+          python boat-ai/runtime/test_live_course_history.py
+      - name: Install official K-file reader
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq p7zip-full
+          python -m pip install --disable-pip-version-check boatrace-lzh
+      - name: Download completed official results through yesterday JST
+        run: |
+          python boat-ai/runtime/live_course_history.py
+      - name: Archive verified completed-day cache without modifying predictions
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_history_daily/
+          if git diff --cached --quiet; then echo 'Cache unchanged'; exit 0; fi
+          git commit -m 'Cache official completed race entry and finish for fast AI history'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - name: Backup daily history checkpoint
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: official-k-daily-cache
+          path: boat-ai/runtime/course_history_daily/
+          retention-days: 30
+          if-no-files-found: warn
