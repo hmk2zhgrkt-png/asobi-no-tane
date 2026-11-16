@@ -1,12 +1,106 @@
 {
   "source": "BOAT RACE official K performance LZH",
-  "from": "2026-05-01",
-  "to": "2026-05-14",
-  "days_requested": 14,
-  "days_successful": 14,
-  "days_unavailable": 0,
-  "complete_races": 2092,
-  "racer_rows": 12552,
+  "data_join": {
+    "days_requested": 14,
+    "days_successful": 14,
+    "days_unavailable": 0,
+    "complete_races": 2092,
+    "racer_rows": 12552,
+    "caution": "Actual course/finish/ST are postrace labels, never pre-race features."
+  },
+  "coverage_by_day": [
+    {
+      "date": "2026-05-01",
+      "status": "ok",
+      "complete_races": 152,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-02",
+      "status": "ok",
+      "complete_races": 156,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-05-03",
+      "status": "ok",
+      "complete_races": 179,
+      "invalid_or_disqualified_race": 9
+    },
+    {
+      "date": "2026-05-04",
+      "status": "ok",
+      "complete_races": 163,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-05",
+      "status": "ok",
+      "complete_races": 179,
+      "invalid_or_disqualified_race": 13
+    },
+    {
+      "date": "2026-05-06",
+      "status": "ok",
+      "complete_races": 192,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-07",
+      "status": "ok",
+      "complete_races": 131,
+      "invalid_or_disqualified_race": 13
+    },
+    {
+      "date": "2026-05-08",
+      "status": "ok",
+      "complete_races": 134,
+      "invalid_or_disqualified_race": 10
+    },
+    {
+      "date": "2026-05-09",
+      "status": "ok",
+      "complete_races": 124,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-10",
+      "status": "ok",
+      "complete_races": 115,
+      "invalid_or_disqualified_race": 5
+    },
+    {
+      "date": "2026-05-11",
+      "status": "ok",
+      "complete_races": 121,
+      "invalid_or_disqualified_race": 5
+    },
+    {
+      "date": "2026-05-12",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-13",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 6
+    },
+    {
+      "date": "2026-05-14",
+      "status": "ok",
+      "complete_races": 146,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 2
+    }
+  ],
   "evaluation": {
     "status": "EVALUATED",
     "train_dates": [
@@ -18,22 +112,20 @@
       "2026-05-14"
     ],
     "train_races": 1525,
-    "holdout_races": 567,
     "benchmark_frame_only": {
+      "heldout_races": 567,
       "winner_log_loss": 1.343246,
       "winner_top1_accuracy": 0.559083
     },
     "experimental_frame_plus_prior_actual_course": {
+      "heldout_races": 567,
       "winner_log_loss": 1.390568,
       "winner_top1_accuracy": 0.557319
     },
     "log_loss_improvement": -0.047322,
-    "production_model_retrained": false,
-    "production_28_feature_model_compared": false,
-    "realized_course_never_used_as_current_pre_race_feature": true,
-    "only_boat_number_as_proxy": true
-  },
-  "artifact_run_id": 43792718707,
-  "artifact_name": "historical-course-pilot",
-  "status": "Pilot generated and evaluated; trained candidate underperformed benchmark and was NOT deployed. Saving audit from verified GitHub Actions logs after concurrent report commits conflicted."
+    "model_retrained_production": false,
+    "prediction_course_input": "pre-start gate as proxy; verified exhibition course needed for real integration",
+    "leakage_rule": "Same-race actual entry course and finish are labels ONLY; prior actual-course history uses earlier dates",
+    "caution": "Small pilot only. Production 28-feature model NOT compared. No paper bets."
+  }
 }

@@ -1,0 +1,101 @@
+{
+  "days_requested": 14,
+  "days_successful": 14,
+  "days_unavailable": 0,
+  "complete_races": 2092,
+  "racer_rows": 12552,
+  "coverage_by_day": [
+    {
+      "date": "2026-05-01",
+      "status": "ok",
+      "complete_races": 152,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-02",
+      "status": "ok",
+      "complete_races": 156,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 2
+    },
+    {
+      "date": "2026-05-03",
+      "status": "ok",
+      "complete_races": 179,
+      "invalid_or_disqualified_race": 9
+    },
+    {
+      "date": "2026-05-04",
+      "status": "ok",
+      "complete_races": 163,
+      "invalid_or_disqualified_race": 10,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-05",
+      "status": "ok",
+      "complete_races": 179,
+      "invalid_or_disqualified_race": 13
+    },
+    {
+      "date": "2026-05-06",
+      "status": "ok",
+      "complete_races": 192,
+      "invalid_or_disqualified_race": 11,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-07",
+      "status": "ok",
+      "complete_races": 131,
+      "invalid_or_disqualified_race": 13
+    },
+    {
+      "date": "2026-05-08",
+      "status": "ok",
+      "complete_races": 134,
+      "invalid_or_disqualified_race": 10
+    },
+    {
+      "date": "2026-05-09",
+      "status": "ok",
+      "complete_races": 124,
+      "invalid_or_disqualified_race": 7,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-10",
+      "status": "ok",
+      "complete_races": 115,
+      "invalid_or_disqualified_race": 5
+    },
+    {
+      "date": "2026-05-11",
+      "status": "ok",
+      "complete_races": 121,
+      "invalid_or_disqualified_race": 5
+    },
+    {
+      "date": "2026-05-12",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 5,
+      "non_six_boat_race": 1
+    },
+    {
+      "date": "2026-05-13",
+      "status": "ok",
+      "complete_races": 150,
+      "invalid_or_disqualified_race": 6
+    },
+    {
+      "date": "2026-05-14",
+      "status": "ok",
+      "complete_races": 146,
+      "invalid_or_disqualified_race": 8,
+      "non_six_boat_race": 2
+    }
+  ],
+  "caution": "Actual course/finish/ST are postrace labels, never pre-race features."
+}

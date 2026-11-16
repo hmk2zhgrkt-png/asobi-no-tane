@@ -1,0 +1,27 @@
+{
+  "status": "EVALUATED",
+  "train_dates": [
+    "2026-05-01",
+    "2026-05-10"
+  ],
+  "holdout_dates": [
+    "2026-05-11",
+    "2026-05-14"
+  ],
+  "train_races": 1525,
+  "benchmark_frame_only": {
+    "heldout_races": 567,
+    "winner_log_loss": 1.343246,
+    "winner_top1_accuracy": 0.559083
+  },
+  "experimental_frame_plus_prior_actual_course": {
+    "heldout_races": 567,
+    "winner_log_loss": 1.390568,
+    "winner_top1_accuracy": 0.557319
+  },
+  "log_loss_improvement": -0.047322,
+  "model_retrained_production": false,
+  "prediction_course_input": "pre-start gate as proxy; verified exhibition course needed for real integration",
+  "leakage_rule": "Same-race actual entry course and finish are labels ONLY; prior actual-course history uses earlier dates",
+  "caution": "Small pilot only. Production 28-feature model NOT compared. No paper bets."
+}
