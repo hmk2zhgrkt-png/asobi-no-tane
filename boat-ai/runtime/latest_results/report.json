@@ -1,10 +1,126 @@
 {
-  "date": "2026-11-15",
-  "venue_code": 24,
-  "race": 8,
-  "status": "DATA_NOT_READY_SKIP",
-  "model_ran": false,
+  "date": "2026-11-16",
+  "venue": "尼崎",
+  "venue_code": 13,
+  "race": 1,
+  "race_code": "202611161301",
+  "status": "REPLAY_OR_UNVERIFIED_NO_BETS",
+  "preclose_snapshot_asof_jst": "2026-11-16T10:36:00+09:00",
+  "deadline_jst": "2026-11-16T10:43:00+09:00",
+  "model_ran": true,
+  "probability_sum": 0.9999999999999994,
+  "estimated_inputs_present": 150,
+  "total_model_inputs": 168,
+  "structurally_missing_fields": [
+    "last_stint_exh",
+    "stint_last_exh_change",
+    "stint_prior_exh_mean"
+  ],
+  "all120_odds": false,
+  "odds_count": 0,
+  "expected_return_scope": "screenshot_visible_only",
+  "screenshot_data_used": true,
+  "history_cutoff": "2026-10-31",
+  "days_updated": 15,
+  "downloaded_result_days": 0,
+  "missing_published_result_days": true,
+  "motor_sources": [
+    {
+      "boat": 1,
+      "racer_id": 5333,
+      "motor": 14,
+      "cycle_source": "2026-04-17",
+      "cycle_prior_runs": 122,
+      "recent_racer_runs": 11,
+      "meeting_prior_runs": 6,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 2,
+      "racer_id": 3951,
+      "motor": 18,
+      "cycle_source": "2026-04-17",
+      "cycle_prior_runs": 132,
+      "recent_racer_runs": 10,
+      "meeting_prior_runs": 6,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 3,
+      "racer_id": 3822,
+      "motor": 54,
+      "cycle_source": "2026-04-17",
+      "cycle_prior_runs": 132,
+      "recent_racer_runs": 5,
+      "meeting_prior_runs": 7,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 4,
+      "racer_id": 3442,
+      "motor": 58,
+      "cycle_source": "2026-04-17",
+      "cycle_prior_runs": 120,
+      "recent_racer_runs": 9,
+      "meeting_prior_runs": 6,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 5,
+      "racer_id": 4650,
+      "motor": 39,
+      "cycle_source": "2026-04-17",
+      "cycle_prior_runs": 127,
+      "recent_racer_runs": 18,
+      "meeting_prior_runs": 6,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    },
+    {
+      "boat": 6,
+      "racer_id": 4300,
+      "motor": 4,
+      "cycle_source": "2026-04-17",
+      "cycle_prior_runs": 137,
+      "recent_racer_runs": 6,
+      "meeting_prior_runs": 6,
+      "meeting_relative_exhibition_n": 0,
+      "base_motor_cycle_matches_source": true,
+      "motor_generation_provenance": "direct motor_stats row"
+    }
+  ],
+  "venue_context": {
+    "source": "https://kyoutei-navi.com/category/place/",
+    "source_period": "2021-01-01/2025-12-31",
+    "course_win_rates_pct": [
+      59.2,
+      11.9,
+      11.8,
+      9.8,
+      5.5,
+      1.7
+    ],
+    "surface": "静水面",
+    "water": "淡水",
+    "tidal_influence": "なし",
+    "method": "bounded first-place course prior",
+    "adjustment_strength": 0.2,
+    "validated_backtest": false
+  },
+  "venue_adjustment_backtested": false,
+  "skip_reasons": [
+    "missing daily archived results or race card downloads",
+    "only 0/120 screenshot-visible odds: no full-odds paper bets"
+  ],
   "paper_candidate_count": 0,
-  "reason": "RuntimeError: programs/race_cards 2026-11-15: HTTP 404",
-  "note": "No prediction or bet was made. Check freshness and required source fields."
+  "note": "The venue-adjusted probabilities are experimental and NOT backtested or calibrated. Historical replays never become paper bets. No real-money betting."
 }
