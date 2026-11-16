@@ -62,6 +62,10 @@ def main(args):
         p=(first[i]/first.sum())*(second[j]/(second.sum()-second[i]))*(third[k]/(third.sum()-third[i]-third[j]))
         probs.append(p)
     probs=np.asarray(probs,dtype=float);probs/=probs.sum()
+    from exhibition_f_bonus import adjust_combo_probs,details as exhibition_f_details
+    st_values=[float(e['exhibition_st']) for e in entries]
+    original_probs=probs.copy()
+    probs=np.asarray(adjust_combo_probs(PERMS,probs,st_values),dtype=float)
     top=np.argsort(-probs)[:5]
     result={
         'status':'RESEARCH_ONLY_PROSPECTIVE_COURSE_ELO',
@@ -77,6 +81,8 @@ def main(args):
         'model_inputs':'boat/venue/prior-history + strict pre-day Elo; exhibition not used in this model',
         'top5':[{'trifecta':'-'.join(map(str,PERMS[int(i)])),'probability':float(probs[int(i)])} for i in top],
         'sum_probability':float(probs.sum()),
+        'exhibition_f_positive_experiment':exhibition_f_details(st_values),
+        'original_top5_without_f_experiment':[{'trifecta':'-'.join(map(str,PERMS[int(i)])),'probability':float(original_probs[int(i)])} for i in np.argsort(-original_probs)[:5]],
         'entrant_elo':[{'boat':int(e['boat']),'racer_id':int(e['racer_id']),
              'elo':round(ratings.ratings.get(int(e['racer_id']),1500),2),
              'races_observed':int(ratings.starts[int(e['racer_id'])])} for e in entries],
