@@ -144,42 +144,65 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     screenshot=read_screenshot(screenshot_path,date,venue_code,race)
     kinds=['programs/race_cards','programs/title','programs/motor_stats','previews/tkz','previews/stt','previews/sui','previews/od3']
     today={}
-    for k in kinds:
-        try:
-            today[k]=csvday(k,date,root=source_root,required=k!='programs/title')
-            if k=='programs/title' and not today[k] and source_root is None:
-                try:
-                    today[k]=[official_race_title(date,venue_code,race)]
-                    print(f'OFFICIAL_FALLBACK: meeting title/deadline for {code}')
-                except (ValueError,HTTPError,URLError,TimeoutError,OSError) as title_error:
-                    print(f'OPTIONAL_TITLE_UNAVAILABLE: {type(title_error).__name__}: {title_error}')
-        except SourceUnavailable as e:
-            if screenshot and k=='previews/od3' and k not in screenshot['previews']:
-                today[k]=[]
-                print(f'NO_SCREENSHOT_ODDS: probability only for {code}')
-                continue
-            if screenshot and k in ('previews/sui','previews/od3') and k in screenshot['previews']:
-                today[k]=[]
-                print(f'SCREENSHOT_FALLBACK: {k} for {code}')
-                continue
-            if screenshot and k in ('previews/tkz','previews/stt') and k in screenshot['previews']:
-                fields=screenshot['previews'][k]
-                needed=('艇1_展示タイム','艇6_展示タイム','艇1_チルト','艇6_チルト') if k=='previews/tkz' else ('艇1_スタート展示','艇6_スタート展示','艇1_コース','艇6_コース')
-                if all(field in fields for field in needed):
+    # Fast pre-close screenshot mode: trusted screenshot covers exhibition,
+    # start exhibition, water/weather and optional odds. Fetch only the two
+    # official facts screenshots do not provide (race card and motor cycle).
+    # Never substitute historic results for unavailable daily files.
+    fast_snapshot=bool(screenshot and source_root is None and
+                       os.environ.get('BOAT_AI_FAST_SCREENSHOT','1')=='1')
+    if fast_snapshot:
+        from concurrent.futures import ThreadPoolExecutor
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            card_future=pool.submit(fetch_official_card,date,venue_code,race)
+            cycle_future=pool.submit(official_motor_cycle,date,venue_code)
+            cards_fast=card_future.result()
+            cycle_fast=cycle_future.result()
+        today['programs/race_cards']=[cards_fast]
+        today['programs/title']=[]
+        today['programs/motor_stats']=[
+            {'場コード':f'{venue_code:02d}',
+             'モーター番号':str(int(cards_fast[f"艇{boat}_モーター番号"])),
+             'モーター期起算日':cycle_fast} for boat in range(1,7)]
+        for kind in ('previews/tkz','previews/stt','previews/sui','previews/od3'):
+            today[kind]=[]
+        print(f'FAST_SCREENSHOT_MODE: official card + motor generation only; screenshot supplies preclose exhibition and weather for {code}')
+    else:
+        for k in kinds:
+            try:
+                today[k]=csvday(k,date,root=source_root,required=k!='programs/title')
+                if k=='programs/title' and not today[k] and source_root is None:
+                    try:
+                        today[k]=[official_race_title(date,venue_code,race)]
+                        print(f'OFFICIAL_FALLBACK: meeting title/deadline for {code}')
+                    except (ValueError,HTTPError,URLError,TimeoutError,OSError) as title_error:
+                        print(f'OPTIONAL_TITLE_UNAVAILABLE: {type(title_error).__name__}: {title_error}')
+            except SourceUnavailable as e:
+                if screenshot and k=='previews/od3' and k not in screenshot['previews']:
                     today[k]=[]
-                    print(f'SCREENSHOT_FALLBACK: complete {k} for {code}')
+                    print(f'NO_SCREENSHOT_ODDS: probability only for {code}')
                     continue
-            if source_root is None and k=='programs/race_cards':
-                try:
-                    today[k]=[fetch_official_card(date,venue_code,race)]
-                    print(f'OFFICIAL_FALLBACK: {code} race card from verified Boatcast TSV')
+                if screenshot and k in ('previews/sui','previews/od3') and k in screenshot['previews']:
+                    today[k]=[]
+                    print(f'SCREENSHOT_FALLBACK: {k} for {code}')
                     continue
-                except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
-                    raise RuntimeError(f'CSV multi-origin failure: {e}; official card fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
-            if source_root is None and k=='programs/motor_stats':
-                try:
-                    period=official_motor_cycle(date,venue_code)
-                    cards=get_by_code(today['programs/race_cards'],code)
+                if screenshot and k in ('previews/tkz','previews/stt') and k in screenshot['previews']:
+                    fields=screenshot['previews'][k]
+                    needed=('艇1_展示タイム','艇6_展示タイム','艇1_チルト','艇6_チルト') if k=='previews/tkz' else ('艇1_スタート展示','艇6_スタート展示','艇1_コース','艇6_コース')
+                    if all(field in fields for field in needed):
+                        today[k]=[]
+                        print(f'SCREENSHOT_FALLBACK: complete {k} for {code}')
+                        continue
+                if source_root is None and k=='programs/race_cards':
+                    try:
+                        today[k]=[fetch_official_card(date,venue_code,race)]
+                        print(f'OFFICIAL_FALLBACK: {code} race card from verified Boatcast TSV')
+                        continue
+                    except (ValueError,HTTPError,URLError,TimeoutError,OSError) as upstream_error:
+                        raise RuntimeError(f'CSV multi-origin failure: {e}; official card fallback failed: {type(upstream_error).__name__} {upstream_error}') from upstream_error
+                if source_root is None and k=='programs/motor_stats':
+                    try:
+                        period=official_motor_cycle(date,venue_code)
+                        cards=get_by_code(today['programs/race_cards'],code)
                     today[k]=[{'場コード':f'{venue_code:02d}','モーター番号':str(int(cards[f"艇{boat}_モーター番号"])),
                                'モーター期起算日':period} for boat in range(1,7)]
                     print(f'OFFICIAL_FALLBACK: verified motor cycle {period} for {code}')
@@ -235,7 +258,10 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     racers0=snapshot(baseline/'racer_snapshot.gz.b64')
     motors0=snapshot(baseline/'motor_snapshot.gz.b64')
     start=dateparse(racers0['asof'])+dt.timedelta(days=1)
-    gathered=recent_updates(start,date-dt.timedelta(days=1),source_root,workers=lookback_workers)
+    # Historical baseline is explicitly dated 2026-10-31. In the fast path
+    # no slow daily CSV retries are attempted: those days remain unverified.
+    # Model outputs are exploratory and paper bets remain disabled.
+    gathered={} if fast_snapshot else recent_updates(start,date-dt.timedelta(days=1),source_root,workers=lookback_workers)
     newer_racers,newer_motors=history_deltas(gathered,date)
     new_by_racer={};new_by_motor={}
     for r in newer_racers:new_by_racer.setdefault(r[1],[]).append(r)
@@ -429,7 +455,9 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'model_ran':True,'probability_sum':float(p.sum()),'estimated_inputs_present':int(X.notna().sum().sum()),
               'total_model_inputs':int(X.size),'structurally_missing_fields':missing,
               'all120_odds':visible_odds==120,'odds_count':visible_odds,'expected_return_scope':'all_120' if visible_odds==120 else 'screenshot_visible_only',
-              'screenshot_data_used':bool(screenshot),'history_cutoff':racers0['asof'],'days_updated':days_total,
+              'screenshot_data_used':bool(screenshot),'fast_screenshot_mode':fast_snapshot,
+              'history_since_baseline_fully_verified':not fast_snapshot and not has_daily_gap,
+              'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
               'venue_adjustment_backtested':False,'course_adjustment_applied':course_adjusted,
