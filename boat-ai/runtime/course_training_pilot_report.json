@@ -26,7 +26,7 @@
     {
       "date": "2026-05-04",
       "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/04.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+      "reason": "All sources unavailable for programs/race_cards/2026/05/04.csv (HTTPError:404,HTTPError:404,HTTPError:403)"
     },
     {
       "date": "2026-05-05",
@@ -41,7 +41,7 @@
     {
       "date": "2026-05-07",
       "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/07.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+      "reason": "All sources unavailable for programs/race_cards/2026/05/07.csv (HTTPError:404,HTTPError:404,HTTPError:403)"
     },
     {
       "date": "2026-05-08",
@@ -61,7 +61,7 @@
     {
       "date": "2026-05-11",
       "status": "unavailable",
-      "reason": "All sources unavailable for programs/race_cards/2026/05/11.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
+      "reason": "All sources unavailable for programs/race_cards/2026/05/11.csv (HTTPError:404,HTTPError:404,HTTPError:403)"
     },
     {
       "date": "2026-05-12",
