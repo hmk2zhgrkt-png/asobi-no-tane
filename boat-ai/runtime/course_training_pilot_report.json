@@ -78,5 +78,9 @@
       "status": "unavailable",
       "reason": "All sources unavailable for programs/race_cards/2026/05/14.csv (HTTPError:404,HTTPError:404,HTTPError:404)"
     }
-  ]
+  ],
+  "evaluation": {
+    "status": "NO_DATA",
+    "reason": "No joined actual entry course/finish rows"
+  }
 }
