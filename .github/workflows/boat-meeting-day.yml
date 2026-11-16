@@ -1,0 +1,38 @@
+name: Safe official K-based meeting-day inference
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/meeting_day_infer.py'
+      - 'boat-ai/runtime/test_meeting_day_infer.py'
+      - 'boat-ai/runtime/auto_predict.py'
+      - '.github/workflows/boat-meeting-day.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Test two-racer matched official K day and strict one-day cutoff
+        run: |
+          python -m py_compile boat-ai/runtime/auto_predict.py boat-ai/runtime/meeting_day_infer.py
+          python boat-ai/runtime/test_meeting_day_infer.py
+      - name: Diagnose saved Marugame 11 racecard if official archive remains online
+        run: |
+          python - <<'PY'
+          import datetime as dt,sys
+          sys.path.insert(0,'boat-ai/runtime')
+          from source_fetch import fetch_official_card
+          from meeting_day_infer import infer_meeting_day
+          try:
+              card=fetch_official_card(dt.date(2026,11,16),15,11)
+              value,evidence=infer_meeting_day(card,'2026-11-16',15,'boat-ai/runtime/course_history_daily')
+              print('HISTORICAL_MARUGAME11_DAY_INFER',value,evidence)
+          except Exception as exc:
+              print('ARCHIVED_OFFICIAL_CARD_NOT_AVAILABLE',type(exc).__name__,str(exc)[:250])
+          PY
