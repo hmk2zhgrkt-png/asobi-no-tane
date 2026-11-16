@@ -1,0 +1,51 @@
+name: 3-year actual-course model train and holdout comparison
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/train_course_3y.py'
+      - 'boat-ai/runtime/test_train_course_3y.py'
+      - '.github/workflows/train-course-3y.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: train-course-3y
+  cancel-in-progress: false
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install numerical and regression packages
+        run: python -m pip install --disable-pip-version-check numpy scikit-learn joblib
+      - name: Validate label safety and 120-way probability calculation
+        run: |
+          python -m py_compile boat-ai/runtime/train_course_3y.py
+          python boat-ai/runtime/test_train_course_3y.py
+      - name: Verify entire 36-month raw source archive
+        run: python boat-ai/runtime/course_history_manifest.py
+      - name: Train and evaluate independent chronological final holdout
+        run: |
+          OPENBLAS_NUM_THREADS=2 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 python boat-ai/runtime/train_course_3y.py
+      - name: Save performance report; research models never replace production
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add boat-ai/runtime/course_training_3y/evaluation.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Archive three-year trained race course history holdout comparison'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Preserve experimental model and report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: three-year-course-model-research
+          path: boat-ai/runtime/course_training_3y/
+          if-no-files-found: warn
+          retention-days: 30
