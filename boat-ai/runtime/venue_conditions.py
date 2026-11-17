@@ -128,14 +128,24 @@ def adjust_research(venue,course_by_boat,combinations,probabilities,condition):
     first_factor={boat:1.0 for boat in range(1,7)}
     # Qualitative source: Kyoutei Navi Miyajima article provides general
     # conjecture, which we use only as an *explicitly unvalidated scenario*.
-    if venue=="宮島" and wind is not None and intensity>0:
+    # Experimental cross-venue hypothesis, separate from learned production:
+    # per-venue magnitudes depend on sourced water difficulty. We DO NOT
+    # claim a universal wind benefit; this is deliberately tested as an
+    # isolated 120-way sensitivity. Source-based 24-venue profiles determine
+    # venue scale, and the 24 local headings determine head/tail orientation.
+    surface=VENUES[venue][1]
+    surface_scale={"難水面":1.0,"普通":0.75,"静水面":0.5}[surface]
+    wind_applied=wind is not None and intensity>0 and wind!="横風"
+    if wind_applied:
         head=wind in ("向かい風","斜め向かい風")
         tail=wind in ("追い風","斜め追い風")
+        diagonal_scale=0.5 if wind in ("斜め向かい風","斜め追い風") else 1.0
+        magnitude=0.04*surface_scale*diagonal_scale*intensity
         for boat,course in course_by_boat.items():
             if head and course in (3,4,5,6):
-                first_factor[boat]*=1+0.04*intensity
+                first_factor[boat]*=1+magnitude
             elif tail and course in (2,3,4):
-                first_factor[boat]*=1+0.04*intensity
+                first_factor[boat]*=1+magnitude
     tide_effect_applied=False
     if venue=="宮島" and phase in ("満潮","干潮","上げ潮","下げ潮"):
         tide_effect_applied=True
@@ -144,14 +154,18 @@ def adjust_research(venue,course_by_boat,combinations,probabilities,condition):
                 first_factor[boat]*=1.04 if phase=="満潮" else 1.02
             elif phase in ("干潮","下げ潮") and course in (3,4,5):
                 first_factor[boat]*=1.04 if phase=="干潮" else 1.02
-    # Other venues: observed water/wind contextual metadata retained, but
-    # no invented quantitative venue-specific physical response.
+    # Tide effects are restricted to Miyajima, where source actually
+    # documents a high/low-tide first-turn advantage; do NOT generalize
+    # tide current to other venues without verified geometry/observations.
     weights=[p*first_factor[combo[0]] for combo,p in zip(combinations,raw)]
     total=sum(weights)
     return [v/total for v in weights],{
         "first_place_factors":first_factor,
-        "wind_effect_applied":venue=="宮島" and wind is not None and intensity>0,
+        "wind_effect_applied":wind_applied,
+        "venue_water_difficulty_magnitude":surface_scale,
+        "wind_strategy_not_historically_fitted":True,
         "tide_effect_applied":tide_effect_applied,
-        "other_venues_unverified_effects_not_invented":venue!="宮島",
+        "tide_effect_from_venue_specific_source_only":venue=="宮島",
+        "unverified_tide_physics_not_generalized":venue!="宮島",
         "research_not_a_proven_improvement":True,
         "uncalibrated":True}
