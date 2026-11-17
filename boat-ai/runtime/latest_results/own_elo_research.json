@@ -3,9 +3,9 @@
   "date": "2026-11-17",
   "venue": "宮島",
   "venue_code": 17,
-  "race": 4,
-  "observed_at_jst": "2026-11-17T11:21:00+09:00",
-  "cutoff_jst": "2026-11-17T11:35:00+09:00",
+  "race": 5,
+  "observed_at_jst": "2026-11-17T11:50:00+09:00",
+  "cutoff_jst": "2026-11-17T12:01:00+09:00",
   "source": "independent own Elo from official BOAT RACE K histories",
   "historic_races_processed": 153507,
   "historic_last_date": "2026-11-16",
@@ -15,27 +15,27 @@
   "model_inputs": "boat/venue/prior-history + strict pre-day Elo; exhibition not used in this model",
   "top5": [
     {
-      "trifecta": "1-4-2",
-      "probability": 0.08619592133860919
-    },
-    {
       "trifecta": "1-2-4",
-      "probability": 0.0857948565946125
+      "probability": 0.05841925306570034
     },
     {
-      "trifecta": "1-4-3",
-      "probability": 0.06498373145331726
+      "trifecta": "1-2-5",
+      "probability": 0.04665811533580618
     },
     {
-      "trifecta": "1-4-5",
-      "probability": 0.05420951043820878
+      "trifecta": "1-2-3",
+      "probability": 0.04425125714626285
     },
     {
       "trifecta": "1-3-4",
-      "probability": 0.04514834549966686
+      "probability": 0.03292119143372089
+    },
+    {
+      "trifecta": "1-4-5",
+      "probability": 0.032710164889479004
     }
   ],
-  "sum_probability": 1.0000000000000002,
+  "sum_probability": 1.0,
   "exhibition_f_positive_experiment": {
     "enabled": true,
     "status": "UNVALIDATED_POSTMODEL_SENSITIVITY",
@@ -54,62 +54,62 @@
   },
   "original_top5_without_f_experiment": [
     {
-      "trifecta": "1-4-2",
-      "probability": 0.08619592133860918
-    },
-    {
       "trifecta": "1-2-4",
-      "probability": 0.08579485659461249
+      "probability": 0.05841925306570034
     },
     {
-      "trifecta": "1-4-3",
-      "probability": 0.06498373145331725
+      "trifecta": "1-2-5",
+      "probability": 0.04665811533580618
     },
     {
-      "trifecta": "1-4-5",
-      "probability": 0.05420951043820876
+      "trifecta": "1-2-3",
+      "probability": 0.04425125714626285
     },
     {
       "trifecta": "1-3-4",
-      "probability": 0.045148345499666856
+      "probability": 0.03292119143372089
+    },
+    {
+      "trifecta": "1-4-5",
+      "probability": 0.032710164889479004
     }
   ],
   "entrant_elo": [
     {
       "boat": 1,
-      "racer_id": 4679,
-      "elo": 1617.39,
-      "races_observed": 627
+      "racer_id": 3771,
+      "elo": 1569.76,
+      "races_observed": 590
     },
     {
       "boat": 2,
-      "racer_id": 4058,
-      "elo": 1523.16,
-      "races_observed": 745
+      "racer_id": 4771,
+      "elo": 1670.92,
+      "races_observed": 662
     },
     {
       "boat": 3,
-      "racer_id": 4054,
-      "elo": 1442.06,
-      "races_observed": 546
+      "racer_id": 3892,
+      "elo": 1489.09,
+      "races_observed": 510
     },
     {
       "boat": 4,
-      "racer_id": 4061,
-      "elo": 1748.22,
-      "races_observed": 793
+      "racer_id": 4553,
+      "elo": 1584.11,
+      "races_observed": 606
     },
     {
       "boat": 5,
-      "racer_id": 3293,
-      "elo": 1410.05,
-      "races_observed": 511
+      "racer_id": 4413,
+      "elo": 1655.0,
+      "races_observed": 703
     },
     {
       "boat": 6,
-      "racer_id": 5462,
-      "elo": 1225.18,
-      "races_observed": 54
+      "racer_id": 4202,
+      "elo": 1463.0,
+      "races_observed": 684
     }
   ],
   "no_bets": true
