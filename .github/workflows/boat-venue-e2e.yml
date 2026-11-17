@@ -1,0 +1,64 @@
+name: End-to-end 24-venue water/wind dual-model replay smoke
+on:
+  push:
+    paths:
+      - '.github/workflows/boat-venue-e2e.yml'
+      - 'boat-ai/runtime/venue_conditions.py'
+      - 'boat-ai/runtime/fetch_preclose_wind.py'
+      - 'boat-ai/runtime/score_conditional_live.py'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install both models
+        run: python -m pip install --disable-pip-version-check pandas numpy lightgbm scikit-learn joblib
+      - name: Validate production model binary
+        run: |
+          echo '9edf35ceaed65514ab8fdc08042f8c4462f4663e5e0ee17dcec7a16b5fd7c22d  boat-ai/runtime/model_bundle.zip' | sha256sum -c -
+          mkdir -p boat-ai/runtime/model
+          python -m zipfile -e boat-ai/runtime/model_bundle.zip boat-ai/runtime/model
+      - name: Re-score saved Miyajima race using original timestamp-verified inputs
+        run: |
+          mkdir -p /tmp/boat-venue-replay
+          python boat-ai/runtime/auto_predict.py --date 2026-11-17 --venue 17 --race 5 --snapshots boat-ai/runtime/data --models boat-ai/runtime/model --out /tmp/boat-venue-replay --screenshot-input boat-ai/runtime/screenshot_input.json
+      - name: Run 158-feature independent Elo venue-course and environmental variants
+        run: |
+          python boat-ai/runtime/score_conditional_live.py --features /tmp/boat-venue-replay/features6.csv --predictions /tmp/boat-venue-replay/predictions120.csv --report /tmp/boat-venue-replay/report.json --out /tmp/boat-venue-replay/conditional_elo_research.json
+      - name: Enforce exact same race, all 120 normal, no postclose claims or live wagers
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('/tmp/boat-venue-replay')
+          base=json.loads((root/'report.json').read_text(encoding='utf-8'))
+          condition=json.loads((root/'venue_environment_research.json').read_text(encoding='utf-8'))
+          elo=json.loads((root/'conditional_elo_research.json').read_text(encoding='utf-8'))
+          assert base['model_ran'] and base['date']=='2026-11-17' and base['venue']=='宮島' and base['race']==5
+          assert condition['report']['environment']['venue']=='宮島'
+          assert condition['date']==elo['date'] and condition['race']==elo['race']
+          assert not elo['prospective_scored_before_cutoff'], 'This is a replay on an already completed race'
+          assert not elo['automatic_live_betting_allowed'] and not elo['production_changed']
+          assert len(condition['all120'])==120 and abs(sum(condition['all120'].values())-1)<1e-8
+          for key in ['incumbent_28feature','conditional_prior_course_plus_own_elo','EXP_water_wind_incumbent','EXP_water_wind_conditional']:
+              m=elo['models'][key]
+              assert len(m['all120'])==120 and abs(sum(m['all120'].values())-1)<1e-8
+          assert len(elo['models'])>=7
+          print('VENUE_REPLAY_PASS',base['venue'],base['race'],list(elo['models']))
+          print('SOURCE_WIND',json.dumps(condition['report']['environment'],ensure_ascii=False))
+          PY
+      - name: Upload no-bet retrospective scenario tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: retrospective-venue-conditions-smoke
+          path: /tmp/boat-venue-replay/
+          retention-days: 14
+          if-no-files-found: warn
