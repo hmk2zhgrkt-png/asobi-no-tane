@@ -461,13 +461,43 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
     # trained model's scores: preserve a separately named research scenario.
     from venue_conditions import prepare_conditions,adjust_research
     observed_environment=(screenshot.get('environmental_conditions',{}) if screenshot else {})
+    observed_wind=observed_environment.get('wind_from')
+    observed_relative=observed_environment.get('relative_wind')
+    official_wind=None
+    wind_source=None
+    from venue_conditions import ALIASES,classify_wind
+    if str(weather.get('風向','')).strip() in ALIASES:
+        official_wind=ALIASES[str(weather['風向']).strip()]
+        wind_source={'source':'verified preclose water/weather preview',
+                     'observed_at_jst':max(obs).isoformat()}
+    elif fast_snapshot:
+        from fetch_preclose_wind import lookup as find_preclose_wind
+        direct=find_preclose_wind(date,venue_code,race,close)
+        if direct:
+            official_wind=direct['wind_from']
+            wind_source=direct
+    wind_conflict=False
+    if official_wind:
+        if observed_wind and ALIASES[observed_wind]!=official_wind:
+            wind_conflict=True
+        elif observed_relative and classify_wind(name,wind_from=official_wind)!=classify_wind(name,relative=observed_relative):
+            wind_conflict=True
+        elif not observed_relative and not observed_wind:
+            observed_wind=official_wind
+    # If independently observed sources conflict, disable direction-dependent
+    # adjustments instead of cherry-picking a favorable observation.
+    if wind_conflict:
+        observed_wind=None
+        observed_relative=None
     environment=prepare_conditions(name,
         wind_speed_m=number(weather.get('風速(m)')) if pd.notna(number(weather.get('風速(m)'))) else None,
-        wind_from=observed_environment.get('wind_from'),
-        relative_wind=observed_environment.get('relative_wind'),
+        wind_from=observed_wind,
+        relative_wind=observed_relative,
         tide_phase=observed_environment.get('tide_phase'),
         tide_height_cm=observed_environment.get('tide_height_cm'),
         observed_at_jst=max(obs).isoformat(),cutoff_jst=close.isoformat())
+    environment['wind_source_provenance']=wind_source
+    environment['wind_sources_disagree']=wind_conflict
     environment_scenario,environment_factors=adjust_research(
         name,entry_courses,PERMS,p,environment)
     env_top5=sorted(zip(PERMS,environment_scenario),key=lambda z:-z[1])[:5]
