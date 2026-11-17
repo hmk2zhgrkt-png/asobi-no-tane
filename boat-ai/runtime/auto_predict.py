@@ -457,7 +457,32 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         row['estimated_roi_proxy_pct']=(corrected*float(odds)*100
             if odds and odds.lower() not in ('nan','none') else np.nan)
     p=np.asarray(after_f,dtype=float)
+    # Explicit 24-venue water/wind context. Do not change the existing
+    # trained model's scores: preserve a separately named research scenario.
+    from venue_conditions import prepare_conditions,adjust_research
+    observed_environment=(screenshot.get('environmental_conditions',{}) if screenshot else {})
+    environment=prepare_conditions(name,
+        wind_speed_m=number(weather.get('風速(m)')) if pd.notna(number(weather.get('風速(m)'))) else None,
+        wind_from=observed_environment.get('wind_from'),
+        relative_wind=observed_environment.get('relative_wind'),
+        tide_phase=observed_environment.get('tide_phase'),
+        tide_height_cm=observed_environment.get('tide_height_cm'),
+        observed_at_jst=max(obs).isoformat(),cutoff_jst=close.isoformat())
+    environment_scenario,environment_factors=adjust_research(
+        name,entry_courses,PERMS,p,environment)
+    env_top5=sorted(zip(PERMS,environment_scenario),key=lambda z:-z[1])[:5]
+    environment_report={'environment':environment,'sensitivity':environment_factors,
+        'source_28_feature_model_unchanged':True,
+        'separate_experimental_top5':[{'trifecta':'-'.join(map(str,c)),
+                                        'probability':float(prob)}
+                                       for c,prob in env_top5]}
     out=Path(out_dir);out.mkdir(parents=True,exist_ok=True)
+    (out/'venue_environment_research.json').write_text(
+        json.dumps({'date':date.isoformat(),'venue':name,'venue_code':venue_code,'race':race,
+                    'course_by_boat':entry_courses,'report':environment_report,
+                    'all120':{'-'.join(map(str,combo)):float(prob)
+                              for combo,prob in zip(PERMS,environment_scenario)}},
+                   ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     df.to_csv(out/'features6.csv',index=False,encoding='utf-8-sig')
     pred=pd.DataFrame(outcome).sort_values('estimated_roi_proxy_pct',ascending=False)
     pred.to_csv(out/'predictions120.csv',index=False,encoding='utf-8-sig')
@@ -466,6 +491,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
         return frame.astype(object).where(pd.notna(frame),None).to_dict(orient='records')
     rankings={'venue':name,'date':date.isoformat(),'race':race,
               'venue_adjustment':venue_context(name),
+              'venue_environment_research':environment_report,
               'racer_course_adjustment':course_report if course_adjusted else None,
               'hit_rate_top3':json_records(pred.sort_values('probability',ascending=False).head(3)),
               'hit_rate_top5':json_records(pred.sort_values('probability',ascending=False).head(5)),
@@ -523,6 +549,7 @@ def calculate(date,venue_code,race,base_dir,model_dir,out_dir,source_root=None,l
               'history_cutoff':racers0['asof'],'days_updated':days_total,
               'downloaded_result_days':downloaded,'missing_published_result_days':has_daily_gap,
               'motor_sources':audit,'venue_context':venue_context(name),
+              'venue_environment_research':environment_report,
               'meeting_day':dayn,'meeting_day_source':meeting_day_source,
               'meeting_day_verification':meeting_day_validation,
               'venue_adjustment_backtested':False,'course_adjustment_applied':course_adjusted,
