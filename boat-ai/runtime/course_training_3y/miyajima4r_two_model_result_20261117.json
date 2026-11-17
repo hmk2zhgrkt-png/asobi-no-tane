@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-17",
+  "venue": "宮島",
+  "venue_code": 17,
+  "race": 4,
+  "actual_trifecta": "4-2-3",
+  "result_source": "user_report",
+  "payout_per_100_yen": null,
+  "screenshot_asof_jst": "2026-11-17T11:21:00+09:00",
+  "conditional_scored_at_jst": "2026-11-17T11:24:37.170111+09:00",
+  "models": [
+    {
+      "name": "incumbent_28feature",
+      "actual_rank": 9,
+      "probability": 0.03304272103097733,
+      "top5_hit": false
+    },
+    {
+      "name": "conditional_prior_course_plus_own_elo",
+      "actual_rank": 12,
+      "probability": 0.023598611286145786,
+      "top5_hit": false
+    }
+  ],
+  "independent_blend_research": {
+    "alpha_0_25_rank": 9,
+    "alpha_0_5_rank": 10,
+    "alpha_0_75_rank": 12
+  },
+  "paper_stake_yen": 0,
+  "real_bets_placed": false,
+  "note": "Both missed TOP5; existing 28-feature ranked actual trifecta higher than conditional Elo. Single result is not statistically conclusive. Wind 4m tailwind and wave 4cm were user-provided; no hindsight tuning."
+}
