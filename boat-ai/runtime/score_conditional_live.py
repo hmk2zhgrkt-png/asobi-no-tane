@@ -56,6 +56,21 @@ def main(history,live,features,report_path,pred_file,model_file,out_path):
     models={'incumbent_28feature':incumbent,'conditional_prior_course_plus_own_elo':research_f}
     for alpha in (.25,.5,.75):
         models[f'EXP_blend_28feature_{alpha:g}']=normalize((1-alpha)*incumbent+alpha*research_f)
+    # Match the incumbent's explicitly observed environmental scenario for
+    # the same race. The existing models retain their original score arrays;
+    # the venue-conditioned variants are UNCALIBRATED research alternatives.
+    from venue_conditions import adjust_research
+    env_report=report.get('venue_environment_research',{})
+    condition=env_report.get('environment')
+    venue_scenarios={}
+    if condition:
+        course={int(e['boat']):int(float(e['entry_course_pre'])) for e in ordered}
+        for original,experimental in [
+            ('incumbent_28feature','EXP_water_wind_incumbent'),
+            ('conditional_prior_course_plus_own_elo','EXP_water_wind_conditional')]:
+            alt,meta=adjust_research(report['venue'],course,perms,models[original],condition)
+            venue_scenarios[experimental]=meta
+            models[experimental]=normalize(alt)
     scored=dt.datetime.now(JST)
     cutoff=dt.datetime.fromisoformat(report['deadline_jst'])
     result={'status':'RESEARCH_ONLY_NO_AUTOMATIC_DEPLOYMENT',
@@ -69,6 +84,9 @@ def main(history,live,features,report_path,pred_file,model_file,out_path):
        'elo_built_independently_from_official_history':True,
        'no_current_day_finish_data_in_features':True,
        'experimental_f_rule':f_details(st),
+       'venue_environment':condition,
+       'environment_research_variant_metadata':venue_scenarios,
+       'learned_24_venue_course_interactions':True,
        'validated_3y_holdout_is_not_28feature_head_to_head':True,
        'production_changed':False,
        'automatic_live_betting_allowed':False,
