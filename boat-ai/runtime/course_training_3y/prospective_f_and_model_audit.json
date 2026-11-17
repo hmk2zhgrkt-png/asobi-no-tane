@@ -46,12 +46,12 @@
   "prospective_research_race_count": 2,
   "prospective_base_race_count": 2,
   "source_checks": {
-    "archived_base_events": 9,
-    "archived_research_events": 4,
-    "completed_research_events": 4,
-    "retrospective_research_excluded": 2,
-    "base_events_scored_after_cutoff": 7,
-    "events_with_result": 9,
+    "archived_base_events": 10,
+    "archived_research_events": 5,
+    "completed_research_events": 5,
+    "retrospective_research_excluded": 3,
+    "base_events_scored_after_cutoff": 8,
+    "events_with_result": 10,
     "meeting_day_missing": 2,
     "multiple_versions_of_same_race_deduplicated": 0
   },
@@ -71,6 +71,14 @@
         11
       ],
       "path": "boat-ai/runtime/preclose_archive/20261116-15-11/research-225034-975c246343d466.json"
+    },
+    {
+      "race": [
+        "2026-11-17",
+        17,
+        5
+      ],
+      "path": "boat-ai/runtime/preclose_archive/20261117-17-05/research-185126-e0237ff562eb0a.json"
     }
   ],
   "F01_to_F04_exhibition_exploratory": {
