@@ -47,6 +47,29 @@ def read_screenshot(path,date,venue,race):
     data=obj.get("fields",{})
     if not isinstance(data,dict):raise ValueError("Missing screenshot fields object")
     result={"observed":observed,"cutoff":obj.get("cutoff_jst",""),"previews":{},"odds_count":0,"complete_odds":False,"notes":[]}
+    # Environment is recorded separately from trained 28-feature schema:
+    # no compass direction or tide phase is fabricated from an unlabeled arrow.
+    from venue_conditions import classify_wind,TIDE_PHASES,ALIASES
+    extra={}
+    if "wind_from" in data:
+        if data["wind_from"] not in ALIASES:raise ValueError("Unverified wind-from compass")
+        extra["wind_from"]=data["wind_from"]
+    if "relative_wind" in data:
+        if data["relative_wind"] not in ("headwind","tailwind","crosswind","向かい風","追い風","横風"):
+            raise ValueError("Invalid observed relative wind")
+        extra["relative_wind"]=data["relative_wind"]
+    if "wind_from" in extra and "relative_wind" in extra:
+        raise ValueError("Wind direction duplicated across reference frames")
+    if "tide_phase" in data:
+        if data["tide_phase"] not in TIDE_PHASES:raise ValueError("Unverified tide phase")
+        extra["tide_phase"]=data["tide_phase"]
+    if "tide_height_cm" in data:
+        extra["tide_height_cm"]=_finite(data["tide_height_cm"],-1000,1000)
+    if "wind_direction_unresolved" in data:
+        if data["wind_direction_unresolved"] is not True:
+            raise ValueError("Unresolved wind must be boolean true")
+        extra["wind_direction_unresolved"]=True
+    result["environmental_conditions"]=extra
     if "meeting_day" in obj:
         day=int(obj["meeting_day"])
         day_observed=_stamp(obj["meeting_day_observed_at_jst"])
