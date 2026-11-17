@@ -1,17 +1,58 @@
 {
   "status": "PAIRED_FORWARD_AUDIT",
   "rules": "Only one latest genuinely preclose model score per event; replays and postrace re-scores excluded.",
-  "matched_prospective_research_scorecard": {},
-  "prospective_research_race_count": 0,
-  "prospective_base_race_count": 0,
+  "matched_prospective_research_scorecard": {
+    "EXP_blend_28feature_0.25": {
+      "n_races": 2,
+      "top1_rate": 0.0,
+      "top3_rate": 0.0,
+      "top5_rate": 0.0,
+      "mean_logloss": 4.1647087545423656,
+      "mean_brier": 0.9953818725774505
+    },
+    "EXP_blend_28feature_0.5": {
+      "n_races": 2,
+      "top1_rate": 0.0,
+      "top3_rate": 0.0,
+      "top5_rate": 0.0,
+      "mean_logloss": 4.256570538130979,
+      "mean_brier": 1.0016953155624266
+    },
+    "EXP_blend_28feature_0.75": {
+      "n_races": 2,
+      "top1_rate": 0.0,
+      "top3_rate": 0.0,
+      "top5_rate": 0.0,
+      "mean_logloss": 4.357918935183826,
+      "mean_brier": 1.0091786612615585
+    },
+    "conditional_prior_course_plus_own_elo": {
+      "n_races": 2,
+      "top1_rate": 0.0,
+      "top3_rate": 0.0,
+      "top5_rate": 0.0,
+      "mean_logloss": 4.470992989321983,
+      "mean_brier": 1.017831909674845
+    },
+    "incumbent_28feature": {
+      "n_races": 2,
+      "top1_rate": 0.0,
+      "top3_rate": 0.0,
+      "top5_rate": 0.0,
+      "mean_logloss": 4.08068728473308,
+      "mean_brier": 0.990238332306629
+    }
+  },
+  "prospective_research_race_count": 2,
+  "prospective_base_race_count": 2,
   "source_checks": {
-    "archived_base_events": 6,
-    "archived_research_events": 2,
-    "completed_research_events": 2,
+    "archived_base_events": 9,
+    "archived_research_events": 4,
+    "completed_research_events": 4,
     "retrospective_research_excluded": 2,
-    "base_events_scored_after_cutoff": 6,
-    "events_with_result": 6,
-    "meeting_day_missing": 0,
+    "base_events_scored_after_cutoff": 7,
+    "events_with_result": 9,
+    "meeting_day_missing": 2,
     "multiple_versions_of_same_race_deduplicated": 0
   },
   "postclose_research_replays_excluded": [
@@ -33,14 +74,14 @@
     }
   ],
   "F01_to_F04_exhibition_exploratory": {
-    "n_boat_exposures": 0,
+    "n_boat_exposures": 12,
     "groups": {
-      "F01_to_F04": {
-        "n": 0,
-        "winner": 0,
-        "top3": 0
-      },
       "other": {
+        "n": 12,
+        "winner": 2,
+        "top3": 6
+      },
+      "F01_to_F04": {
         "n": 0,
         "winner": 0,
         "top3": 0
