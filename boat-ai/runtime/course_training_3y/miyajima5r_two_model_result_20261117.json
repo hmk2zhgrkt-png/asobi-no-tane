@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-17",
+  "venue": "宮島",
+  "venue_code": 17,
+  "race": 5,
+  "actual_trifecta": "3-2-5",
+  "result_source": "user_report",
+  "payout_per_100_yen": null,
+  "screenshot_asof_jst": "2026-11-17T11:50:00+09:00",
+  "conditional_scored_at_jst": "2026-11-17T11:53:14.409432+09:00",
+  "deadline_jst": "2026-11-17T12:01:00+09:00",
+  "prospective_scored_before_cutoff": true,
+  "models": [
+    {
+      "name": "incumbent_28feature",
+      "actual_rank": 40,
+      "probability": 0.00863941340505131,
+      "top5_hit": false
+    },
+    {
+      "name": "conditional_prior_course_plus_own_elo",
+      "actual_rank": 42,
+      "probability": 0.0055418961792875815,
+      "top5_hit": false
+    }
+  ],
+  "experimental_blend_results": {
+    "0.25": {
+      "rank": 41,
+      "probability": 0.00786503409861038
+    },
+    "0.5": {
+      "rank": 39,
+      "probability": 0.007090654792169446
+    },
+    "0.75": {
+      "rank": 42,
+      "probability": 0.0063162754857285135
+    }
+  },
+  "paper_stake_yen": 0,
+  "real_bets_placed": false,
+  "notes": "Both missed TOP5, 3 boat won, 2 placed second. Document outcomes without hindsight fitting."
+}
