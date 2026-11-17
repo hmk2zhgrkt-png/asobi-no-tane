@@ -11,8 +11,10 @@ def save(model_json,archive):
     if not stamp.tzinfo or not cutoff.tzinfo:raise ValueError('Offset-aware clock required')
     if o['prospective_scored_before_cutoff']!=(stamp<cutoff):
         raise ValueError('Inconsistent prospective status')
-    if set(o['models'])!={'incumbent_28feature','conditional_prior_course_plus_own_elo',
-         'EXP_blend_28feature_0.25','EXP_blend_28feature_0.5','EXP_blend_28feature_0.75'}:
+    required={'incumbent_28feature','conditional_prior_course_plus_own_elo',
+         'EXP_blend_28feature_0.25','EXP_blend_28feature_0.5','EXP_blend_28feature_0.75'}
+    allowed=required|{'EXP_water_wind_incumbent','EXP_water_wind_conditional'}
+    if not required.issubset(o['models']) or not set(o['models']).issubset(allowed):
         raise ValueError('Unexpected model selection')
     for name,v in o['models'].items():
         if len(v['all120'])!=120 or abs(sum(v['all120'].values())-1)>1e-7:
