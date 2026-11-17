@@ -29,12 +29,22 @@ SMALL_NAMES=['boat_fraction','prior_30d_win','prior_30d_top2','prior_30d_top3',
              'prior_90d_win','prior_90d_top3','prior_90d_course_win',
              'prior_365d_win','prior_365d_top3','prior_365d_course_win',
              'prior_365d_course_top3','elo_center','elo_field_advantage','elo_log_starts']
+# Venue*planned-course interactions: strictly pre-race one-hot features.
+# This lets the *learned* conditional 2nd/3rd model represent different
+# 1..6 course profiles across ALL 24 venues, not just a fixed 1-boat bonus.
+SMALL_NAMES += [f'venue_{venue:02d}_course_{course}' for venue in range(1,25)
+                for course in range(1,7)]
 
 def small_features(X):
     # Course history array order verified at startup. Past actual course
     # history only. The current race's realized entry course never used.
     boat=np.argmax(X[:,:6],axis=1).astype(np.float32)/5.0
-    z=np.column_stack([boat,X[:,INDEXES],X[:,-4],X[:,-3],X[:,-1]]).astype(np.float32)
+    venue_flag=X[:,6:30]
+    course_flag=X[:,:6]
+    if not np.all(np.isclose(venue_flag.sum(axis=1),1)) or not np.all(np.isclose(course_flag.sum(axis=1),1)):
+        raise ValueError('Missing or ambiguous venue / planned course one-hot')
+    venue_course=(venue_flag[:,:,None]*course_flag[:,None,:]).reshape(-1,24*6)
+    z=np.column_stack([boat,X[:,INDEXES],X[:,-4],X[:,-3],X[:,-1],venue_course]).astype(np.float32)
     if z.shape[1]!=len(SMALL_NAMES):raise ValueError('Feature schema mismatch')
     return z
 
@@ -184,7 +194,10 @@ def main(root,out,baseline):
       'training_end':TRAIN_END,'validation_end':VALID_END,
       'holdout_dates':['2026-09-01',TEST_END],
       'reference':'Previously trained own-Elo course-history first/second/third model',
-      'features':SMALL_NAMES,'uses_historic_exhibition':False,'same_day_outcome_features':False,
+      'features':SMALL_NAMES,
+      'venue_course_interaction_features':144,
+      'site_specific_wind_or_tide_directions_not_in_official_K':True,
+      'uses_historic_exhibition':False,'same_day_outcome_features':False,
       'heldout_selection_leakage':False,'chosen_on_validation_only':selected,
       'validation':{'reference':results(v['original'],v['actual']),
            'conditional':results(v['conditional'],v['actual']),
