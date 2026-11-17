@@ -13,7 +13,7 @@ from train_course_3y import COMBOS,FEATURES
 from own_elo import FEATURES as ELO_FEATURES
 from course_model_sidecar import course_features
 from score_own_elo_live import build_elo
-from conditional_roles_3y import small_features,compare_proba,old_pl_proba,apply_tuning
+from conditional_roles_3y import SMALL_NAMES,small_features,compare_proba,old_pl_proba,apply_tuning
 from exhibition_f_bonus import adjust_combo_probs,details as f_details
 
 JST=dt.timezone(dt.timedelta(hours=9))
@@ -37,6 +37,8 @@ def main(history,live,features,report_path,pred_file,model_file,out_path):
     model=joblib.load(model_file)
     if model.get('features')!=FEATURES+list(ELO_FEATURES) or not model.get('research_only'):
         raise ValueError('Wrong 3-year research model artifact')
+    if model.get('small_features')!=SMALL_NAMES:
+        raise ValueError('Saved conditional venue×course model feature list has not finished training; fail closed')
     base_course=course_features(history,date,[dict(e,venue_code=venue) for e in ordered])
     elo,ratings,count,latest=build_elo(history,live,date,ordered)
     full=np.hstack([base_course,elo]).astype(np.float32)
