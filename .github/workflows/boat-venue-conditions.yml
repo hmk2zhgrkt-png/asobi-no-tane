@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'boat-ai/runtime/venue_conditions.py'
+      - 'boat-ai/runtime/fetch_preclose_wind.py'
+      - 'boat-ai/runtime/test_fetch_preclose_wind.py'
       - 'boat-ai/runtime/test_venue_conditions.py'
       - 'boat-ai/runtime/screenshot_input.py'
       - 'boat-ai/runtime/score_conditional_live.py'
@@ -24,4 +26,5 @@ jobs:
         run: |
           python -m py_compile boat-ai/runtime/venue_conditions.py boat-ai/runtime/screenshot_input.py boat-ai/runtime/score_conditional_live.py boat-ai/runtime/auto_predict.py
           python boat-ai/runtime/test_venue_conditions.py
+          python boat-ai/runtime/test_fetch_preclose_wind.py
           python boat-ai/runtime/test_screenshot_input.py
