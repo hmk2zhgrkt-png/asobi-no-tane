@@ -1,0 +1,27 @@
+name: 24-venue environmental scenario regression
+on:
+  push:
+    paths:
+      - 'boat-ai/runtime/venue_conditions.py'
+      - 'boat-ai/runtime/test_venue_conditions.py'
+      - 'boat-ai/runtime/screenshot_input.py'
+      - 'boat-ai/runtime/score_conditional_live.py'
+      - 'boat-ai/runtime/auto_predict.py'
+      - '.github/workflows/boat-venue-conditions.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Validate all-24 venues and strict wind/tide truth constraints
+        run: |
+          python -m py_compile boat-ai/runtime/venue_conditions.py boat-ai/runtime/screenshot_input.py boat-ai/runtime/score_conditional_live.py boat-ai/runtime/auto_predict.py
+          python boat-ai/runtime/test_venue_conditions.py
+          python boat-ai/runtime/test_screenshot_input.py
