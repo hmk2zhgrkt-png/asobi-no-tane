@@ -1,0 +1,30 @@
+name: Update novel market data
+on:
+  schedule:
+    - cron: "13 4 * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: novel-market-data
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch public ranking snapshots
+        run: python scripts/update_novel_market.py
+      - name: Commit updated data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add novel-needs/snapshots.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update novel market ranking snapshots"
+            git push
+          fi
