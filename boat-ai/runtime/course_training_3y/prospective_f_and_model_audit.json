@@ -46,12 +46,12 @@
   "prospective_research_race_count": 2,
   "prospective_base_race_count": 2,
   "source_checks": {
-    "archived_base_events": 15,
+    "archived_base_events": 16,
     "archived_research_events": 5,
     "completed_research_events": 5,
     "retrospective_research_excluded": 3,
-    "base_events_scored_after_cutoff": 13,
-    "events_with_result": 15,
+    "base_events_scored_after_cutoff": 14,
+    "events_with_result": 16,
     "meeting_day_missing": 2,
     "multiple_versions_of_same_race_deduplicated": 0
   },
