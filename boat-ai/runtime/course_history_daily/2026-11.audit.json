@@ -1,13 +1,13 @@
 {
   "month": "2026-11",
-  "asof": "2026-11-24",
+  "asof": "2026-11-25",
   "file": "2026-11.csv.gz",
-  "sha256": "15157ff4f3f8d50b9310fcbfb72d7fd90d90f955bd799b599c3deae0dd176326",
-  "days_requested": 24,
-  "days_downloaded": 24,
+  "sha256": "fd488a7333fb356e45392867257d7e8c9cb14117d05b3d3a756095ce2db55e07",
+  "days_requested": 25,
+  "days_downloaded": 25,
   "days_missing": 0,
-  "racer_rows": 19356,
-  "clean_six_boat_races": 3226,
+  "racer_rows": 20250,
+  "clean_six_boat_races": 3375,
   "days": [
     {
       "date": "2026-11-01",
@@ -172,6 +172,12 @@
       "complete_races": 156,
       "invalid_or_disqualified_race": 8,
       "non_six_boat_race": 3
+    },
+    {
+      "date": "2026-11-25",
+      "status": "ok",
+      "complete_races": 149,
+      "invalid_or_disqualified_race": 7
     }
   ],
   "source": "official BOATRACE completed K-LZH",
